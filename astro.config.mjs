@@ -11,10 +11,7 @@ export default defineConfig({
       applyBaseStyles: false,
     })
   ],
-  output: 'server',
-  adapter: cloudflare({
-    mode: 'directory'
-  }),
+  output: 'static',
   site: 'https://scyclatest-solo.pages.dev/',
   // Force deployment refresh
   build: {
