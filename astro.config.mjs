@@ -21,6 +21,28 @@ export default defineConfig({
   vite: {
     optimizeDeps: {
       include: ['react', 'react-dom']
+    },
+    ssr: {
+      external: [
+        'path',
+        'fs',
+        'vm',
+        'events',
+        'url',
+        'util',
+        'http',
+        'https',
+        'assert',
+        'string_decoder',
+        'child_process',
+        'os',
+        'buffer',
+        'crypto',
+        'net',
+        'tls',
+        'stream',
+        'zlib'
+      ]
     }
   }
 });
