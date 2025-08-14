@@ -20,16 +20,20 @@ if (!supabaseUrl || !supabaseAnonKey) {
       getSession: () => Promise.resolve({ data: { session: null }, error: new Error('Supabase not configured') }),
       onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
     },
-    from: () => ({
-      insert: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
-      select: () => ({
-        eq: () => ({
-          single: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') })
-        })
-      }),
-      update: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
-      delete: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') })
-    })
+    from: () => {
+      const mockQuery = {
+        insert: () => Promise.resolve({ data: null, error: null }),
+        select: () => mockQuery,
+        eq: () => mockQuery,
+        gte: () => mockQuery,
+        order: () => mockQuery,
+        limit: () => Promise.resolve({ data: [], error: null }),
+        single: () => Promise.resolve({ data: null, error: null }),
+        update: () => Promise.resolve({ data: null, error: null }),
+        delete: () => Promise.resolve({ data: null, error: null })
+      };
+      return mockQuery;
+    }
   };
 } else {
   supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
