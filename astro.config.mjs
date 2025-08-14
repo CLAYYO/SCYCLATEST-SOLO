@@ -3,6 +3,9 @@ import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
 import cloudflare from '@astrojs/cloudflare';
 
+// Import MessageChannel polyfill for Cloudflare Workers
+import './src/polyfills/messagechannel.js';
+
 // https://astro.build/config
 export default defineConfig({
   integrations: [
@@ -12,7 +15,10 @@ export default defineConfig({
     })
   ],
   output: 'server',
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    mode: 'advanced',
+    functionPerRoute: false
+  }),
   site: 'https://scyclatest-solo.pages.dev/',
   // Force deployment refresh
   build: {
@@ -22,6 +28,7 @@ export default defineConfig({
     optimizeDeps: {
       include: ['react', 'react-dom']
     },
+
     ssr: {
       external: [
         'path',
@@ -41,8 +48,10 @@ export default defineConfig({
         'net',
         'tls',
         'stream',
-        'zlib'
-      ]
+        'zlib',
+        'react-dom/server'
+      ],
+      noExternal: ['react', 'react-dom']
     }
   }
 });
