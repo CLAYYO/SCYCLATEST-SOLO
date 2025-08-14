@@ -1,0 +1,467 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { supabase } from '../../lib/supabase';
+import { formatDate, formatFileSize, getFileExtension, DOCUMENT_CATEGORIES } from '../../utils';
+
+// Fetch documents from Supabase
+const { data: documents } = await supabase
+  .from('documents')
+  .select('*')
+  .eq('status', 'published')
+  .order('created_at', { ascending: false });
+
+// Sample documents data for demonstration
+const sampleDocuments = [
+  {
+    id: '1',
+    title: 'SCYC Racing Rules 2024',
+    description: 'Complete racing rules and regulations for the 2024 sailing season, including class-specific requirements and safety protocols.',
+    file_name: 'SCYC_Racing_Rules_2024.pdf',
+    file_path: '/documents/racing/SCYC_Racing_Rules_2024.pdf',
+    file_size: 2048576, // 2MB
+    file_type: 'application/pdf',
+    category: 'racing',
+    uploaded_by: 'Racing Committee',
+    created_at: '2024-01-15T10:00:00Z',
+    updated_at: '2024-01-15T10:00:00Z',
+    download_count: 156,
+    status: 'published',
+    tags: ['racing', 'rules', '2024', 'regulations']
+  },
+  {
+    id: '2',
+    title: 'Membership Application Form',
+    description: 'Official membership application form for new members. Please complete and return to the club office.',
+    file_name: 'Membership_Application_2024.pdf',
+    file_path: '/documents/membership/Membership_Application_2024.pdf',
+    file_size: 512000, // 500KB
+    file_type: 'application/pdf',
+    category: 'membership',
+    uploaded_by: 'Secretary',
+    created_at: '2024-01-10T14:30:00Z',
+    updated_at: '2024-01-10T14:30:00Z',
+    download_count: 89,
+    status: 'published',
+    tags: ['membership', 'application', 'form']
+  },
+  {
+    id: '3',
+    title: 'Safety Guidelines and Procedures',
+    description: 'Comprehensive safety guidelines for all club activities, including emergency procedures and contact information.',
+    file_name: 'Safety_Guidelines_2024.pdf',
+    file_path: '/documents/safety/Safety_Guidelines_2024.pdf',
+    file_size: 1536000, // 1.5MB
+    file_type: 'application/pdf',
+    category: 'safety',
+    uploaded_by: 'Safety Officer',
+    created_at: '2024-02-01T09:00:00Z',
+    updated_at: '2024-02-01T09:00:00Z',
+    download_count: 234,
+    status: 'published',
+    tags: ['safety', 'procedures', 'emergency']
+  },
+  {
+    id: '4',
+    title: 'Club Constitution and Bylaws',
+    description: 'Official club constitution and bylaws governing the operation of South Caernarvonshire Yacht Club.',
+    file_name: 'SCYC_Constitution_2023.pdf',
+    file_path: '/documents/governance/SCYC_Constitution_2023.pdf',
+    file_size: 768000, // 750KB
+    file_type: 'application/pdf',
+    category: 'governance',
+    uploaded_by: 'Commodore',
+    created_at: '2023-12-01T16:00:00Z',
+    updated_at: '2023-12-01T16:00:00Z',
+    download_count: 67,
+    status: 'published',
+    tags: ['constitution', 'bylaws', 'governance']
+  },
+  {
+    id: '5',
+    title: 'Mooring and Berthing Information',
+    description: 'Information about mooring facilities, berthing arrangements, and associated fees for the 2024 season.',
+    file_name: 'Mooring_Information_2024.pdf',
+    file_path: '/documents/facilities/Mooring_Information_2024.pdf',
+    file_size: 1024000, // 1MB
+    file_type: 'application/pdf',
+    category: 'facilities',
+    uploaded_by: 'Harbour Master',
+    created_at: '2024-02-15T11:30:00Z',
+    updated_at: '2024-02-15T11:30:00Z',
+    download_count: 123,
+    status: 'published',
+    tags: ['mooring', 'berthing', 'facilities', 'fees']
+  },
+  {
+    id: '6',
+    title: 'Training Course Schedule 2024',
+    description: 'Complete schedule of RYA training courses offered by SCYC throughout the 2024 season.',
+    file_name: 'Training_Schedule_2024.xlsx',
+    file_path: '/documents/training/Training_Schedule_2024.xlsx',
+    file_size: 256000, // 250KB
+    file_type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    category: 'training',
+    uploaded_by: 'Training Officer',
+    created_at: '2024-02-20T13:15:00Z',
+    updated_at: '2024-02-20T13:15:00Z',
+    download_count: 78,
+    status: 'published',
+    tags: ['training', 'courses', 'schedule', 'RYA']
+  }
+];
+
+// Use real data if available, otherwise use sample data
+const displayDocuments = documents && documents.length > 0 ? documents : sampleDocuments;
+
+// Get unique categories from documents
+const usedCategories = [...new Set(displayDocuments.map(doc => doc.category))];
+
+const categoryLabels = {
+  racing: 'Racing',
+  membership: 'Membership',
+  safety: 'Safety',
+  governance: 'Governance',
+  facilities: 'Facilities',
+  training: 'Training',
+  events: 'Events',
+  restaurant: 'Restaurant',
+  maintenance: 'Maintenance',
+  general: 'General'
+};
+
+const categoryColors = {
+  racing: 'bg-blue-100 text-blue-800',
+  membership: 'bg-green-100 text-green-800',
+  safety: 'bg-red-100 text-red-800',
+  governance: 'bg-purple-100 text-purple-800',
+  facilities: 'bg-yellow-100 text-yellow-800',
+  training: 'bg-indigo-100 text-indigo-800',
+  events: 'bg-pink-100 text-pink-800',
+  restaurant: 'bg-orange-100 text-orange-800',
+  maintenance: 'bg-gray-100 text-gray-800',
+  general: 'bg-navy-100 text-navy-800'
+};
+
+const fileTypeIcons = {
+  'application/pdf': '📄',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': '📊',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '📝',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation': '📊',
+  'image/jpeg': '🖼️',
+  'image/png': '🖼️',
+  'text/plain': '📄',
+  'default': '📎'
+};
+---
+
+<Layout title="Document Library - South Caernarvonshire Yacht Club">
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-r from-navy-900 to-navy-700 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <h1 class="text-4xl md:text-5xl font-serif font-bold mb-4">
+          Document Library
+        </h1>
+        <p class="text-xl text-navy-100 max-w-3xl mx-auto">
+          Access important club documents, forms, rules, and resources all in one place
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search and Filter Section -->
+  <section class="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <!-- Search Bar -->
+      <div class="mb-4">
+        <div class="relative max-w-md">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <input
+            type="text"
+            id="document-search"
+            placeholder="Search documents..."
+            class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-navy-500 focus:border-navy-500"
+          />
+        </div>
+      </div>
+      
+      <!-- Category Filters -->
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="text-sm font-medium text-gray-700 mr-2">Filter by category:</span>
+        <button 
+          class="category-filter px-3 py-1 rounded-full text-sm font-medium bg-navy-700 text-white" 
+          data-category="all"
+        >
+          All Documents
+        </button>
+        {usedCategories.map(category => (
+          <button 
+            class={`category-filter px-3 py-1 rounded-full text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 ${categoryColors[category] || 'bg-gray-100 text-gray-800'}`}
+            data-category={category}
+          >
+            {categoryLabels[category] || category}
+          </button>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Documents Grid -->
+  <section class="py-12 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {displayDocuments.length === 0 ? (
+        <div class="text-center py-12">
+          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <h3 class="mt-2 text-sm font-medium text-gray-900">No documents found</h3>
+          <p class="mt-1 text-sm text-gray-500">Try adjusting your search or filter criteria.</p>
+        </div>
+      ) : (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="documents-grid">
+          {displayDocuments.map((document) => {
+            const createdDate = new Date(document.created_at);
+            const fileIcon = fileTypeIcons[document.file_type] || fileTypeIcons.default;
+            const fileExt = getFileExtension(document.file_name).toUpperCase();
+            
+            return (
+              <div class={`document-item bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden`} data-category={document.category}>
+                <div class="p-6">
+                  <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center">
+                      <span class="text-2xl mr-3">{fileIcon}</span>
+                      <div>
+                        <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${categoryColors[document.category] || 'bg-gray-100 text-gray-800'}`}>
+                          {categoryLabels[document.category] || document.category}
+                        </span>
+                        <div class="text-xs text-gray-500 mt-1">
+                          {fileExt} • {formatFileSize(document.file_size)}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="flex items-center text-xs text-gray-500">
+                      <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                      </svg>
+                      {document.download_count || 0}
+                    </div>
+                  </div>
+                  
+                  <h3 class="text-lg font-semibold text-navy-900 mb-2 line-clamp-2">
+                    {document.title}
+                  </h3>
+                  
+                  <p class="text-gray-600 text-sm mb-4 line-clamp-3">
+                    {document.description}
+                  </p>
+                  
+                  <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                    <div class="flex items-center">
+                      <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                      </svg>
+                      {document.uploaded_by}
+                    </div>
+                    
+                    <time datetime={document.created_at}>
+                      {formatDate(createdDate)}
+                    </time>
+                  </div>
+                  
+                  <div class="flex items-center justify-between">
+                    <button 
+                      class="download-btn flex items-center px-4 py-2 bg-navy-700 text-white text-sm font-medium rounded-md hover:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-500 transition-colors"
+                      data-file-path={document.file_path}
+                      data-file-name={document.file_name}
+                      data-document-id={document.id}
+                    >
+                      <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                      </svg>
+                      Download
+                    </button>
+                    
+                    <button 
+                      class="share-btn p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                      data-document-title={document.title}
+                      data-document-url={`/documents/${document.id}`}
+                      title="Share document"
+                    >
+                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
+                      </svg>
+                    </button>
+                  </div>
+                  
+                  {document.tags && document.tags.length > 0 && (
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                      <div class="flex flex-wrap gap-1">
+                        {document.tags.slice(0, 3).map(tag => (
+                          <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-700">
+                            #{tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- Upload Section (for authenticated users) -->
+  <section class="py-16 bg-navy-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-2xl mx-auto text-center">
+        <h2 class="text-3xl font-serif font-bold mb-4">
+          Need to Upload a Document?
+        </h2>
+        <p class="text-xl text-navy-100 mb-8">
+          Club members and officers can upload documents through the member portal.
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="/auth/login"
+            class="px-6 py-3 bg-gold-600 text-white font-medium rounded-md hover:bg-gold-700 focus:outline-none focus:ring-2 focus:ring-gold-500 transition-colors"
+          >
+            Member Login
+          </a>
+          <a
+            href="/contact"
+            class="px-6 py-3 border border-white text-white font-medium rounded-md hover:bg-white hover:text-navy-900 focus:outline-none focus:ring-2 focus:ring-white transition-colors"
+          >
+            Contact Us
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Search functionality
+  const searchInput = document.getElementById('document-search');
+  const documentItems = document.querySelectorAll('.document-item');
+  
+  searchInput?.addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    
+    documentItems.forEach(item => {
+      const title = item.querySelector('h3').textContent.toLowerCase();
+      const description = item.querySelector('p').textContent.toLowerCase();
+      const tags = Array.from(item.querySelectorAll('.bg-gray-100')).map(tag => tag.textContent.toLowerCase()).join(' ');
+      
+      if (title.includes(searchTerm) || description.includes(searchTerm) || tags.includes(searchTerm)) {
+        item.style.display = 'block';
+      } else {
+        item.style.display = 'none';
+      }
+    });
+  });
+  
+  // Category filtering functionality
+  const categoryFilters = document.querySelectorAll('.category-filter');
+  
+  categoryFilters.forEach(filter => {
+    filter.addEventListener('click', function() {
+      const selectedCategory = this.dataset.category;
+      
+      // Update active filter button
+      categoryFilters.forEach(btn => {
+        btn.classList.remove('bg-navy-700', 'text-white');
+        btn.classList.add('border', 'border-gray-300', 'text-gray-700', 'hover:bg-gray-50');
+      });
+      
+      this.classList.add('bg-navy-700', 'text-white');
+      this.classList.remove('border', 'border-gray-300', 'text-gray-700', 'hover:bg-gray-50');
+      
+      // Filter documents
+      documentItems.forEach(item => {
+        if (selectedCategory === 'all' || item.dataset.category === selectedCategory) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+      
+      // Clear search when filtering
+      if (searchInput) {
+        searchInput.value = '';
+      }
+    });
+  });
+  
+  // Download functionality
+  const downloadButtons = document.querySelectorAll('.download-btn');
+  
+  downloadButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const filePath = this.dataset.filePath;
+      const fileName = this.dataset.fileName;
+      const documentId = this.dataset.documentId;
+      
+      // In a real implementation, you would:
+      // 1. Make an API call to increment download count
+      // 2. Generate a secure download URL
+      // 3. Trigger the download
+      
+      // For demo purposes, show an alert
+      alert(`Downloading: ${fileName}\n\nIn a real implementation, this would download the file and update the download count.`);
+      
+      // Update download count in UI
+      const downloadCountElement = this.closest('.document-item').querySelector('.text-xs.text-gray-500');
+      if (downloadCountElement) {
+        const currentCount = parseInt(downloadCountElement.textContent) || 0;
+        downloadCountElement.textContent = currentCount + 1;
+      }
+    });
+  });
+  
+  // Share functionality
+  const shareButtons = document.querySelectorAll('.share-btn');
+  
+  shareButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const title = this.dataset.documentTitle;
+      const url = window.location.origin + this.dataset.documentUrl;
+      
+      if (navigator.share) {
+        navigator.share({
+          title: title,
+          url: url
+        });
+      } else {
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(url).then(() => {
+          alert('Document link copied to clipboard!');
+        });
+      }
+    });
+  });
+</script>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

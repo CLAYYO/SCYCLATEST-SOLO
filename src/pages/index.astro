@@ -1,16 +1,402 @@
 ---
+import Layout from '../layouts/Layout.astro';
+import { supabase } from '../lib/supabase';
+import { formatDate } from '../utils';
 
+// Fetch latest news and events
+const { data: latestNews } = await supabase
+  .from('news')
+  .select('*')
+  .eq('published', true)
+  .order('published_at', { ascending: false })
+  .limit(3);
+
+const { data: upcomingEvents } = await supabase
+  .from('events')
+  .select('*')
+  .gte('start_date', new Date().toISOString())
+  .order('start_date', { ascending: true })
+  .limit(3);
+
+const { data: recentRaces } = await supabase
+  .from('races')
+  .select('*')
+  .order('race_date', { ascending: false })
+  .limit(3);
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="South Caernarvonshire Yacht Club - SCYC">
+  <!-- Hero Section -->
+  <section class="relative h-screen flex items-center justify-center overflow-hidden">
+    <!-- Background Image -->
+    <div class="absolute inset-0 z-0">
+      <img 
+        src="https://trae-api-us.mchost.guru/api/ide/v1/text_to_image?prompt=Beautiful%20sailing%20yacht%20club%20in%20Abersoch%20Wales%20with%20boats%20moored%20in%20Cardigan%20Bay%2C%20golden%20hour%20lighting%2C%20dramatic%20sky%2C%20coastal%20landscape%2C%20professional%20photography&image_size=landscape_16_9" 
+        alt="SCYC Marina at Abersoch" 
+        class="w-full h-full object-cover"
+      />
+      <div class="absolute inset-0 bg-navy-900/60"></div>
+    </div>
+    
+    <!-- Hero Content -->
+    <div class="relative z-10 text-center text-white max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="animate-fade-in">
+        <img src="/images/scyc-logo.svg" alt="SCYC Logo" class="h-24 w-24 mx-auto mb-6" />
+        <h1 class="font-serif text-4xl md:text-6xl font-bold mb-4 text-gold-400">
+          South Caernarvonshire<br />Yacht Club
+        </h1>
+        <p class="text-xl md:text-2xl mb-2 text-gray-200">
+          Established 1924
+        </p>
+        <p class="text-lg md:text-xl mb-8 text-gray-300 max-w-2xl mx-auto">
+          Located in the heart of Abersoch on the beautiful Cardigan Bay, serving the sailing community for nearly a century.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="/membership" class="btn-primary">
+            Join Our Club
+          </a>
+          <a href="/racing" class="btn-secondary">
+            View Racing Results
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+      <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Quick Stats -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div class="animate-slide-up">
+          <div class="text-3xl md:text-4xl font-bold text-navy-900 mb-2">100+</div>
+          <div class="text-gray-600">Years of Heritage</div>
+        </div>
+        <div class="animate-slide-up" style="animation-delay: 0.1s;">
+          <div class="text-3xl md:text-4xl font-bold text-navy-900 mb-2">500+</div>
+          <div class="text-gray-600">Active Members</div>
+        </div>
+        <div class="animate-slide-up" style="animation-delay: 0.2s;">
+          <div class="text-3xl md:text-4xl font-bold text-navy-900 mb-2">50+</div>
+          <div class="text-gray-600">Annual Races</div>
+        </div>
+        <div class="animate-slide-up" style="animation-delay: 0.3s;">
+          <div class="text-3xl md:text-4xl font-bold text-navy-900 mb-2">12</div>
+          <div class="text-gray-600">Boat Classes</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Latest News -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-serif font-bold text-navy-900 mb-4">
+          Latest News
+        </h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+          Stay updated with the latest happenings at SCYC
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {latestNews && latestNews.length > 0 ? (
+          latestNews.map((article, index) => (
+            <article class="card animate-slide-up" style={`animation-delay: ${index * 0.1}s;`}>
+              {article.featured_image && (
+                <img 
+                  src={article.featured_image} 
+                  alt={article.title}
+                  class="w-full h-48 object-cover rounded-t-lg"
+                />
+              )}
+              <div class="p-6">
+                <div class="flex items-center text-sm text-gray-500 mb-2">
+                  <time datetime={article.published_at}>
+                    {formatDate(new Date(article.published_at))}
+                  </time>
+                  <span class="mx-2">•</span>
+                  <span class="bg-navy-100 text-navy-800 px-2 py-1 rounded-full text-xs">
+                    {article.category}
+                  </span>
+                </div>
+                <h3 class="text-xl font-semibold text-navy-900 mb-3">
+                  <a href={`/news/${article.slug}`} class="hover:text-gold-600 transition-colors">
+                    {article.title}
+                  </a>
+                </h3>
+                <p class="text-gray-600 mb-4 line-clamp-3">
+                  {article.excerpt}
+                </p>
+                <a 
+                  href={`/news/${article.slug}`} 
+                  class="text-navy-700 hover:text-gold-600 font-medium transition-colors"
+                >
+                  Read more →
+                </a>
+              </div>
+            </article>
+          ))
+        ) : (
+          <!-- Placeholder news items -->
+          <article class="card animate-slide-up">
+            <img 
+              src="https://trae-api-us.mchost.guru/api/ide/v1/text_to_image?prompt=Sailing%20regatta%20at%20yacht%20club%20with%20colorful%20spinnakers%2C%20competitive%20racing%2C%20blue%20water%2C%20professional%20sailing%20photography&image_size=landscape_4_3" 
+              alt="Summer Regatta 2024"
+              class="w-full h-48 object-cover rounded-t-lg"
+            />
+            <div class="p-6">
+              <div class="flex items-center text-sm text-gray-500 mb-2">
+                <time datetime="2024-08-15">August 15, 2024</time>
+                <span class="mx-2">•</span>
+                <span class="bg-navy-100 text-navy-800 px-2 py-1 rounded-full text-xs">Racing</span>
+              </div>
+              <h3 class="text-xl font-semibold text-navy-900 mb-3">
+                <a href="/news/summer-regatta-2024" class="hover:text-gold-600 transition-colors">
+                  Summer Regatta 2024 Results
+                </a>
+              </h3>
+              <p class="text-gray-600 mb-4">
+                Congratulations to all participants in this year's Summer Regatta. Excellent conditions and competitive racing across all classes.
+              </p>
+              <a href="/news/summer-regatta-2024" class="text-navy-700 hover:text-gold-600 font-medium transition-colors">
+                Read more →
+              </a>
+            </div>
+          </article>
+          
+          <article class="card animate-slide-up" style="animation-delay: 0.1s;">
+            <img 
+              src="https://trae-api-us.mchost.guru/api/ide/v1/text_to_image?prompt=Elegant%20yacht%20club%20restaurant%20interior%20with%20nautical%20decor%2C%20fine%20dining%2C%20coastal%20views%2C%20warm%20lighting&image_size=landscape_4_3" 
+              alt="The Cove Restaurant"
+              class="w-full h-48 object-cover rounded-t-lg"
+            />
+            <div class="p-6">
+              <div class="flex items-center text-sm text-gray-500 mb-2">
+                <time datetime="2024-08-10">August 10, 2024</time>
+                <span class="mx-2">•</span>
+                <span class="bg-navy-100 text-navy-800 px-2 py-1 rounded-full text-xs">Restaurant</span>
+              </div>
+              <h3 class="text-xl font-semibold text-navy-900 mb-3">
+                <a href="/news/new-autumn-menu" class="hover:text-gold-600 transition-colors">
+                  New Autumn Menu at The Cove
+                </a>
+              </h3>
+              <p class="text-gray-600 mb-4">
+                Our head chef has crafted a delicious new autumn menu featuring local Welsh ingredients and fresh seafood from Cardigan Bay.
+              </p>
+              <a href="/news/new-autumn-menu" class="text-navy-700 hover:text-gold-600 font-medium transition-colors">
+                Read more →
+              </a>
+            </div>
+          </article>
+          
+          <article class="card animate-slide-up" style="animation-delay: 0.2s;">
+            <img 
+              src="https://trae-api-us.mchost.guru/api/ide/v1/text_to_image?prompt=Yacht%20club%20members%20socializing%20at%20evening%20event%2C%20maritime%20setting%2C%20warm%20atmosphere%2C%20community%20gathering&image_size=landscape_4_3" 
+              alt="Members Evening"
+              class="w-full h-48 object-cover rounded-t-lg"
+            />
+            <div class="p-6">
+              <div class="flex items-center text-sm text-gray-500 mb-2">
+                <time datetime="2024-08-05">August 5, 2024</time>
+                <span class="mx-2">•</span>
+                <span class="bg-navy-100 text-navy-800 px-2 py-1 rounded-full text-xs">Social</span>
+              </div>
+              <h3 class="text-xl font-semibold text-navy-900 mb-3">
+                <a href="/news/members-evening" class="hover:text-gold-600 transition-colors">
+                  Annual Members' Evening Success
+                </a>
+              </h3>
+              <p class="text-gray-600 mb-4">
+                Thank you to everyone who attended our annual members' evening. A wonderful celebration of our sailing community.
+              </p>
+              <a href="/news/members-evening" class="text-navy-700 hover:text-gold-600 font-medium transition-colors">
+                Read more →
+              </a>
+            </div>
+          </article>
+        )}
+      </div>
+      
+      <div class="text-center mt-12">
+        <a href="/news" class="btn-primary">
+          View All News
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Upcoming Events -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-serif font-bold text-navy-900 mb-4">
+          Upcoming Events
+        </h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+          Join us for exciting events throughout the sailing season
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {upcomingEvents && upcomingEvents.length > 0 ? (
+          upcomingEvents.map((event, index) => (
+            <div class="card animate-slide-up" style={`animation-delay: ${index * 0.1}s;`}>
+              <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                  <span class="bg-gold-100 text-gold-800 px-3 py-1 rounded-full text-sm font-medium">
+                    {event.event_type}
+                  </span>
+                  <time class="text-sm text-gray-500" datetime={event.start_date}>
+                    {formatDate(new Date(event.start_date))}
+                  </time>
+                </div>
+                <h3 class="text-xl font-semibold text-navy-900 mb-3">
+                  <a href={`/events/${event.slug}`} class="hover:text-gold-600 transition-colors">
+                    {event.title}
+                  </a>
+                </h3>
+                <p class="text-gray-600 mb-4">
+                  {event.description}
+                </p>
+                <div class="flex items-center text-sm text-gray-500 mb-4">
+                  <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  </svg>
+                  {event.location || 'SCYC Clubhouse'}
+                </div>
+                <a href={`/events/${event.slug}`} class="text-navy-700 hover:text-gold-600 font-medium transition-colors">
+                  Learn more →
+                </a>
+              </div>
+            </div>
+          ))
+        ) : (
+          <!-- Placeholder events -->
+          <div class="card animate-slide-up">
+            <div class="p-6">
+              <div class="flex items-center justify-between mb-4">
+                <span class="bg-gold-100 text-gold-800 px-3 py-1 rounded-full text-sm font-medium">
+                  Racing
+                </span>
+                <time class="text-sm text-gray-500">September 15, 2024</time>
+              </div>
+              <h3 class="text-xl font-semibold text-navy-900 mb-3">
+                <a href="/events/autumn-series" class="hover:text-gold-600 transition-colors">
+                  Autumn Racing Series
+                </a>
+              </h3>
+              <p class="text-gray-600 mb-4">
+                Join us for the start of our Autumn Racing Series. Open to all boat classes with prizes for each division.
+              </p>
+              <div class="flex items-center text-sm text-gray-500 mb-4">
+                <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                SCYC Marina
+              </div>
+              <a href="/events/autumn-series" class="text-navy-700 hover:text-gold-600 font-medium transition-colors">
+                Learn more →
+              </a>
+            </div>
+          </div>
+          
+          <div class="card animate-slide-up" style="animation-delay: 0.1s;">
+            <div class="p-6">
+              <div class="flex items-center justify-between mb-4">
+                <span class="bg-gold-100 text-gold-800 px-3 py-1 rounded-full text-sm font-medium">
+                  Social
+                </span>
+                <time class="text-sm text-gray-500">September 22, 2024</time>
+              </div>
+              <h3 class="text-xl font-semibold text-navy-900 mb-3">
+                <a href="/events/harvest-dinner" class="hover:text-gold-600 transition-colors">
+                  Harvest Dinner
+                </a>
+              </h3>
+              <p class="text-gray-600 mb-4">
+                Celebrate the season with our annual Harvest Dinner featuring local produce and live music.
+              </p>
+              <div class="flex items-center text-sm text-gray-500 mb-4">
+                <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                The Cove Restaurant
+              </div>
+              <a href="/events/harvest-dinner" class="text-navy-700 hover:text-gold-600 font-medium transition-colors">
+                Learn more →
+              </a>
+            </div>
+          </div>
+          
+          <div class="card animate-slide-up" style="animation-delay: 0.2s;">
+            <div class="p-6">
+              <div class="flex items-center justify-between mb-4">
+                <span class="bg-gold-100 text-gold-800 px-3 py-1 rounded-full text-sm font-medium">
+                  Training
+                </span>
+                <time class="text-sm text-gray-500">October 5, 2024</time>
+              </div>
+              <h3 class="text-xl font-semibold text-navy-900 mb-3">
+                <a href="/events/sailing-course" class="hover:text-gold-600 transition-colors">
+                  RYA Sailing Course
+                </a>
+              </h3>
+              <p class="text-gray-600 mb-4">
+                Learn to sail with our qualified RYA instructors. Suitable for beginners and intermediate sailors.
+              </p>
+              <div class="flex items-center text-sm text-gray-500 mb-4">
+                <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 616 0z"></path>
+                </svg>
+                SCYC Training Center
+              </div>
+              <a href="/events/sailing-course" class="text-navy-700 hover:text-gold-600 font-medium transition-colors">
+                Learn more →
+              </a>
+            </div>
+          </div>
+        )}
+      </div>
+      
+      <div class="text-center mt-12">
+        <a href="/events" class="btn-primary">
+          View All Events
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="py-16 bg-navy-900 text-white">
+    <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4 text-gold-400">
+        Join Our Sailing Community
+      </h2>
+      <p class="text-xl mb-8 text-gray-300">
+        Experience the thrill of sailing in one of Wales' most beautiful locations. 
+        Whether you're a seasoned sailor or just starting out, SCYC welcomes you.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/membership" class="btn-primary">
+          Become a Member
+        </a>
+        <a href="/contact" class="btn-secondary">
+          Contact Us
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

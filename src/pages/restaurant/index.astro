@@ -1,0 +1,530 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { supabase } from '../../lib/supabase';
+import { formatTime } from '../../utils';
+
+// Fetch menu items
+const { data: menuItems } = await supabase
+  .from('menus')
+  .select('*')
+  .eq('is_active', true)
+  .order('category', { ascending: true })
+  .order('display_order', { ascending: true });
+
+// Sample menu data for demonstration
+const sampleMenuItems = [
+  // Breakfast
+  {
+    id: '1',
+    name: 'Full Welsh Breakfast',
+    description: 'Two eggs, Welsh bacon, sausages, black pudding, baked beans, grilled tomato, mushrooms, and toast',
+    price: 12.95,
+    category: 'breakfast',
+    is_vegetarian: false,
+    allergens: ['gluten', 'eggs']
+  },
+  {
+    id: '2',
+    name: 'Vegetarian Breakfast',
+    description: 'Two eggs, vegetarian sausages, baked beans, grilled tomato, mushrooms, hash browns, and toast',
+    price: 11.95,
+    category: 'breakfast',
+    is_vegetarian: true,
+    allergens: ['gluten', 'eggs']
+  },
+  {
+    id: '3',
+    name: 'Smoked Salmon & Scrambled Eggs',
+    description: 'Fresh smoked salmon with creamy scrambled eggs on toasted sourdough',
+    price: 14.95,
+    category: 'breakfast',
+    is_vegetarian: false,
+    allergens: ['gluten', 'eggs', 'fish']
+  },
+  
+  // Lunch
+  {
+    id: '4',
+    name: 'Fish & Chips',
+    description: 'Fresh local cod in crispy beer batter with hand-cut chips and mushy peas',
+    price: 16.95,
+    category: 'lunch',
+    is_vegetarian: false,
+    allergens: ['gluten', 'fish']
+  },
+  {
+    id: '5',
+    name: 'Crab Sandwich',
+    description: 'Fresh Cardigan Bay crab with mixed leaves and marie rose sauce on artisan bread',
+    price: 18.95,
+    category: 'lunch',
+    is_vegetarian: false,
+    allergens: ['gluten', 'shellfish', 'eggs']
+  },
+  {
+    id: '6',
+    name: 'Welsh Lamb Burger',
+    description: 'Locally sourced lamb burger with caramelized onions, mint yogurt, and chips',
+    price: 17.95,
+    category: 'lunch',
+    is_vegetarian: false,
+    allergens: ['gluten', 'dairy']
+  },
+  
+  // Dinner
+  {
+    id: '7',
+    name: 'Pan-Seared Sea Bass',
+    description: 'Fresh sea bass with samphire, new potatoes, and lemon butter sauce',
+    price: 24.95,
+    category: 'dinner',
+    is_vegetarian: false,
+    allergens: ['fish', 'dairy']
+  },
+  {
+    id: '8',
+    name: 'Welsh Beef Fillet',
+    description: '8oz Welsh beef fillet with roasted vegetables and red wine jus',
+    price: 32.95,
+    category: 'dinner',
+    is_vegetarian: false,
+    allergens: ['dairy']
+  },
+  {
+    id: '9',
+    name: 'Roasted Vegetable Risotto',
+    description: 'Creamy arborio rice with seasonal roasted vegetables and parmesan',
+    price: 18.95,
+    category: 'dinner',
+    is_vegetarian: true,
+    allergens: ['dairy']
+  },
+  
+  // Desserts
+  {
+    id: '10',
+    name: 'Welsh Cakes & Ice Cream',
+    description: 'Traditional Welsh cakes served warm with vanilla ice cream',
+    price: 7.95,
+    category: 'desserts',
+    is_vegetarian: true,
+    allergens: ['gluten', 'dairy', 'eggs']
+  },
+  {
+    id: '11',
+    name: 'Lemon Posset',
+    description: 'Creamy lemon posset with shortbread biscuit',
+    price: 8.95,
+    category: 'desserts',
+    is_vegetarian: true,
+    allergens: ['dairy', 'gluten']
+  }
+];
+
+// Use real data if available, otherwise use sample data
+const displayMenuItems = menuItems && menuItems.length > 0 ? menuItems : sampleMenuItems;
+
+// Group menu items by category
+const menuByCategory = displayMenuItems.reduce((acc, item) => {
+  if (!acc[item.category]) {
+    acc[item.category] = [];
+  }
+  acc[item.category].push(item);
+  return acc;
+}, {});
+
+const categoryTitles = {
+  breakfast: 'Breakfast',
+  lunch: 'Lunch',
+  dinner: 'Dinner',
+  desserts: 'Desserts',
+  drinks: 'Drinks'
+};
+
+const openingHours = {
+  breakfast: '8:00 AM - 11:30 AM',
+  lunch: '12:00 PM - 3:00 PM',
+  dinner: '6:00 PM - 9:00 PM'
+};
+---
+
+<Layout title="The Cove Restaurant - SCYC">
+  <!-- Hero Section -->
+  <section class="relative bg-navy-900 text-white py-20">
+    <div class="absolute inset-0 bg-gradient-to-r from-navy-900 to-navy-800 opacity-90"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <h1 class="text-5xl md:text-6xl font-serif font-bold mb-6 text-gold-400">
+          The Cove Restaurant
+        </h1>
+        <p class="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto mb-8">
+          Exceptional dining with stunning views over Cardigan Bay. 
+          Fresh, local ingredients prepared with passion and served with Welsh hospitality.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="#menu" class="btn-primary">
+            View Menu
+          </a>
+          <a href="#booking" class="btn-secondary">
+            Make Reservation
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Opening Hours -->
+  <section class="py-12 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-serif font-bold text-navy-900 mb-4">
+          Opening Hours
+        </h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">
+          We're open daily during the sailing season, serving fresh, locally-sourced cuisine
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+        <div class="text-center p-6 bg-gray-50 rounded-lg">
+          <div class="w-16 h-16 bg-gold-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-navy-900" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold text-navy-900 mb-2">Breakfast</h3>
+          <p class="text-gray-600">{openingHours.breakfast}</p>
+        </div>
+        
+        <div class="text-center p-6 bg-gray-50 rounded-lg">
+          <div class="w-16 h-16 bg-gold-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-navy-900" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold text-navy-900 mb-2">Lunch</h3>
+          <p class="text-gray-600">{openingHours.lunch}</p>
+        </div>
+        
+        <div class="text-center p-6 bg-gray-50 rounded-lg">
+          <div class="w-16 h-16 bg-gold-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-navy-900" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold text-navy-900 mb-2">Dinner</h3>
+          <p class="text-gray-600">{openingHours.dinner}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Menu Section -->
+  <section id="menu" class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-serif font-bold text-navy-900 mb-4">
+          Our Menu
+        </h2>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          Featuring the finest local Welsh produce, fresh seafood from Cardigan Bay, 
+          and traditional dishes with a modern twist.
+        </p>
+      </div>
+
+      <!-- Menu Categories -->
+      <div class="space-y-12">
+        {Object.entries(menuByCategory).map(([category, items]) => (
+          <div class="bg-white rounded-lg shadow-sm p-8">
+            <h3 class="text-3xl font-serif font-bold text-navy-900 mb-8 text-center border-b border-gold-200 pb-4">
+              {categoryTitles[category] || category.charAt(0).toUpperCase() + category.slice(1)}
+            </h3>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {items.map((item) => (
+                <div class="border-b border-gray-100 pb-6 last:border-b-0">
+                  <div class="flex justify-between items-start mb-2">
+                    <h4 class="text-xl font-semibold text-navy-900 flex items-center gap-2">
+                      {item.name}
+                      {item.is_vegetarian && (
+                        <span class="text-green-600 text-sm" title="Vegetarian">
+                          🌱
+                        </span>
+                      )}
+                    </h4>
+                    <span class="text-xl font-bold text-gold-600">
+                      £{item.price.toFixed(2)}
+                    </span>
+                  </div>
+                  
+                  <p class="text-gray-600 mb-3 leading-relaxed">
+                    {item.description}
+                  </p>
+                  
+                  {item.allergens && item.allergens.length > 0 && (
+                    <div class="flex flex-wrap gap-1">
+                      <span class="text-xs text-gray-500">Contains:</span>
+                      {item.allergens.map((allergen, index) => (
+                        <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                          {allergen}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Special Dietary Information -->
+      <div class="mt-12 bg-navy-900 text-white rounded-lg p-8">
+        <div class="text-center mb-6">
+          <h3 class="text-2xl font-serif font-bold text-gold-400 mb-4">
+            Special Dietary Requirements
+          </h3>
+          <p class="text-gray-300">
+            We're happy to accommodate special dietary requirements. Please speak to our staff about:
+          </p>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          <div>
+            <div class="text-2xl mb-2">🌱</div>
+            <div class="font-medium">Vegetarian</div>
+          </div>
+          <div>
+            <div class="text-2xl mb-2">🌾</div>
+            <div class="font-medium">Gluten Free</div>
+          </div>
+          <div>
+            <div class="text-2xl mb-2">🥛</div>
+            <div class="font-medium">Dairy Free</div>
+          </div>
+          <div>
+            <div class="text-2xl mb-2">🥜</div>
+            <div class="font-medium">Nut Allergies</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Booking Section -->
+  <section id="booking" class="py-16 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-serif font-bold text-navy-900 mb-4">
+          Make a Reservation
+        </h2>
+        <p class="text-xl text-gray-600">
+          Book your table at The Cove for an unforgettable dining experience
+        </p>
+      </div>
+
+      <div class="bg-gray-50 rounded-lg p-8">
+        <form class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                Name *
+              </label>
+              <input 
+                type="text" 
+                id="name" 
+                name="name" 
+                required 
+                class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-navy-500 focus:border-navy-500"
+                placeholder="Your full name"
+              >
+            </div>
+            
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                Email *
+              </label>
+              <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                required 
+                class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-navy-500 focus:border-navy-500"
+                placeholder="your.email@example.com"
+              >
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <label for="date" class="block text-sm font-medium text-gray-700 mb-2">
+                Date *
+              </label>
+              <input 
+                type="date" 
+                id="date" 
+                name="date" 
+                required 
+                class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-navy-500 focus:border-navy-500"
+              >
+            </div>
+            
+            <div>
+              <label for="time" class="block text-sm font-medium text-gray-700 mb-2">
+                Time *
+              </label>
+              <select 
+                id="time" 
+                name="time" 
+                required 
+                class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-navy-500 focus:border-navy-500"
+              >
+                <option value="">Select time</option>
+                <option value="08:00">8:00 AM</option>
+                <option value="08:30">8:30 AM</option>
+                <option value="09:00">9:00 AM</option>
+                <option value="09:30">9:30 AM</option>
+                <option value="10:00">10:00 AM</option>
+                <option value="10:30">10:30 AM</option>
+                <option value="11:00">11:00 AM</option>
+                <option value="12:00">12:00 PM</option>
+                <option value="12:30">12:30 PM</option>
+                <option value="13:00">1:00 PM</option>
+                <option value="13:30">1:30 PM</option>
+                <option value="14:00">2:00 PM</option>
+                <option value="14:30">2:30 PM</option>
+                <option value="18:00">6:00 PM</option>
+                <option value="18:30">6:30 PM</option>
+                <option value="19:00">7:00 PM</option>
+                <option value="19:30">7:30 PM</option>
+                <option value="20:00">8:00 PM</option>
+                <option value="20:30">8:30 PM</option>
+              </select>
+            </div>
+            
+            <div>
+              <label for="guests" class="block text-sm font-medium text-gray-700 mb-2">
+                Guests *
+              </label>
+              <select 
+                id="guests" 
+                name="guests" 
+                required 
+                class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-navy-500 focus:border-navy-500"
+              >
+                <option value="">Number of guests</option>
+                <option value="1">1 Guest</option>
+                <option value="2">2 Guests</option>
+                <option value="3">3 Guests</option>
+                <option value="4">4 Guests</option>
+                <option value="5">5 Guests</option>
+                <option value="6">6 Guests</option>
+                <option value="7">7 Guests</option>
+                <option value="8">8 Guests</option>
+                <option value="8+">8+ Guests</option>
+              </select>
+            </div>
+          </div>
+          
+          <div>
+            <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+              Phone Number
+            </label>
+            <input 
+              type="tel" 
+              id="phone" 
+              name="phone" 
+              class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-navy-500 focus:border-navy-500"
+              placeholder="Your phone number"
+            >
+          </div>
+          
+          <div>
+            <label for="requirements" class="block text-sm font-medium text-gray-700 mb-2">
+              Special Requirements
+            </label>
+            <textarea 
+              id="requirements" 
+              name="requirements" 
+              rows="4" 
+              class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-navy-500 focus:border-navy-500"
+              placeholder="Please let us know about any dietary requirements, accessibility needs, or special occasions..."
+            ></textarea>
+          </div>
+          
+          <div class="text-center">
+            <button 
+              type="submit" 
+              class="btn-primary px-8 py-4 text-lg"
+            >
+              Request Reservation
+            </button>
+            <p class="text-sm text-gray-500 mt-4">
+              We'll confirm your reservation within 24 hours. For same-day bookings, please call us directly.
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Information -->
+  <section class="py-16 bg-navy-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-serif font-bold text-gold-400 mb-4">
+          Contact The Cove
+        </h2>
+        <p class="text-xl text-gray-300">
+          Get in touch for reservations, events, or general enquiries
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+        <div>
+          <div class="w-16 h-16 bg-gold-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-navy-900" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Phone</h3>
+          <p class="text-gray-300">01758 712338</p>
+          <p class="text-sm text-gray-400 mt-1">Daily 8:00 AM - 9:00 PM</p>
+        </div>
+        
+        <div>
+          <div class="w-16 h-16 bg-gold-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-navy-900" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+              <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Email</h3>
+          <p class="text-gray-300">restaurant@scyc.co.uk</p>
+          <p class="text-sm text-gray-400 mt-1">We'll respond within 24 hours</p>
+        </div>
+        
+        <div>
+          <div class="w-16 h-16 bg-gold-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-navy-900" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Location</h3>
+          <p class="text-gray-300">South Caernarvonshire Yacht Club</p>
+          <p class="text-gray-300">Abersoch, Gwynedd LL53 7EB</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .btn-primary {
+    @apply inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-navy-700 hover:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-navy-500 transition-colors;
+  }
+  
+  .btn-secondary {
+    @apply inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-navy-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-navy-500 transition-colors;
+  }
+</style>

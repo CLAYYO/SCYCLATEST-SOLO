@@ -1,0 +1,201 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { supabase } from '../../../lib/supabase';
+
+// Using server-side rendering instead of static generation
+// This allows the page to work even when no races exist in the database yet
+export const prerender = false;
+
+const { id } = Astro.params;
+
+// Fetch race info
+const { data: raceData } = await supabase
+  .from('races')
+  .select('*')
+  .eq('id', id)
+  .single();
+
+// Fetch race results
+const { data: results } = await supabase
+  .from('race_results')
+  .select(`
+    *,
+    members!inner(name, sail_number, age_group)
+  `)
+  .eq('race_id', id)
+  .order('position');
+
+// Group results by division
+const resultsByDivision = results?.reduce((acc, result) => {
+  const division = result.division || 'Open';
+  if (!acc[division]) {
+    acc[division] = [];
+  }
+  acc[division].push(result);
+  return acc;
+}, {}) || {};
+
+// Get race info
+const raceInfo = raceData;
+const currentDate = new Date().toLocaleString('en-AU', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit'
+});
+---
+
+<Layout title={`${raceInfo?.name || 'Race Results'} - SCYC Racing`}>
+  <div class="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+    <!-- Navigation Breadcrumb -->
+    <div class="bg-navy-800 text-white py-4">
+      <div class="container mx-auto px-4">
+        <nav class="flex items-center space-x-2 text-sm">
+          <a href="/" class="hover:text-gold-400 transition-colors">Home</a>
+          <span class="text-gray-300">/</span>
+          <a href="/racing" class="hover:text-gold-400 transition-colors">Racing</a>
+          <span class="text-gray-300">/</span>
+          <a href="/racing/results" class="hover:text-gold-400 transition-colors">Results</a>
+          <span class="text-gray-300">/</span>
+          <span class="text-gold-400">{raceInfo?.name}</span>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Sailwave Style Results -->
+    <div class="container mx-auto px-4 py-8">
+      <style>
+        /* Sailwave CSS Classes */
+        .headertable { border: 0px; width: 100%; }
+        .headertable td { border: 0px; }
+        .seriestitle { text-align: center; font-size: 1.2em; margin: 20px 0; }
+        .summarytitle { text-align: center; font-size: 1.4em; margin: 20px 0; color: #1e3a8a; }
+        .summarycaption { text-align: center; font-weight: bold; margin: 10px 0; }
+        .summarytable { margin: 0 auto 30px auto; border-collapse: collapse; }
+        .titlerow th { background-color: #bbbbbb; padding: 8px; border: 1px solid #999; }
+        .summaryrow td { padding: 6px; border: 1px solid #ccc; }
+        .odd { background-color: #f9f9f9; }
+        .even { background-color: #d7d7d7; }
+        .rank1 { font-weight: bold; background-color: #ffffaa !important; }
+        .rank2 { font-weight: bold; background-color: #aaaaff !important; }
+        .rank3 { font-weight: bold; background-color: #ffaaaa !important; }
+        .place1 { font-weight: bold; background-color: #ffffaa; }
+        .place2 { font-weight: bold; background-color: #aaaaff; }
+        .place3 { font-weight: bold; background-color: #ffaaaa; }
+      </style>
+
+      <!-- Header Table -->
+      <table class="headertable" cellspacing="0" cellpadding="0">
+        <tbody>
+          <tr>
+            <td width="30%"></td>
+            <td width="40%" style="text-align: center;">
+              <h1 style="font-size: 1.6em; margin: 10px 0;">{raceInfo?.name || 'Race Results'}</h1>
+              <h2 style="font-size: 1.4em; margin: 10px 0;">
+                {raceInfo?.date ? new Date(raceInfo.date).toLocaleDateString('en-AU', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                }) : ''}
+              </h2>
+              {raceInfo?.venue && <h3 style="font-size: 1.2em; margin: 10px 0;">Venue: {raceInfo.venue}</h3>}
+            </td>
+            <td width="30%"></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="clear: both;"></div>
+
+      <!-- Provisional Results Notice -->
+      <h3 class="seriestitle">Results are provisional as of {currentDate}</h3>
+
+      <!-- Results by Division -->
+      {Object.entries(resultsByDivision).map(([division, divisionResults]) => (
+        <div key={division}>
+          <h3 class="summarytitle" id={`summary${division.toLowerCase()}`}>{division} Division</h3>
+          <div class="summarycaption">
+            Sailed: 1, Entries: {divisionResults.length}, Scoring system: Appendix A
+          </div>
+          
+          <table class="summarytable" cellspacing="0" cellpadding="0" border="0">
+            <colgroup span="7">
+              <col class="rank" />
+              <col class="division" />
+              <col class="sailno" />
+              <col class="helmname" />
+              <col class="helmagegroup" />
+              <col class="race" />
+              <col class="total" />
+            </colgroup>
+            <thead>
+              <tr class="titlerow">
+                <th>Place</th>
+                <th>Division</th>
+                <th>Sail No</th>
+                <th>Name</th>
+                <th>Age Group</th>
+                <th>{raceInfo?.venue || 'Race'}<br />&nbsp; &nbsp;</th>
+                <th>Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              {divisionResults.map((result, index) => {
+                const isOdd = index % 2 === 0;
+                const placeClass = result.position === 1 ? 'place1' : 
+                                 result.position === 2 ? 'place2' : 
+                                 result.position === 3 ? 'place3' : 'placen';
+                const rankClass = result.position === 1 ? 'rank1' : 
+                                result.position === 2 ? 'rank2' : 
+                                result.position === 3 ? 'rank3' : '';
+                
+                return (
+                  <tr class={`${isOdd ? 'odd' : 'even'} summaryrow ${placeClass}`} key={result.id}>
+                    <td>{result.position}</td>
+                    <td>{division}</td>
+                    <td>{result.members?.sail_number || 'N/A'}</td>
+                    <td>{result.members?.name || 'Unknown'}</td>
+                    <td>{result.members?.age_group || ''}</td>
+                    <td class={rankClass}>
+                      {result.status === 'DNC' ? `${result.points}.0 DNC` : 
+                       result.status === 'DNF' ? `${result.points}.0 DNF` : 
+                       result.status === 'DSQ' ? `${result.points}.0 DSQ` : 
+                       `${result.points}.0`}
+                    </td>
+                    <td>{result.points}.0</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      ))}
+
+      <!-- Race Information -->
+      {raceInfo?.conditions && (
+        <div class="mt-8 p-4 bg-blue-50 rounded-lg">
+          <h4 class="font-semibold text-navy-800 mb-2">Race Conditions</h4>
+          <p class="text-gray-700">{raceInfo.conditions}</p>
+        </div>
+      )}
+
+      <!-- Navigation -->
+      <div class="mt-8 text-center">
+        <a 
+          href="/racing/results" 
+          class="inline-flex items-center px-6 py-3 bg-navy-800 text-white rounded-lg hover:bg-navy-700 transition-colors"
+        >
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          Back to All Results
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  // Add any interactive functionality here if needed
+</script>

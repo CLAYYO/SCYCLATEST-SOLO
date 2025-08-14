@@ -1,0 +1,725 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { MEMBERSHIP_TYPES } from '../../utils';
+
+// Membership type details for pricing
+const membershipPricing = {
+  full: { name: 'Full Membership', price: 450, description: 'Complete access to all club facilities' },
+  associate: { name: 'Associate Membership', price: 275, description: 'Perfect for occasional sailors' },
+  junior: { name: 'Junior Membership', price: 125, description: 'For members under 18' },
+  family: { name: 'Family Membership', price: 650, description: '2 adults + children under 18' },
+  honorary: { name: 'Honorary Membership', price: 0, description: 'By invitation only' }
+};
+---
+
+<Layout title="Membership Application - South Caernarvonshire Yacht Club">
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-r from-navy-900 to-navy-700 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <h1 class="text-4xl md:text-5xl font-serif font-bold mb-4">
+          Membership Application
+        </h1>
+        <p class="text-xl text-navy-100 max-w-3xl mx-auto">
+          Join the South Caernarvonshire Yacht Club and become part of our sailing community
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Application Form -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div class="px-6 py-8">
+          <form id="membership-form" class="space-y-8">
+            <!-- Membership Type Selection -->
+            <div>
+              <h2 class="text-2xl font-bold text-navy-900 mb-6">Membership Type</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {Object.entries(membershipPricing).map(([type, details]) => (
+                  <label class="membership-option relative flex cursor-pointer rounded-lg border border-gray-300 bg-white p-4 shadow-sm focus-within:ring-2 focus-within:ring-navy-500 hover:border-navy-300">
+                    <input
+                      type="radio"
+                      name="membership_type"
+                      value={type}
+                      class="sr-only"
+                      required
+                    />
+                    <div class="flex flex-1">
+                      <div class="flex flex-col">
+                        <span class="block text-sm font-medium text-gray-900">
+                          {details.name}
+                        </span>
+                        <span class="mt-1 flex items-center text-sm text-gray-500">
+                          {details.description}
+                        </span>
+                        <span class="mt-2 text-lg font-bold text-navy-700">
+                          {details.price > 0 ? `£${details.price}/year` : 'By invitation'}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="radio-indicator ml-3 h-5 w-5 rounded-full border-2 border-gray-300 flex items-center justify-center">
+                      <div class="h-2 w-2 rounded-full bg-navy-600 opacity-0"></div>
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <!-- Personal Information -->
+            <div>
+              <h2 class="text-2xl font-bold text-navy-900 mb-6">Personal Information</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label for="first_name" class="block text-sm font-medium text-gray-700 mb-2">
+                    First Name *
+                  </label>
+                  <input
+                    type="text"
+                    id="first_name"
+                    name="first_name"
+                    required
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500"
+                  />
+                </div>
+                
+                <div>
+                  <label for="last_name" class="block text-sm font-medium text-gray-700 mb-2">
+                    Last Name *
+                  </label>
+                  <input
+                    type="text"
+                    id="last_name"
+                    name="last_name"
+                    required
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500"
+                  />
+                </div>
+                
+                <div>
+                  <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500"
+                  />
+                </div>
+                
+                <div>
+                  <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+                    Phone Number *
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    required
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500"
+                  />
+                </div>
+                
+                <div>
+                  <label for="date_of_birth" class="block text-sm font-medium text-gray-700 mb-2">
+                    Date of Birth *
+                  </label>
+                  <input
+                    type="date"
+                    id="date_of_birth"
+                    name="date_of_birth"
+                    required
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500"
+                  />
+                </div>
+                
+                <div>
+                  <label for="occupation" class="block text-sm font-medium text-gray-700 mb-2">
+                    Occupation
+                  </label>
+                  <input
+                    type="text"
+                    id="occupation"
+                    name="occupation"
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Address Information -->
+            <div>
+              <h2 class="text-2xl font-bold text-navy-900 mb-6">Address Information</h2>
+              <div class="grid grid-cols-1 gap-6">
+                <div>
+                  <label for="address_line1" class="block text-sm font-medium text-gray-700 mb-2">
+                    Address Line 1 *
+                  </label>
+                  <input
+                    type="text"
+                    id="address_line1"
+                    name="address_line1"
+                    required
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500"
+                  />
+                </div>
+                
+                <div>
+                  <label for="address_line2" class="block text-sm font-medium text-gray-700 mb-2">
+                    Address Line 2
+                  </label>
+                  <input
+                    type="text"
+                    id="address_line2"
+                    name="address_line2"
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500"
+                  />
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <label for="city" class="block text-sm font-medium text-gray-700 mb-2">
+                      City *
+                    </label>
+                    <input
+                      type="text"
+                      id="city"
+                      name="city"
+                      required
+                      class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label for="county" class="block text-sm font-medium text-gray-700 mb-2">
+                      County
+                    </label>
+                    <input
+                      type="text"
+                      id="county"
+                      name="county"
+                      class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label for="postcode" class="block text-sm font-medium text-gray-700 mb-2">
+                      Postcode *
+                    </label>
+                    <input
+                      type="text"
+                      id="postcode"
+                      name="postcode"
+                      required
+                      class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <label for="country" class="block text-sm font-medium text-gray-700 mb-2">
+                    Country *
+                  </label>
+                  <select
+                    id="country"
+                    name="country"
+                    required
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500"
+                  >
+                    <option value="">Select Country</option>
+                    <option value="GB">United Kingdom</option>
+                    <option value="IE">Ireland</option>
+                    <option value="US">United States</option>
+                    <option value="CA">Canada</option>
+                    <option value="AU">Australia</option>
+                    <option value="NZ">New Zealand</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Family Members (for family membership) -->
+            <div id="family-members-section" class="hidden">
+              <h2 class="text-2xl font-bold text-navy-900 mb-6">Family Members</h2>
+              <p class="text-gray-600 mb-4">
+                Please provide details for all family members to be included in this membership.
+              </p>
+              
+              <div id="family-members-container">
+                <!-- Family member forms will be added here dynamically -->
+              </div>
+              
+              <button
+                type="button"
+                id="add-family-member"
+                class="mt-4 px-4 py-2 border border-navy-300 text-navy-700 font-medium rounded-md hover:bg-navy-50 focus:outline-none focus:ring-2 focus:ring-navy-500"
+              >
+                + Add Family Member
+              </button>
+            </div>
+
+            <!-- Sailing Experience -->
+            <div>
+              <h2 class="text-2xl font-bold text-navy-900 mb-6">Sailing Experience</h2>
+              <div class="grid grid-cols-1 gap-6">
+                <div>
+                  <label for="sailing_experience" class="block text-sm font-medium text-gray-700 mb-2">
+                    Sailing Experience Level
+                  </label>
+                  <select
+                    id="sailing_experience"
+                    name="sailing_experience"
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500"
+                  >
+                    <option value="">Select Experience Level</option>
+                    <option value="beginner">Beginner - New to sailing</option>
+                    <option value="intermediate">Intermediate - Some sailing experience</option>
+                    <option value="advanced">Advanced - Experienced sailor</option>
+                    <option value="expert">Expert - Racing/Professional level</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label for="qualifications" class="block text-sm font-medium text-gray-700 mb-2">
+                    Sailing Qualifications (RYA, ASA, etc.)
+                  </label>
+                  <textarea
+                    id="qualifications"
+                    name="qualifications"
+                    rows="3"
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500"
+                    placeholder="List any sailing qualifications or certifications..."
+                  ></textarea>
+                </div>
+                
+                <div>
+                  <label for="boat_details" class="block text-sm font-medium text-gray-700 mb-2">
+                    Boat Details (if you own a boat)
+                  </label>
+                  <textarea
+                    id="boat_details"
+                    name="boat_details"
+                    rows="3"
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500"
+                    placeholder="Boat name, type, length, etc..."
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- References -->
+            <div>
+              <h2 class="text-2xl font-bold text-navy-900 mb-6">References</h2>
+              <p class="text-gray-600 mb-4">
+                Please provide two references, preferably from current SCYC members or other yacht club members.
+              </p>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-900 mb-4">Reference 1</h3>
+                  <div class="space-y-4">
+                    <div>
+                      <label for="ref1_name" class="block text-sm font-medium text-gray-700 mb-2">
+                        Full Name *
+                      </label>
+                      <input
+                        type="text"
+                        id="ref1_name"
+                        name="ref1_name"
+                        required
+                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label for="ref1_email" class="block text-sm font-medium text-gray-700 mb-2">
+                        Email Address *
+                      </label>
+                      <input
+                        type="email"
+                        id="ref1_email"
+                        name="ref1_email"
+                        required
+                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label for="ref1_relationship" class="block text-sm font-medium text-gray-700 mb-2">
+                        Relationship/How you know them
+                      </label>
+                      <input
+                        type="text"
+                        id="ref1_relationship"
+                        name="ref1_relationship"
+                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500"
+                        placeholder="e.g., SCYC member, sailing instructor, etc."
+                      />
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-900 mb-4">Reference 2</h3>
+                  <div class="space-y-4">
+                    <div>
+                      <label for="ref2_name" class="block text-sm font-medium text-gray-700 mb-2">
+                        Full Name *
+                      </label>
+                      <input
+                        type="text"
+                        id="ref2_name"
+                        name="ref2_name"
+                        required
+                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label for="ref2_email" class="block text-sm font-medium text-gray-700 mb-2">
+                        Email Address *
+                      </label>
+                      <input
+                        type="email"
+                        id="ref2_email"
+                        name="ref2_email"
+                        required
+                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label for="ref2_relationship" class="block text-sm font-medium text-gray-700 mb-2">
+                        Relationship/How you know them
+                      </label>
+                      <input
+                        type="text"
+                        id="ref2_relationship"
+                        name="ref2_relationship"
+                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500"
+                        placeholder="e.g., SCYC member, sailing instructor, etc."
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Additional Information -->
+            <div>
+              <h2 class="text-2xl font-bold text-navy-900 mb-6">Additional Information</h2>
+              <div class="space-y-6">
+                <div>
+                  <label for="interests" class="block text-sm font-medium text-gray-700 mb-2">
+                    Club Activities of Interest
+                  </label>
+                  <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    <label class="flex items-center">
+                      <input type="checkbox" name="interests" value="racing" class="mr-2 text-navy-600 focus:ring-navy-500" />
+                      Racing
+                    </label>
+                    <label class="flex items-center">
+                      <input type="checkbox" name="interests" value="cruising" class="mr-2 text-navy-600 focus:ring-navy-500" />
+                      Cruising
+                    </label>
+                    <label class="flex items-center">
+                      <input type="checkbox" name="interests" value="training" class="mr-2 text-navy-600 focus:ring-navy-500" />
+                      Training Courses
+                    </label>
+                    <label class="flex items-center">
+                      <input type="checkbox" name="interests" value="social" class="mr-2 text-navy-600 focus:ring-navy-500" />
+                      Social Events
+                    </label>
+                    <label class="flex items-center">
+                      <input type="checkbox" name="interests" value="volunteering" class="mr-2 text-navy-600 focus:ring-navy-500" />
+                      Volunteering
+                    </label>
+                    <label class="flex items-center">
+                      <input type="checkbox" name="interests" value="restaurant" class="mr-2 text-navy-600 focus:ring-navy-500" />
+                      The Cove Restaurant
+                    </label>
+                  </div>
+                </div>
+                
+                <div>
+                  <label for="additional_comments" class="block text-sm font-medium text-gray-700 mb-2">
+                    Additional Comments
+                  </label>
+                  <textarea
+                    id="additional_comments"
+                    name="additional_comments"
+                    rows="4"
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500"
+                    placeholder="Tell us anything else you'd like us to know about your application..."
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Terms and Conditions -->
+            <div>
+              <h2 class="text-2xl font-bold text-navy-900 mb-6">Terms and Conditions</h2>
+              <div class="space-y-4">
+                <label class="flex items-start">
+                  <input
+                    type="checkbox"
+                    name="terms_accepted"
+                    required
+                    class="mt-1 mr-3 text-navy-600 focus:ring-navy-500"
+                  />
+                  <span class="text-sm text-gray-700">
+                    I agree to abide by the club's constitution, rules, and regulations, and understand that membership is subject to approval by the membership committee.
+                  </span>
+                </label>
+                
+                <label class="flex items-start">
+                  <input
+                    type="checkbox"
+                    name="privacy_accepted"
+                    required
+                    class="mt-1 mr-3 text-navy-600 focus:ring-navy-500"
+                  />
+                  <span class="text-sm text-gray-700">
+                    I consent to SCYC storing and processing my personal data in accordance with the club's privacy policy and GDPR regulations.
+                  </span>
+                </label>
+                
+                <label class="flex items-start">
+                  <input
+                    type="checkbox"
+                    name="communications_accepted"
+                    class="mt-1 mr-3 text-navy-600 focus:ring-navy-500"
+                  />
+                  <span class="text-sm text-gray-700">
+                    I would like to receive club newsletters, event updates, and other communications via email.
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-6 border-t border-gray-200">
+              <div class="flex items-center justify-between">
+                <div class="text-sm text-gray-600">
+                  <p>* Required fields</p>
+                  <p class="mt-1">Application processing typically takes 5-10 business days.</p>
+                </div>
+                
+                <button
+                  type="submit"
+                  id="submit-btn"
+                  class="px-8 py-3 bg-navy-700 text-white font-medium rounded-md hover:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span class="submit-text">Submit Application</span>
+                  <span class="loading-text hidden">Submitting...</span>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Success/Error Messages -->
+  <div id="success-message" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-8 max-w-md mx-4">
+      <div class="text-center">
+        <svg class="mx-auto h-12 w-12 text-green-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        <h3 class="text-lg font-bold text-gray-900 mb-2">Application Submitted!</h3>
+        <p class="text-gray-600 mb-6">
+          Thank you for your membership application. We'll review it and contact you within 5-10 business days.
+        </p>
+        <button
+          onclick="window.location.href='/membership'"
+          class="px-6 py-2 bg-navy-700 text-white font-medium rounded-md hover:bg-navy-800"
+        >
+          Return to Membership
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="error-message" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-8 max-w-md mx-4">
+      <div class="text-center">
+        <svg class="mx-auto h-12 w-12 text-red-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+        <h3 class="text-lg font-bold text-gray-900 mb-2">Submission Error</h3>
+        <p class="text-gray-600 mb-6" id="error-text">
+          There was an error submitting your application. Please try again.
+        </p>
+        <button
+          onclick="document.getElementById('error-message').classList.add('hidden')"
+          class="px-6 py-2 bg-navy-700 text-white font-medium rounded-md hover:bg-navy-800"
+        >
+          Try Again
+        </button>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  // Handle membership type selection
+  const membershipOptions = document.querySelectorAll('input[name="membership_type"]');
+  const familyMembersSection = document.getElementById('family-members-section');
+  
+  membershipOptions.forEach(option => {
+    option.addEventListener('change', function() {
+      // Update visual selection
+      membershipOptions.forEach(opt => {
+        const label = opt.closest('.membership-option');
+        const indicator = label.querySelector('.radio-indicator div');
+        
+        if (opt.checked) {
+          label.classList.add('border-navy-500', 'bg-navy-50');
+          indicator.classList.remove('opacity-0');
+        } else {
+          label.classList.remove('border-navy-500', 'bg-navy-50');
+          indicator.classList.add('opacity-0');
+        }
+      });
+      
+      // Show/hide family members section
+      if (this.value === 'family') {
+        familyMembersSection.classList.remove('hidden');
+      } else {
+        familyMembersSection.classList.add('hidden');
+      }
+    });
+  });
+  
+  // Family member management
+  let familyMemberCount = 0;
+  
+  document.getElementById('add-family-member')?.addEventListener('click', function() {
+    familyMemberCount++;
+    const container = document.getElementById('family-members-container');
+    
+    const memberDiv = document.createElement('div');
+    memberDiv.className = 'family-member border border-gray-200 rounded-lg p-4 mb-4';
+    memberDiv.innerHTML = `
+      <div class="flex items-center justify-between mb-4">
+        <h4 class="text-lg font-semibold text-gray-900">Family Member ${familyMemberCount}</h4>
+        <button type="button" class="remove-family-member text-red-600 hover:text-red-800">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+          <input type="text" name="family_member_${familyMemberCount}_first_name" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+          <input type="text" name="family_member_${familyMemberCount}_last_name" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
+          <input type="date" name="family_member_${familyMemberCount}_dob" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500" />
+        </div>
+      </div>
+      <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Relationship</label>
+        <select name="family_member_${familyMemberCount}_relationship" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-navy-500 focus:border-navy-500">
+          <option value="">Select Relationship</option>
+          <option value="spouse">Spouse/Partner</option>
+          <option value="child">Child</option>
+          <option value="parent">Parent</option>
+          <option value="sibling">Sibling</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+    `;
+    
+    container.appendChild(memberDiv);
+    
+    // Add remove functionality
+    memberDiv.querySelector('.remove-family-member').addEventListener('click', function() {
+      memberDiv.remove();
+    });
+  });
+  
+  // Form submission
+  document.getElementById('membership-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const submitBtn = document.getElementById('submit-btn');
+    const submitText = submitBtn.querySelector('.submit-text');
+    const loadingText = submitBtn.querySelector('.loading-text');
+    
+    // Show loading state
+    submitBtn.disabled = true;
+    submitText.classList.add('hidden');
+    loadingText.classList.remove('hidden');
+    
+    try {
+      // Collect form data
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData.entries());
+      
+      // Collect family members data
+      const familyMembers = [];
+      for (let i = 1; i <= familyMemberCount; i++) {
+        const firstName = formData.get(`family_member_${i}_first_name`);
+        const lastName = formData.get(`family_member_${i}_last_name`);
+        const dob = formData.get(`family_member_${i}_dob`);
+        const relationship = formData.get(`family_member_${i}_relationship`);
+        
+        if (firstName || lastName) {
+          familyMembers.push({
+            first_name: firstName,
+            last_name: lastName,
+            date_of_birth: dob,
+            relationship: relationship
+          });
+        }
+      }
+      
+      // Collect interests
+      const interests = Array.from(document.querySelectorAll('input[name="interests"]:checked'))
+        .map(cb => cb.value);
+      
+      // Prepare submission data
+      const submissionData = {
+        ...data,
+        family_members: familyMembers,
+        interests: interests,
+        submitted_at: new Date().toISOString()
+      };
+      
+      // In a real implementation, you would submit to your API
+      // For demo purposes, we'll simulate a successful submission
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      console.log('Membership application submitted:', submissionData);
+      
+      // Show success message
+      document.getElementById('success-message').classList.remove('hidden');
+      
+    } catch (error) {
+      console.error('Error submitting application:', error);
+      
+      // Show error message
+      document.getElementById('error-text').textContent = 
+        error.message || 'There was an error submitting your application. Please try again.';
+      document.getElementById('error-message').classList.remove('hidden');
+      
+    } finally {
+      // Reset button state
+      submitBtn.disabled = false;
+      submitText.classList.remove('hidden');
+      loadingText.classList.add('hidden');
+    }
+  });
+</script>

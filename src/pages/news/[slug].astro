@@ -1,0 +1,456 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { supabase } from '../../lib/supabase';
+import { formatDate } from '../../utils';
+
+// Required for dynamic routes in static builds
+export async function getStaticPaths() {
+  // In a real implementation, you would fetch all article slugs from Supabase
+  // For now, we'll provide some sample paths
+  return [
+    { params: { slug: 'scyc-wins-regional-championship' } },
+    { params: { slug: 'new-sailing-season-begins' } },
+    { params: { slug: 'club-facilities-upgrade' } },
+  ];
+}
+
+// Get article slug from URL params
+const { slug } = Astro.params;
+
+// Fetch article details
+let article = null;
+let error = null;
+
+try {
+  const { data, error: fetchError } = await supabase
+    .from('news')
+    .select('*')
+    .eq('slug', slug)
+    .single();
+  
+  if (fetchError) throw fetchError;
+  article = data;
+} catch (err) {
+  error = err.message;
+  console.error('Error fetching article:', err);
+}
+
+// Sample article data for demonstration
+const sampleArticles = {
+  'scyc-wins-regional-sailing-championship': {
+    id: '1',
+    title: 'SCYC Wins Regional Sailing Championship',
+    slug: 'scyc-wins-regional-sailing-championship',
+    excerpt: 'Our racing team brought home the trophy from the North Wales Regional Championships, with outstanding performances across multiple classes.',
+    content: `<h2>Outstanding Performance at Regional Championships</h2>
+    
+    <p>South Caernarvonshire Yacht Club has once again proven its excellence in competitive sailing by winning the prestigious North Wales Regional Championships. The event, held over three days in challenging conditions off the coast of Anglesey, saw our club's sailors demonstrate exceptional skill and determination.</p>
+    
+    <h3>Race Results</h3>
+    
+    <p>Our success was built on consistent performances across multiple sailing classes:</p>
+    
+    <ul>
+      <li><strong>Laser Class:</strong> First place - Sarah Williams</li>
+      <li><strong>RS Aero:</strong> Second place - Mark Thompson</li>
+      <li><strong>Optimist:</strong> First place - Emma Davies (Junior Champion)</li>
+      <li><strong>420 Class:</strong> First place - James Roberts & Lucy Evans</li>
+    </ul>
+    
+    <h3>Challenging Conditions</h3>
+    
+    <p>The championship was held in particularly challenging weather conditions, with winds ranging from 15-25 knots and occasional squalls. These conditions tested the sailors' skills to the limit and made for exciting racing throughout the weekend.</p>
+    
+    <p>"The conditions were tough, but our sailors showed real character and skill," commented Racing Captain Mike Johnson. "The hours of training in Cardigan Bay have clearly paid off, and I'm incredibly proud of the entire team."</p>
+    
+    <h3>Looking Ahead</h3>
+    
+    <p>This victory qualifies SCYC to represent North Wales at the National Championships to be held in Portsmouth this September. The club is already making preparations for this prestigious event.</p>
+    
+    <p>Training sessions for the national championships will begin next month, and all club members are invited to support our representatives as they prepare for this exciting challenge.</p>`,
+    category: 'racing',
+    author: 'Racing Committee',
+    published_at: '2024-03-15T10:00:00Z',
+    updated_at: '2024-03-15T10:00:00Z',
+    featured_image: null,
+    status: 'published',
+    tags: ['racing', 'championship', 'victory'],
+    meta_description: 'SCYC wins North Wales Regional Championships with outstanding performances across multiple sailing classes.',
+    reading_time: 3
+  },
+  'new-safety-equipment-installed': {
+    id: '2',
+    title: 'New Safety Equipment Installed',
+    slug: 'new-safety-equipment-installed',
+    excerpt: 'We have upgraded our safety equipment including new rescue boats and updated first aid facilities to ensure the highest safety standards.',
+    content: `<h2>Enhanced Safety Measures for All Members</h2>
+    
+    <p>South Caernarvonshire Yacht Club has invested significantly in upgrading our safety equipment and facilities to ensure the highest standards of safety for all members and visitors.</p>
+    
+    <h3>New Rescue Boats</h3>
+    
+    <p>We have acquired two new state-of-the-art rescue boats:</p>
+    
+    <ul>
+      <li><strong>Primary Rescue Boat:</strong> 6.5m RIB with twin 90hp engines, capable of 35+ knots</li>
+      <li><strong>Secondary Rescue Boat:</strong> 5.2m RIB with single 60hp engine for close-shore operations</li>
+    </ul>
+    
+    <p>Both boats are equipped with the latest navigation and communication equipment, including GPS chartplotters, VHF radios, and emergency beacons.</p>
+    
+    <h3>Updated First Aid Facilities</h3>
+    
+    <p>Our first aid facilities have been completely renovated and restocked with modern medical equipment:</p>
+    
+    <ul>
+      <li>Automated External Defibrillator (AED)</li>
+      <li>Oxygen therapy equipment</li>
+      <li>Spinal immobilization boards</li>
+      <li>Comprehensive trauma and wound care supplies</li>
+    </ul>
+    
+    <h3>Training and Certification</h3>
+    
+    <p>All rescue boat operators and safety officers have completed updated training courses, including:</p>
+    
+    <ul>
+      <li>RYA Powerboat Level 2 certification</li>
+      <li>First Aid at Sea courses</li>
+      <li>VHF Radio Operator licenses</li>
+    </ul>
+    
+    <p>"Safety is our top priority at SCYC," said Commodore Helen Davies. "These investments ensure we can provide the best possible safety cover for all our sailing activities."</p>
+    
+    <h3>Safety Procedures</h3>
+    
+    <p>We remind all members to familiarize themselves with our updated safety procedures, available in the clubhouse and on our website. Regular safety briefings will be held throughout the sailing season.</p>`,
+    category: 'club_news',
+    author: 'Commodore',
+    published_at: '2024-03-10T14:30:00Z',
+    updated_at: '2024-03-10T14:30:00Z',
+    featured_image: null,
+    status: 'published',
+    tags: ['safety', 'equipment', 'club'],
+    meta_description: 'SCYC upgrades safety equipment with new rescue boats and first aid facilities for enhanced member safety.',
+    reading_time: 4
+  }
+};
+
+// Use real data if available, otherwise use sample data
+const displayArticle = article || sampleArticles[slug];
+
+if (!displayArticle) {
+  return Astro.redirect('/news');
+}
+
+// Fetch related articles
+const { data: relatedArticles } = await supabase
+  .from('news')
+  .select('id, title, slug, excerpt, published_at, category')
+  .eq('status', 'published')
+  .eq('category', displayArticle.category)
+  .neq('id', displayArticle.id)
+  .order('published_at', { ascending: false })
+  .limit(3);
+
+const categoryLabels = {
+  racing: 'Racing News',
+  club_news: 'Club News',
+  training: 'Training & Education',
+  social: 'Social Events',
+  restaurant: 'The Cove',
+  announcements: 'Announcements',
+  maintenance: 'Club Maintenance'
+};
+
+const categoryColors = {
+  racing: 'bg-blue-100 text-blue-800',
+  club_news: 'bg-navy-100 text-navy-800',
+  training: 'bg-green-100 text-green-800',
+  social: 'bg-purple-100 text-purple-800',
+  restaurant: 'bg-orange-100 text-orange-800',
+  announcements: 'bg-yellow-100 text-yellow-800',
+  maintenance: 'bg-gray-100 text-gray-800'
+};
+
+const publishedDate = new Date(displayArticle.published_at);
+const updatedDate = new Date(displayArticle.updated_at);
+---
+
+<Layout 
+  title={`${displayArticle.title} - SCYC News`}
+  description={displayArticle.meta_description || displayArticle.excerpt}
+>
+  <!-- Breadcrumb Navigation -->
+  <nav class="bg-gray-50 border-b border-gray-200" aria-label="Breadcrumb">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <ol class="flex items-center space-x-2 text-sm">
+        <li>
+          <a href="/" class="text-gray-500 hover:text-gray-700">Home</a>
+        </li>
+        <li>
+          <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+          </svg>
+        </li>
+        <li>
+          <a href="/news" class="text-gray-500 hover:text-gray-700">News</a>
+        </li>
+        <li>
+          <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+          </svg>
+        </li>
+        <li>
+          <span class="text-gray-900 font-medium">{displayArticle.title}</span>
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Article Header -->
+  <article class="py-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <header class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+          <span class={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${categoryColors[displayArticle.category] || 'bg-gray-100 text-gray-800'}`}>
+            {categoryLabels[displayArticle.category] || displayArticle.category}
+          </span>
+          
+          {displayArticle.reading_time && (
+            <span class="text-sm text-gray-500">
+              {displayArticle.reading_time} min read
+            </span>
+          )}
+        </div>
+        
+        <h1 class="text-4xl md:text-5xl font-serif font-bold text-navy-900 mb-6">
+          {displayArticle.title}
+        </h1>
+        
+        <div class="flex items-center justify-between text-sm text-gray-600 mb-6">
+          <div class="flex items-center space-x-4">
+            <div class="flex items-center">
+              <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+              </svg>
+              {displayArticle.author}
+            </div>
+            
+            <div class="flex items-center">
+              <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+              </svg>
+              <time datetime={displayArticle.published_at}>
+                {formatDate(publishedDate)}
+              </time>
+            </div>
+            
+            {displayArticle.updated_at !== displayArticle.published_at && (
+              <div class="flex items-center text-gray-500">
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                </svg>
+                Updated {formatDate(updatedDate)}
+              </div>
+            )}
+          </div>
+          
+          <!-- Share Buttons -->
+          <div class="flex items-center space-x-2">
+            <span class="text-gray-500">Share:</span>
+            <button 
+              class="p-2 text-gray-400 hover:text-blue-600 transition-colors"
+              onclick="shareOnTwitter()"
+              title="Share on Twitter"
+            >
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+              </svg>
+            </button>
+            
+            <button 
+              class="p-2 text-gray-400 hover:text-blue-800 transition-colors"
+              onclick="shareOnFacebook()"
+              title="Share on Facebook"
+            >
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </button>
+            
+            <button 
+              class="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+              onclick="copyToClipboard()"
+              title="Copy link"
+            >
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        {displayArticle.excerpt && (
+          <p class="text-xl text-gray-600 leading-relaxed">
+            {displayArticle.excerpt}
+          </p>
+        )}
+      </header>
+      
+      {displayArticle.featured_image && (
+        <div class="mb-8">
+          <img 
+            src={displayArticle.featured_image} 
+            alt={displayArticle.title}
+            class="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg"
+          />
+        </div>
+      )}
+      
+      <!-- Article Content -->
+      <div class="prose prose-lg prose-navy max-w-none">
+        <Fragment set:html={displayArticle.content} />
+      </div>
+      
+      <!-- Tags -->
+      {displayArticle.tags && displayArticle.tags.length > 0 && (
+        <div class="mt-8 pt-8 border-t border-gray-200">
+          <h3 class="text-sm font-medium text-gray-900 mb-3">Tags</h3>
+          <div class="flex flex-wrap gap-2">
+            {displayArticle.tags.map(tag => (
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
+                #{tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  </article>
+  
+  <!-- Related Articles -->
+  {relatedArticles && relatedArticles.length > 0 && (
+    <section class="py-12 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-serif font-bold text-navy-900 mb-8">
+          Related Articles
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {relatedArticles.map(related => {
+            const relatedDate = new Date(related.published_at);
+            return (
+              <article class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+                <div class="p-6">
+                  <div class="flex items-center justify-between mb-3">
+                    <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${categoryColors[related.category] || 'bg-gray-100 text-gray-800'}`}>
+                      {categoryLabels[related.category] || related.category}
+                    </span>
+                    <time class="text-sm text-gray-500" datetime={related.published_at}>
+                      {formatDate(relatedDate)}
+                    </time>
+                  </div>
+                  
+                  <h3 class="text-lg font-semibold text-navy-900 mb-3 line-clamp-2">
+                    <a href={`/news/${related.slug || related.id}`} class="hover:text-navy-700 transition-colors">
+                      {related.title}
+                    </a>
+                  </h3>
+                  
+                  <p class="text-gray-600 text-sm line-clamp-3">
+                    {related.excerpt}
+                  </p>
+                  
+                  <a 
+                    href={`/news/${related.slug || related.id}`} 
+                    class="inline-flex items-center mt-4 text-navy-700 hover:text-navy-900 font-medium text-sm transition-colors"
+                  >
+                    Read more
+                    <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                  </a>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  )}
+  
+  <!-- Back to News -->
+  <section class="py-8 bg-white border-t border-gray-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <a 
+        href="/news" 
+        class="inline-flex items-center text-navy-700 hover:text-navy-900 font-medium transition-colors"
+      >
+        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+        </svg>
+        Back to all news
+      </a>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Social sharing functions
+  function shareOnTwitter() {
+    const url = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent(document.title);
+    window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank', 'width=600,height=400');
+  }
+  
+  function shareOnFacebook() {
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank', 'width=600,height=400');
+  }
+  
+  function copyToClipboard() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      // Show a temporary notification
+      const button = event.target.closest('button');
+      const originalTitle = button.title;
+      button.title = 'Copied!';
+      setTimeout(() => {
+        button.title = originalTitle;
+      }, 2000);
+    });
+  }
+</script>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .prose-navy {
+    --tw-prose-headings: theme('colors.navy.900');
+    --tw-prose-links: theme('colors.navy.700');
+    --tw-prose-bold: theme('colors.navy.900');
+    --tw-prose-counters: theme('colors.navy.600');
+    --tw-prose-bullets: theme('colors.navy.400');
+    --tw-prose-hr: theme('colors.navy.200');
+    --tw-prose-quotes: theme('colors.navy.900');
+    --tw-prose-quote-borders: theme('colors.navy.200');
+    --tw-prose-captions: theme('colors.navy.600');
+    --tw-prose-code: theme('colors.navy.900');
+    --tw-prose-pre-code: theme('colors.navy.100');
+    --tw-prose-pre-bg: theme('colors.navy.900');
+    --tw-prose-th-borders: theme('colors.navy.300');
+    --tw-prose-td-borders: theme('colors.navy.200');
+  }
+</style>

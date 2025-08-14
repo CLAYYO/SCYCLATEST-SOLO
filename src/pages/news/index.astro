@@ -1,0 +1,320 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { supabase } from '../../lib/supabase';
+import { formatDate, truncateText, slugify, NEWS_CATEGORIES } from '../../utils';
+
+// Fetch news articles
+const { data: newsArticles } = await supabase
+  .from('news')
+  .select('*')
+  .eq('status', 'published')
+  .order('published_at', { ascending: false })
+  .limit(20);
+
+// Sample news data for demonstration
+const sampleNews = [
+  {
+    id: '1',
+    title: 'SCYC Wins Regional Sailing Championship',
+    slug: 'scyc-wins-regional-sailing-championship',
+    excerpt: 'Our racing team brought home the trophy from the North Wales Regional Championships, with outstanding performances across multiple classes.',
+    content: 'Full article content would go here...',
+    category: 'racing',
+    author: 'Racing Committee',
+    published_at: '2024-03-15T10:00:00Z',
+    featured_image: null,
+    status: 'published',
+    tags: ['racing', 'championship', 'victory']
+  },
+  {
+    id: '2',
+    title: 'New Safety Equipment Installed',
+    slug: 'new-safety-equipment-installed',
+    excerpt: 'We have upgraded our safety equipment including new rescue boats and updated first aid facilities to ensure the highest safety standards.',
+    content: 'Full article content would go here...',
+    category: 'club_news',
+    author: 'Commodore',
+    published_at: '2024-03-10T14:30:00Z',
+    featured_image: null,
+    status: 'published',
+    tags: ['safety', 'equipment', 'club']
+  },
+  {
+    id: '3',
+    title: 'Spring Training Courses Now Open',
+    slug: 'spring-training-courses-now-open',
+    excerpt: 'Registration is now open for our comprehensive spring training program, suitable for sailors of all levels from beginners to advanced racers.',
+    content: 'Full article content would go here...',
+    category: 'training',
+    author: 'Training Officer',
+    published_at: '2024-03-05T09:00:00Z',
+    featured_image: null,
+    status: 'published',
+    tags: ['training', 'courses', 'education']
+  },
+  {
+    id: '4',
+    title: 'The Cove Restaurant Menu Update',
+    slug: 'the-cove-restaurant-menu-update',
+    excerpt: 'Our restaurant has introduced new seasonal dishes featuring fresh local seafood and Welsh specialties. Come and try our updated menu!',
+    content: 'Full article content would go here...',
+    category: 'restaurant',
+    author: 'Restaurant Manager',
+    published_at: '2024-02-28T16:00:00Z',
+    featured_image: null,
+    status: 'published',
+    tags: ['restaurant', 'menu', 'food']
+  },
+  {
+    id: '5',
+    title: 'Annual General Meeting Announcement',
+    slug: 'annual-general-meeting-announcement',
+    excerpt: 'The Annual General Meeting will be held on April 20th. All members are invited to attend and participate in important club decisions.',
+    content: 'Full article content would go here...',
+    category: 'announcements',
+    author: 'Secretary',
+    published_at: '2024-02-25T11:00:00Z',
+    featured_image: null,
+    status: 'published',
+    tags: ['agm', 'meeting', 'members']
+  }
+];
+
+// Use real data if available, otherwise use sample data
+const displayNews = newsArticles && newsArticles.length > 0 ? newsArticles : sampleNews;
+
+// Get unique categories from news articles
+const usedCategories = [...new Set(displayNews.map(article => article.category))];
+
+const categoryLabels = {
+  racing: 'Racing News',
+  club_news: 'Club News',
+  training: 'Training & Education',
+  social: 'Social Events',
+  restaurant: 'The Cove',
+  announcements: 'Announcements',
+  maintenance: 'Club Maintenance'
+};
+
+const categoryColors = {
+  racing: 'bg-blue-100 text-blue-800',
+  club_news: 'bg-navy-100 text-navy-800',
+  training: 'bg-green-100 text-green-800',
+  social: 'bg-purple-100 text-purple-800',
+  restaurant: 'bg-orange-100 text-orange-800',
+  announcements: 'bg-yellow-100 text-yellow-800',
+  maintenance: 'bg-gray-100 text-gray-800'
+};
+---
+
+<Layout title="News & Updates - South Caernarvonshire Yacht Club">
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-r from-navy-900 to-navy-700 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <h1 class="text-4xl md:text-5xl font-serif font-bold mb-4">
+          News &amp; Updates
+        </h1>
+        <p class="text-xl text-navy-100 max-w-3xl mx-auto">
+          Stay up to date with the latest news, race results, and announcements from South Caernarvonshire Yacht Club
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Category Filter -->
+  <section class="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="text-sm font-medium text-gray-700 mr-2">Filter by category:</span>
+        <button 
+          class="category-filter px-3 py-1 rounded-full text-sm font-medium bg-navy-700 text-white" 
+          data-category="all"
+        >
+          All News
+        </button>
+        {usedCategories.map(category => (
+          <button 
+            class={`category-filter px-3 py-1 rounded-full text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 ${categoryColors[category] || 'bg-gray-100 text-gray-800'}`}
+            data-category={category}
+          >
+            {categoryLabels[category] || category}
+          </button>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- News Articles -->
+  <section class="py-12 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {displayNews.length === 0 ? (
+        <div class="text-center py-12">
+          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+          </svg>
+          <h3 class="mt-2 text-sm font-medium text-gray-900">No news articles</h3>
+          <p class="mt-1 text-sm text-gray-500">Check back soon for the latest updates from SCYC.</p>
+        </div>
+      ) : (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="news-grid">
+          {displayNews.map((article) => {
+            const publishedDate = new Date(article.published_at);
+            return (
+              <article class={`news-article bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden`} data-category={article.category}>
+                {article.featured_image && (
+                  <div class="aspect-w-16 aspect-h-9">
+                    <img 
+                      src={article.featured_image} 
+                      alt={article.title}
+                      class="w-full h-48 object-cover"
+                    />
+                  </div>
+                )}
+                
+                <div class="p-6">
+                  <div class="flex items-center justify-between mb-3">
+                    <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${categoryColors[article.category] || 'bg-gray-100 text-gray-800'}`}>
+                      {categoryLabels[article.category] || article.category}
+                    </span>
+                    <time class="text-sm text-gray-500" datetime={article.published_at}>
+                      {formatDate(publishedDate)}
+                    </time>
+                  </div>
+                  
+                  <h2 class="text-xl font-semibold text-navy-900 mb-3 line-clamp-2">
+                    <a href={`/news/${article.slug || article.id}`} class="hover:text-navy-700 transition-colors">
+                      {article.title}
+                    </a>
+                  </h2>
+                  
+                  <p class="text-gray-600 mb-4 line-clamp-3">
+                    {article.excerpt || truncateText(article.content, 150)}
+                  </p>
+                  
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center text-sm text-gray-500">
+                      <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                      </svg>
+                      {article.author}
+                    </div>
+                    
+                    <a 
+                      href={`/news/${article.slug || article.id}`} 
+                      class="text-navy-700 hover:text-navy-900 font-medium text-sm transition-colors"
+                    >
+                      Read more →
+                    </a>
+                  </div>
+                  
+                  {article.tags && article.tags.length > 0 && (
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                      <div class="flex flex-wrap gap-1">
+                        {article.tags.slice(0, 3).map(tag => (
+                          <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-700">
+                            #{tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- Newsletter Signup -->
+  <section class="py-16 bg-navy-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-2xl mx-auto text-center">
+        <h2 class="text-3xl font-serif font-bold mb-4">
+          Stay in the Loop
+        </h2>
+        <p class="text-xl text-navy-100 mb-8">
+          Subscribe to our newsletter to receive the latest news, race results, and event announcements directly in your inbox.
+        </p>
+        
+        <form class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+          <input
+            type="email"
+            placeholder="Enter your email address"
+            class="flex-1 px-4 py-3 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-gold-500"
+            required
+          />
+          <button
+            type="submit"
+            class="px-6 py-3 bg-gold-600 text-white font-medium rounded-md hover:bg-gold-700 focus:outline-none focus:ring-2 focus:ring-gold-500 transition-colors"
+          >
+            Subscribe
+          </button>
+        </form>
+        
+        <p class="text-sm text-navy-200 mt-4">
+          We respect your privacy. Unsubscribe at any time.
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Category filtering functionality
+  const categoryFilters = document.querySelectorAll('.category-filter');
+  const newsArticles = document.querySelectorAll('.news-article');
+  
+  categoryFilters.forEach(filter => {
+    filter.addEventListener('click', function() {
+      const selectedCategory = this.dataset.category;
+      
+      // Update active filter button
+      categoryFilters.forEach(btn => {
+        btn.classList.remove('bg-navy-700', 'text-white');
+        btn.classList.add('border', 'border-gray-300', 'text-gray-700', 'hover:bg-gray-50');
+      });
+      
+      this.classList.add('bg-navy-700', 'text-white');
+      this.classList.remove('border', 'border-gray-300', 'text-gray-700', 'hover:bg-gray-50');
+      
+      // Filter articles
+      newsArticles.forEach(article => {
+        if (selectedCategory === 'all' || article.dataset.category === selectedCategory) {
+          article.style.display = 'block';
+        } else {
+          article.style.display = 'none';
+        }
+      });
+    });
+  });
+  
+  // Newsletter form submission
+  const newsletterForm = document.querySelector('form');
+  newsletterForm?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = this.querySelector('input[type="email"]').value;
+    
+    // Here you would typically send the email to your newsletter service
+    alert('Thank you for subscribing! You will receive a confirmation email shortly.');
+    this.reset();
+  });
+</script>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

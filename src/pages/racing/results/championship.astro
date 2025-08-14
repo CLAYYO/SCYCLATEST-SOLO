@@ -1,0 +1,242 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { supabase } from '../../../lib/supabase';
+
+// Fetch championship data
+const { data: championships } = await supabase
+  .from('race_series')
+  .select(`
+    id,
+    name,
+    year,
+    type,
+    description,
+    start_date,
+    end_date
+  `)
+  .eq('type', 'championship')
+  .order('year', { ascending: false });
+
+// Fetch championship results for each championship
+const championshipResults = await Promise.all(
+  championships?.map(async (championship) => {
+    const { data: results } = await supabase
+      .from('championship_results')
+      .select(`
+        *,
+        members!inner(name, sail_number, boat_class),
+        race_series!inner(name, year)
+      `)
+      .eq('series_id', championship.id)
+      .order('position');
+    
+    return {
+      championship,
+      results: results || []
+    };
+  }) || []
+);
+
+// Group by year
+const resultsByYear = championshipResults.reduce((acc, item) => {
+  const year = item.championship.year;
+  if (!acc[year]) {
+    acc[year] = [];
+  }
+  acc[year].push(item);
+  return acc;
+}, {});
+
+const years = Object.keys(resultsByYear).sort((a, b) => b - a);
+---
+
+<Layout title="Championship Results - SCYC Racing">
+  <div class="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+    <!-- Navigation Breadcrumb -->
+    <div class="bg-navy-800 text-white py-4">
+      <div class="container mx-auto px-4">
+        <nav class="flex items-center space-x-2 text-sm">
+          <a href="/" class="hover:text-gold-400 transition-colors">Home</a>
+          <span class="text-gray-300">/</span>
+          <a href="/racing" class="hover:text-gold-400 transition-colors">Racing</a>
+          <span class="text-gray-300">/</span>
+          <a href="/racing/results" class="hover:text-gold-400 transition-colors">Results</a>
+          <span class="text-gray-300">/</span>
+          <span class="text-gold-400">Championships</span>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <div class="bg-white border-b border-gray-200">
+      <div class="container mx-auto px-4 py-8">
+        <div class="text-center">
+          <h1 class="text-4xl font-bold text-navy-800 mb-4">Championship Results</h1>
+          <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+            Annual championship standings and trophy winners at South Caernarvonshire Yacht Club
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Championship Content -->
+    <div class="container mx-auto px-4 py-8">
+      {years.length > 0 ? (
+        <div class="space-y-12">
+          {years.map(year => (
+            <div key={year} class="year-section">
+              <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-navy-800 mb-2">{year} Championships</h2>
+                <div class="w-24 h-1 bg-gold-400 mx-auto"></div>
+              </div>
+              
+              <div class="grid gap-8 lg:grid-cols-2">
+                {resultsByYear[year].map(({ championship, results }) => (
+                  <div key={championship.id} class="championship-card bg-white rounded-lg shadow-lg overflow-hidden">
+                    <!-- Championship Header -->
+                    <div class="bg-gradient-to-r from-navy-800 to-navy-700 text-white px-6 py-4">
+                      <h3 class="text-xl font-bold mb-1">{championship.name}</h3>
+                      <p class="text-navy-200 text-sm">
+                        {championship.start_date && championship.end_date ? (
+                          `${new Date(championship.start_date).toLocaleDateString('en-AU')} - ${new Date(championship.end_date).toLocaleDateString('en-AU')}`
+                        ) : (
+                          `${year} Season`
+                        )}
+                      </p>
+                      {championship.description && (
+                        <p class="text-navy-100 text-sm mt-2">{championship.description}</p>
+                      )}
+                    </div>
+
+                    <!-- Championship Results -->
+                    <div class="p-6">
+                      {results.length > 0 ? (
+                        <div class="space-y-4">
+                          <!-- Podium Winners -->
+                          <div class="grid gap-4 mb-6">
+                            {results.slice(0, 3).map((result, index) => {
+                              const podiumColors = [
+                                'from-yellow-400 to-yellow-500', // Gold
+                                'from-gray-300 to-gray-400',     // Silver
+                                'from-orange-400 to-orange-500'  // Bronze
+                              ];
+                              const podiumText = ['Champion', '2nd Place', '3rd Place'];
+                              
+                              return (
+                                <div key={result.id} class={`podium-card bg-gradient-to-r ${podiumColors[index]} text-white rounded-lg p-4`}>
+                                  <div class="flex items-center justify-between">
+                                    <div>
+                                      <div class="font-bold text-lg">{podiumText[index]}</div>
+                                      <div class="text-sm opacity-90">{result.members?.name}</div>
+                                      <div class="text-xs opacity-75">
+                                        {result.members?.boat_class} • Sail #{result.members?.sail_number}
+                                      </div>
+                                    </div>
+                                    <div class="text-right">
+                                      <div class="text-2xl font-bold">{result.position}</div>
+                                      <div class="text-sm opacity-90">{result.total_points} pts</div>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+
+                          <!-- Full Results Table -->
+                          {results.length > 3 && (
+                            <div class="overflow-x-auto">
+                              <table class="w-full text-sm">
+                                <thead>
+                                  <tr class="bg-gray-50 border-b">
+                                    <th class="text-left py-3 px-4 font-semibold text-gray-700">Pos</th>
+                                    <th class="text-left py-3 px-4 font-semibold text-gray-700">Sailor</th>
+                                    <th class="text-left py-3 px-4 font-semibold text-gray-700">Class</th>
+                                    <th class="text-left py-3 px-4 font-semibold text-gray-700">Sail #</th>
+                                    <th class="text-right py-3 px-4 font-semibold text-gray-700">Points</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {results.slice(3).map((result, index) => (
+                                    <tr key={result.id} class={`border-b ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors`}>
+                                      <td class="py-3 px-4 font-medium">{result.position}</td>
+                                      <td class="py-3 px-4">{result.members?.name}</td>
+                                      <td class="py-3 px-4 text-gray-600">{result.members?.boat_class}</td>
+                                      <td class="py-3 px-4 text-gray-600">{result.members?.sail_number}</td>
+                                      <td class="py-3 px-4 text-right font-medium">{result.total_points}</td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div class="text-center py-8 text-gray-500">
+                          <svg class="w-12 h-12 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                          </svg>
+                          <p>No results available for this championship</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-16">
+          <div class="max-w-md mx-auto">
+            <svg class="w-20 h-20 mx-auto text-gray-400 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+            </svg>
+            <h3 class="text-2xl font-bold text-gray-700 mb-4">No Championship Results</h3>
+            <p class="text-gray-500 mb-6">Championship results will be displayed here once they become available.</p>
+            <a 
+              href="/racing/results" 
+              class="inline-flex items-center px-6 py-3 bg-navy-800 text-white rounded-lg hover:bg-navy-700 transition-colors"
+            >
+              View Current Results
+              <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+      )}
+
+      <!-- Navigation -->
+      <div class="mt-12 text-center">
+        <a 
+          href="/racing/results" 
+          class="inline-flex items-center px-6 py-3 bg-navy-800 text-white rounded-lg hover:bg-navy-700 transition-colors"
+        >
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          Back to Results
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .championship-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .championship-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+  
+  .podium-card {
+    transition: transform 0.2s ease;
+  }
+  
+  .podium-card:hover {
+    transform: scale(1.02);
+  }
+</style>

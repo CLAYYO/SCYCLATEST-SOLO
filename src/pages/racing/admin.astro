@@ -1,0 +1,39 @@
+---
+// TODO: Add authentication check here
+// For now, this is a placeholder admin page
+import Layout from '../../layouts/Layout.astro';
+import UploadResults from '../../components/racing/UploadResults.tsx';
+---
+
+<Layout title="Racing Admin - SCYC">
+  <main class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-navy-900">Racing Administration</h1>
+        <p class="mt-2 text-gray-600">Manage race results and racing data</p>
+      </div>
+      
+      <!-- Upload Results Component -->
+      <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-xl font-semibold text-gray-900">Upload Race Results</h2>
+          <p class="mt-1 text-sm text-gray-600">
+            Upload Sailwave HTML files to automatically create race results
+          </p>
+        </div>
+        <div class="p-6">
+          <UploadResults client:load />
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .bg-navy-900 {
+    background-color: #1e3a8a;
+  }
+  .text-navy-900 {
+    color: #1e3a8a;
+  }
+</style>

@@ -1,0 +1,22 @@
+<svg width="120" height="80" viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="60" cy="40" r="35" fill="#1e3a8a" stroke="#d4af37" stroke-width="2"/>
+  
+  <!-- Sailboat silhouette -->
+  <g transform="translate(60, 40)">
+    <!-- Mast -->
+    <line x1="0" y1="-20" x2="0" y2="15" stroke="#ffffff" stroke-width="1.5"/>
+    
+    <!-- Main sail -->
+    <path d="M 0 -20 L -12 -5 L 0 10 Z" fill="#ffffff"/>
+    
+    <!-- Jib sail -->
+    <path d="M 0 -15 L 8 -8 L 0 5 Z" fill="#d4af37"/>
+    
+    <!-- Hull -->
+    <ellipse cx="0" cy="12" rx="15" ry="3" fill="#ffffff"/>
+  </g>
+  
+  <!-- Club text -->
+  <text x="60" y="68" text-anchor="middle" font-family="serif" font-size="8" font-weight="bold" fill="#1e3a8a">SCYC</text>
+</svg>

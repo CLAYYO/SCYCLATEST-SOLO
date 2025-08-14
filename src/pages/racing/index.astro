@@ -1,0 +1,336 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { supabase } from '../../lib/supabase';
+import { formatDate } from '../../utils';
+
+// Fetch upcoming races
+const { data: upcomingRaces } = await supabase
+  .from('races')
+  .select('*')
+  .gte('race_date', new Date().toISOString().split('T')[0])
+  .order('race_date', { ascending: true })
+  .limit(5);
+
+// Fetch recent results
+const { data: recentResults } = await supabase
+  .from('races')
+  .select('*')
+  .lt('race_date', new Date().toISOString().split('T')[0])
+  .order('race_date', { ascending: false })
+  .limit(3);
+
+// Sample data for demonstration
+const sampleUpcomingRaces = [
+  {
+    id: '1',
+    name: 'Summer Series Race 5',
+    race_date: '2024-09-07',
+    location: 'Abersoch',
+    description: 'Fifth race in the summer series'
+  },
+  {
+    id: '2',
+    name: 'Club Championship Round 3',
+    race_date: '2024-09-14',
+    location: 'SCYC',
+    description: 'Third round of club championships'
+  },
+  {
+    id: '3',
+    name: 'Autumn Cup',
+    race_date: '2024-09-21',
+    location: 'Pwllheli',
+    description: 'Annual autumn cup competition'
+  }
+];
+
+const sampleRecentResults = [
+  {
+    id: '1',
+    name: 'Summer Series Race 4',
+    race_date: '2024-08-31',
+    location: 'Barmouth',
+    description: 'Fourth race in the summer series'
+  },
+  {
+    id: '2',
+    name: 'Club Championship Round 2',
+    race_date: '2024-08-24',
+    location: 'SCYC',
+    description: 'Second round of club championships'
+  },
+  {
+    id: '3',
+    name: 'Summer Series Race 3',
+    race_date: '2024-08-17',
+    location: 'Abersoch',
+    description: 'Third race in the summer series'
+  }
+];
+
+const displayUpcomingRaces = upcomingRaces && upcomingRaces.length > 0 ? upcomingRaces : sampleUpcomingRaces;
+const displayRecentResults = recentResults && recentResults.length > 0 ? recentResults : sampleRecentResults;
+---
+
+<Layout title="Racing Hub - SCYC">
+  <!-- Hero Section -->
+  <section class="relative bg-navy-900 text-white py-20">
+    <div class="absolute inset-0 bg-gradient-to-r from-navy-900 to-navy-800 opacity-90"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <h1 class="text-5xl md:text-6xl font-serif font-bold mb-6 text-gold-400">
+          Racing at SCYC
+        </h1>
+        <p class="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto mb-8">
+          Experience competitive sailing in the beautiful waters of Cardigan Bay. 
+          From club racing to championship events, SCYC offers racing for all levels.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="/racing/results" class="btn-primary">
+            View Results
+          </a>
+          <a href="/racing/calendar" class="btn-secondary">
+            Race Calendar
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Stats -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div class="space-y-2">
+          <div class="text-3xl md:text-4xl font-bold text-navy-900">15+</div>
+          <div class="text-gray-600">Boat Classes</div>
+        </div>
+        <div class="space-y-2">
+          <div class="text-3xl md:text-4xl font-bold text-navy-900">50+</div>
+          <div class="text-gray-600">Annual Races</div>
+        </div>
+        <div class="space-y-2">
+          <div class="text-3xl md:text-4xl font-bold text-navy-900">200+</div>
+          <div class="text-gray-600">Active Racers</div>
+        </div>
+        <div class="space-y-2">
+          <div class="text-3xl md:text-4xl font-bold text-navy-900">100</div>
+          <div class="text-gray-600">Years of Racing</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content Grid -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Upcoming Races -->
+        <div class="lg:col-span-2">
+          <div class="card">
+            <div class="p-6">
+              <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-serif font-bold text-navy-900">
+                  Upcoming Races
+                </h2>
+                <a href="/racing/calendar" class="text-navy-700 hover:text-gold-600 font-medium">
+                  View All →
+                </a>
+              </div>
+              
+              <div class="space-y-4">
+                {displayUpcomingRaces.map((race) => (
+                  <div class="border-l-4 border-gold-500 pl-4 py-3 bg-gray-50 rounded-r">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <h3 class="font-semibold text-navy-900">{race.name}</h3>
+                        <p class="text-gray-600 text-sm">{race.description}</p>
+                        <div class="flex items-center gap-4 mt-2 text-sm text-gray-500">
+                          <span>📅 {formatDate(race.race_date)}</span>
+                          <span>📍 {race.location}</span>
+                        </div>
+                      </div>
+                      <div class="mt-3 sm:mt-0">
+                        <a href={`/racing/race/${race.id}`} class="text-navy-700 hover:text-gold-600 font-medium text-sm">
+                          Details →
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              {displayUpcomingRaces.length === 0 && (
+                <div class="text-center py-8 text-gray-500">
+                  <p>No upcoming races scheduled.</p>
+                  <p class="text-sm mt-2">Check back soon for new race announcements.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Links Sidebar -->
+        <div class="space-y-6">
+          <!-- Recent Results -->
+          <div class="card">
+            <div class="p-6">
+              <h3 class="text-xl font-serif font-bold text-navy-900 mb-4">
+                Recent Results
+              </h3>
+              <div class="space-y-3">
+                {displayRecentResults.map((race) => (
+                  <div class="border-b border-gray-200 pb-3 last:border-b-0">
+                    <h4 class="font-medium text-navy-900 text-sm">{race.name}</h4>
+                    <div class="text-xs text-gray-500 mt-1">
+                      {formatDate(race.race_date)} • {race.location}
+                    </div>
+                    <a href={`/racing/results/${race.id}`} class="text-navy-700 hover:text-gold-600 text-xs font-medium">
+                      View Results →
+                    </a>
+                  </div>
+                ))}
+              </div>
+              <div class="mt-4 pt-4 border-t border-gray-200">
+                <a href="/racing/results" class="text-navy-700 hover:text-gold-600 font-medium text-sm">
+                  All Results →
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Racing Categories -->
+          <div class="card">
+            <div class="p-6">
+              <h3 class="text-xl font-serif font-bold text-navy-900 mb-4">
+                Racing Categories
+              </h3>
+              <div class="space-y-3">
+                <a href="/racing/classes/dinghies" class="block p-3 bg-gray-50 rounded hover:bg-gray-100 transition-colors">
+                  <div class="font-medium text-navy-900">Dinghies</div>
+                  <div class="text-sm text-gray-600">Laser, RS, Topper & more</div>
+                </a>
+                <a href="/racing/classes/keelboats" class="block p-3 bg-gray-50 rounded hover:bg-gray-100 transition-colors">
+                  <div class="font-medium text-navy-900">Keelboats</div>
+                  <div class="text-sm text-gray-600">Cruiser racing classes</div>
+                </a>
+                <a href="/racing/classes/windsurfers" class="block p-3 bg-gray-50 rounded hover:bg-gray-100 transition-colors">
+                  <div class="font-medium text-navy-900">Windsurfers</div>
+                  <div class="text-sm text-gray-600">Formula & recreational</div>
+                </a>
+                <a href="/racing/classes/youth" class="block p-3 bg-gray-50 rounded hover:bg-gray-100 transition-colors">
+                  <div class="font-medium text-navy-900">Youth Racing</div>
+                  <div class="text-sm text-gray-600">Junior development</div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Racing Information -->
+  <section class="py-16 bg-navy-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4 text-gold-400">
+          Racing Information
+        </h2>
+        <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+          Everything you need to know about racing at SCYC
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="text-center">
+          <div class="w-16 h-16 bg-gold-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-navy-900" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">Racing Rules</h3>
+          <p class="text-gray-300 mb-4">Download sailing instructions and racing rules for all events.</p>
+          <a href="/documents/racing-rules" class="text-gold-400 hover:text-gold-300 font-medium">
+            View Rules →
+          </a>
+        </div>
+        
+        <div class="text-center">
+          <div class="w-16 h-16 bg-gold-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-navy-900" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M8 7V3a4 4 0 118 0v4a1 1 0 001 1h2a1 1 0 011 1v9a1 1 0 01-1 1H5a1 1 0 01-1-1V9a1 1 0 011-1h2a1 1 0 001-1z"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">Entry Forms</h3>
+          <p class="text-gray-300 mb-4">Register for upcoming races and championship events.</p>
+          <a href="/racing/entry" class="text-gold-400 hover:text-gold-300 font-medium">
+            Enter Race →
+          </a>
+        </div>
+        
+        <div class="text-center">
+          <div class="w-16 h-16 bg-gold-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-navy-900" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">Results Archive</h3>
+          <p class="text-gray-300 mb-4">Browse historical racing results and championship records.</p>
+          <a href="/racing/results/archive" class="text-gold-400 hover:text-gold-300 font-medium">
+            View Archive →
+          </a>
+        </div>
+        
+        <div class="text-center">
+          <div class="w-16 h-16 bg-gold-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-navy-900" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">Race Committee</h3>
+          <p class="text-gray-300 mb-4">Information for race officers and committee volunteers.</p>
+          <a href="/racing/committee" class="text-gold-400 hover:text-gold-300 font-medium">
+            Learn More →
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="py-16 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl md:text-4xl font-serif font-bold text-navy-900 mb-6">
+        Ready to Race?
+      </h2>
+      <p class="text-xl text-gray-600 mb-8">
+        Join the racing community at SCYC. Whether you're a seasoned competitor or new to racing, 
+        we have events and classes suitable for all skill levels.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/membership" class="btn-primary">
+          Become a Member
+        </a>
+        <a href="/contact" class="btn-secondary">
+          Contact Racing Secretary
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .card {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200;
+  }
+  
+  .btn-primary {
+    @apply inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-navy-700 hover:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-navy-500 transition-colors;
+  }
+  
+  .btn-secondary {
+    @apply inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-navy-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-navy-500 transition-colors;
+  }
+</style>

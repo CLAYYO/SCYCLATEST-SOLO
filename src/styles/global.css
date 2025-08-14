@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom base styles */
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  body {
+    @apply bg-slate-50 text-slate-900;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif text-navy-900;
+  }
+}
+
+/* Custom component styles */
+@layer components {
+  .btn-primary {
+    @apply bg-navy-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-navy-800 transition-colors duration-200;
+  }
+  
+  .btn-secondary {
+    @apply bg-gold-950 text-navy-900 px-6 py-3 rounded-lg font-semibold hover:bg-gold-900 transition-colors duration-200;
+  }
+  
+  .btn-outline {
+    @apply border-2 border-navy-900 text-navy-900 px-6 py-3 rounded-lg font-semibold hover:bg-navy-900 hover:text-white transition-all duration-200;
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden;
+  }
+  
+  .maritime-gradient {
+    @apply bg-gradient-to-br from-navy-900 via-navy-800 to-accent;
+  }
+  
+  .gold-accent {
+    @apply text-gold-950 font-semibold;
+  }
+  
+  /* Racing results table styles */
+  .results-table {
+    @apply w-full border-collapse bg-white rounded-lg overflow-hidden shadow-lg;
+  }
+  
+  .results-table th {
+    @apply bg-navy-900 text-white px-4 py-3 text-left font-semibold;
+  }
+  
+  .results-table td {
+    @apply px-4 py-2 border-b border-slate-200;
+  }
+  
+  .results-table tr:hover {
+    @apply bg-slate-50;
+  }
+  
+  /* Ranking styles for racing results */
+  .rank1 {
+    @apply bg-yellow-100 font-bold text-yellow-800;
+  }
+  
+  .rank2 {
+    @apply bg-gray-100 font-bold text-gray-800;
+  }
+  
+  .rank3 {
+    @apply bg-orange-100 font-bold text-orange-800;
+  }
+  
+  .dnc {
+    @apply text-red-600 font-semibold;
+  }
+}
+
+/* Custom utility styles */
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .maritime-border {
+    border-image: linear-gradient(45deg, #1e3a8a, #d4af37) 1;
+  }
+}

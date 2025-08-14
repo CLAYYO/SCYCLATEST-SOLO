@@ -1,0 +1,394 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { supabase } from '../../lib/supabase';
+
+// Fetch club statistics (in a real app, this would come from Supabase)
+const clubStats = {
+  founded: 1924,
+  members: 450,
+  boats: 180,
+  races_per_year: 85,
+  years_of_history: new Date().getFullYear() - 1924
+};
+
+// Club facilities and amenities
+const facilities = [
+  {
+    name: 'Marina & Moorings',
+    description: 'Secure moorings for member boats with easy access to Cardigan Bay',
+    icon: '⚓'
+  },
+  {
+    name: 'The Cove Restaurant',
+    description: 'Award-winning restaurant serving fresh local seafood and Welsh cuisine',
+    icon: '🍽️'
+  },
+  {
+    name: 'Clubhouse',
+    description: 'Historic clubhouse with bar, lounge areas, and event spaces',
+    icon: '🏛️'
+  },
+  {
+    name: 'Boat Storage',
+    description: 'Secure dry storage facilities for dinghies and small craft',
+    icon: '🏗️'
+  },
+  {
+    name: 'Slipway',
+    description: 'Private slipway for launching and recovery of member boats',
+    icon: '🛥️'
+  },
+  {
+    name: 'Training Facilities',
+    description: 'RYA recognized training center with qualified instructors',
+    icon: '🎓'
+  }
+];
+
+// Club officers and committee
+const officers = [
+  { position: 'Commodore', name: 'Captain James Morrison', term: '2024-2025' },
+  { position: 'Vice Commodore', name: 'Sarah Williams', term: '2024-2025' },
+  { position: 'Rear Commodore', name: 'David Evans', term: '2024-2025' },
+  { position: 'Honorary Secretary', name: 'Margaret Jones', term: '2024-2025' },
+  { position: 'Honorary Treasurer', name: 'Robert Davies', term: '2024-2025' },
+  { position: 'Sailing Secretary', name: 'Michael Roberts', term: '2024-2025' }
+];
+---
+
+<Layout title="About the Club - South Caernarvonshire Yacht Club">
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-r from-navy-900 to-navy-700 text-white py-20">
+    <div class="absolute inset-0 bg-black opacity-20"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <h1 class="text-5xl md:text-6xl font-serif font-bold mb-6">
+          About SCYC
+        </h1>
+        <p class="text-xl text-navy-100 max-w-3xl mx-auto mb-8">
+          Celebrating {clubStats.years_of_history} years of sailing excellence in the heart of Cardigan Bay
+        </p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+          <div class="text-center">
+            <div class="text-3xl font-bold text-gold-400">{clubStats.founded}</div>
+            <div class="text-sm text-navy-200">Founded</div>
+          </div>
+          <div class="text-center">
+            <div class="text-3xl font-bold text-gold-400">{clubStats.members}+</div>
+            <div class="text-sm text-navy-200">Members</div>
+          </div>
+          <div class="text-center">
+            <div class="text-3xl font-bold text-gold-400">{clubStats.boats}+</div>
+            <div class="text-sm text-navy-200">Boats</div>
+          </div>
+          <div class="text-center">
+            <div class="text-3xl font-bold text-gold-400">{clubStats.races_per_year}+</div>
+            <div class="text-sm text-navy-200">Races/Year</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Club History -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <h2 class="text-3xl font-serif font-bold text-navy-900 mb-6">
+            Our Rich Heritage
+          </h2>
+          <div class="prose prose-lg text-gray-700">
+            <p class="mb-6">
+              Founded in 1924, the South Caernarvonshire Yacht Club has been a cornerstone of the sailing community in Abersoch for nearly a century. Our club was established by a group of passionate sailors who recognized the exceptional sailing conditions offered by Cardigan Bay.
+            </p>
+            <p class="mb-6">
+              Located at coordinates 52°49.43'N, 04°269.89'W, our clubhouse sits in one of the most picturesque locations on the Welsh coast. The sheltered waters of Abersoch provide ideal conditions for both racing and cruising, making SCYC a premier destination for sailors from across the UK and beyond.
+            </p>
+            <p class="mb-6">
+              Throughout our history, SCYC has maintained its commitment to promoting sailing excellence, fostering community spirit, and preserving maritime traditions. We've hosted numerous prestigious regattas and have been home to many accomplished sailors who have competed at national and international levels.
+            </p>
+            <p>
+              Today, SCYC continues to thrive as a modern yacht club while honoring its traditional values of seamanship, sportsmanship, and camaraderie.
+            </p>
+          </div>
+        </div>
+        <div class="space-y-6">
+          <div class="bg-navy-50 rounded-lg p-6">
+            <h3 class="text-xl font-bold text-navy-900 mb-4">Key Milestones</h3>
+            <div class="space-y-4">
+              <div class="flex items-start">
+                <div class="flex-shrink-0 w-16 text-sm font-bold text-navy-700">1924</div>
+                <div class="text-gray-700">Club founded by local sailing enthusiasts</div>
+              </div>
+              <div class="flex items-start">
+                <div class="flex-shrink-0 w-16 text-sm font-bold text-navy-700">1935</div>
+                <div class="text-gray-700">Current clubhouse constructed</div>
+              </div>
+              <div class="flex items-start">
+                <div class="flex-shrink-0 w-16 text-sm font-bold text-navy-700">1960</div>
+                <div class="text-gray-700">Marina facilities expanded</div>
+              </div>
+              <div class="flex items-start">
+                <div class="flex-shrink-0 w-16 text-sm font-bold text-navy-700">1985</div>
+                <div class="text-gray-700">RYA Training Centre established</div>
+              </div>
+              <div class="flex items-start">
+                <div class="flex-shrink-0 w-16 text-sm font-bold text-navy-700">2010</div>
+                <div class="text-gray-700">The Cove Restaurant opened</div>
+              </div>
+              <div class="flex items-start">
+                <div class="flex-shrink-0 w-16 text-sm font-bold text-navy-700">2024</div>
+                <div class="text-gray-700">Centenary celebrations</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Facilities -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-serif font-bold text-navy-900 mb-4">
+          Club Facilities
+        </h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          SCYC offers comprehensive facilities to support all aspects of sailing and club life
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {facilities.map(facility => (
+          <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+            <div class="text-4xl mb-4">{facility.icon}</div>
+            <h3 class="text-xl font-bold text-navy-900 mb-3">{facility.name}</h3>
+            <p class="text-gray-600">{facility.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Location & Contact -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div>
+          <h2 class="text-3xl font-serif font-bold text-navy-900 mb-6">
+            Location & Access
+          </h2>
+          <div class="space-y-6">
+            <div>
+              <h3 class="text-lg font-bold text-navy-800 mb-2">Address</h3>
+              <p class="text-gray-700">
+                South Caernarvonshire Yacht Club<br>
+                Abersoch, Pwllheli<br>
+                Gwynedd, Wales<br>
+                LL53 7EB
+              </p>
+            </div>
+            
+            <div>
+              <h3 class="text-lg font-bold text-navy-800 mb-2">Coordinates</h3>
+              <p class="text-gray-700">
+                52°49.43'N, 04°269.89'W
+              </p>
+            </div>
+            
+            <div>
+              <h3 class="text-lg font-bold text-navy-800 mb-2">Getting Here</h3>
+              <ul class="text-gray-700 space-y-2">
+                <li>• 15 minutes from Pwllheli town center</li>
+                <li>• 45 minutes from Caernarfon</li>
+                <li>• 2 hours from Chester</li>
+                <li>• Ample parking available</li>
+                <li>• Accessible by public transport</li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 class="text-lg font-bold text-navy-800 mb-2">Contact Information</h3>
+              <div class="space-y-2 text-gray-700">
+                <p><strong>Phone:</strong> +44 (0) 1758 712338</p>
+                <p><strong>Email:</strong> info@scyc.co.uk</p>
+                <p><strong>Office Hours:</strong> Mon-Fri 9:00-17:00</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div>
+          <h2 class="text-3xl font-serif font-bold text-navy-900 mb-6">
+            Club Officers
+          </h2>
+          <div class="bg-navy-50 rounded-lg p-6">
+            <div class="space-y-4">
+              {officers.map(officer => (
+                <div class="flex justify-between items-center py-2 border-b border-navy-200 last:border-b-0">
+                  <div>
+                    <div class="font-semibold text-navy-900">{officer.position}</div>
+                    <div class="text-gray-700">{officer.name}</div>
+                  </div>
+                  <div class="text-sm text-gray-500">{officer.term}</div>
+                </div>
+              ))}
+            </div>
+            
+            <div class="mt-6 pt-6 border-t border-navy-200">
+              <p class="text-sm text-gray-600">
+                Officers are elected annually at the AGM. For committee meeting minutes and club governance information, please contact the Honorary Secretary.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Club Rules & Governance -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-serif font-bold text-navy-900 mb-4">
+          Club Governance
+        </h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          SCYC operates under a comprehensive constitution and set of sailing instructions
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white rounded-lg shadow-md p-6 text-center">
+          <div class="text-3xl mb-4">📋</div>
+          <h3 class="text-lg font-bold text-navy-900 mb-2">Constitution</h3>
+          <p class="text-gray-600 mb-4">Club rules and regulations</p>
+          <a href="/documents" class="text-navy-700 hover:text-navy-900 font-medium">
+            View Documents →
+          </a>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md p-6 text-center">
+          <div class="text-3xl mb-4">⛵</div>
+          <h3 class="text-lg font-bold text-navy-900 mb-2">Sailing Instructions</h3>
+          <p class="text-gray-600 mb-4">Racing rules and procedures</p>
+          <a href="/racing" class="text-navy-700 hover:text-navy-900 font-medium">
+            View Racing →
+          </a>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md p-6 text-center">
+          <div class="text-3xl mb-4">🏆</div>
+          <h3 class="text-lg font-bold text-navy-900 mb-2">Trophies & Awards</h3>
+          <p class="text-gray-600 mb-4">Annual competitions</p>
+          <a href="/racing" class="text-navy-700 hover:text-navy-900 font-medium">
+            View Trophies →
+          </a>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md p-6 text-center">
+          <div class="text-3xl mb-4">📅</div>
+          <h3 class="text-lg font-bold text-navy-900 mb-2">AGM & Meetings</h3>
+          <p class="text-gray-600 mb-4">Annual general meeting</p>
+          <a href="/events" class="text-navy-700 hover:text-navy-900 font-medium">
+            View Events →
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Environmental Commitment -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-serif font-bold text-navy-900 mb-4">
+          Environmental Commitment
+        </h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          As custodians of Cardigan Bay, we're committed to protecting our marine environment
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center">
+          <div class="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-navy-900 mb-3">Marine Conservation</h3>
+          <p class="text-gray-600">
+            Supporting local marine conservation efforts and sustainable fishing practices in Cardigan Bay.
+          </p>
+        </div>
+        
+        <div class="text-center">
+          <div class="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-navy-900 mb-3">Waste Reduction</h3>
+          <p class="text-gray-600">
+            Implementing recycling programs and reducing single-use plastics throughout club operations.
+          </p>
+        </div>
+        
+        <div class="text-center">
+          <div class="bg-yellow-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-navy-900 mb-3">Education</h3>
+          <p class="text-gray-600">
+            Promoting environmental awareness through sailing courses and community outreach programs.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="py-16 bg-navy-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl font-serif font-bold mb-4">
+        Ready to Join Our Community?
+      </h2>
+      <p class="text-xl text-navy-100 mb-8 max-w-3xl mx-auto">
+        Become part of SCYC's rich sailing tradition and enjoy access to some of the finest sailing waters in Wales.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href="/membership/apply"
+          class="px-8 py-3 bg-gold-500 text-navy-900 font-bold rounded-md hover:bg-gold-400 transition-colors"
+        >
+          Apply for Membership
+        </a>
+        <a
+          href="/events"
+          class="px-8 py-3 border-2 border-white text-white font-bold rounded-md hover:bg-white hover:text-navy-900 transition-colors"
+        >
+          View Upcoming Events
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .prose {
+    line-height: 1.7;
+  }
+  
+  .prose p {
+    margin-bottom: 1.5rem;
+  }
+  
+  .prose p:last-child {
+    margin-bottom: 0;
+  }
+</style>

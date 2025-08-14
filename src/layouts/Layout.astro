@@ -1,0 +1,305 @@
+---
+import '../styles/global.css';
+
+export interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  noIndex?: boolean;
+}
+
+const { 
+  title, 
+  description = 'South Caernarvonshire Yacht Club - Founded 1924. Located in Abersoch, Wales on the beautiful Cardigan Bay.',
+  image = '/images/scyc-hero.jpg',
+  noIndex = false 
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const socialImage = new URL(image, Astro.url).href;
+---
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalURL} />
+    
+    <!-- Primary Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    {noIndex && <meta name="robots" content="noindex, nofollow" />}
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={socialImage} />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={socialImage} />
+    
+    <!-- Preload critical fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    
+    <!-- Schema.org markup -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "South Caernarvonshire Yacht Club",
+        "alternateName": "SCYC",
+        "url": "https://scyc.org.uk",
+        "logo": "https://scyc.org.uk/images/scyc-logo.png",
+        "foundingDate": "1924",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Abersoch",
+          "addressRegion": "Wales",
+          "addressCountry": "GB"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": "52.8238",
+          "longitude": "-4.4498"
+        },
+        "sameAs": [
+          "https://www.facebook.com/scyc",
+          "https://www.instagram.com/scyc"
+        ]
+      }
+    </script>
+  </head>
+  
+  <body class="min-h-screen bg-white text-navy-900 font-sans antialiased">
+    <!-- Skip to main content -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-gold-500 text-navy-900 px-4 py-2 rounded-md font-medium z-50">
+      Skip to main content
+    </a>
+    
+    <!-- Navigation -->
+    <nav class="bg-navy-900 text-white shadow-lg sticky top-0 z-40">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <!-- Logo -->
+          <div class="flex-shrink-0">
+            <a href="/" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+              <img src="/images/scyc-logo.svg" alt="SCYC Logo" class="h-10 w-10" />
+              <div class="hidden sm:block">
+                <div class="font-serif font-bold text-lg text-gold-400">SCYC</div>
+                <div class="text-xs text-gray-300">Est. 1924</div>
+              </div>
+            </a>
+          </div>
+          
+          <!-- Desktop Navigation -->
+          <div class="hidden md:block">
+            <div class="ml-10 flex items-baseline space-x-4">
+              <a href="/" class="nav-link">Home</a>
+              <div class="relative group">
+                <button class="nav-link flex items-center">
+                  Racing
+                  <svg class="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </button>
+                <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                  <a href="/racing" class="dropdown-link">Racing Hub</a>
+                  <a href="/racing/results" class="dropdown-link">Results</a>
+                  <a href="/racing/calendar" class="dropdown-link">Race Calendar</a>
+                  <a href="/racing/classes" class="dropdown-link">Boat Classes</a>
+                </div>
+              </div>
+              <a href="/restaurant" class="nav-link">The Cove</a>
+              <a href="/events" class="nav-link">Events</a>
+              <a href="/membership" class="nav-link">Membership</a>
+              <div class="relative group">
+                <button class="nav-link flex items-center">
+                  Club
+                  <svg class="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </button>
+                <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                  <a href="/club" class="dropdown-link">About Us</a>
+                  <a href="/club/history" class="dropdown-link">History</a>
+                  <a href="/club/facilities" class="dropdown-link">Facilities</a>
+                  <a href="/club/committee" class="dropdown-link">Committee</a>
+                </div>
+              </div>
+              <a href="/news" class="nav-link">News</a>
+              <a href="/documents" class="nav-link">Documents</a>
+              <a href="/contact" class="nav-link">Contact</a>
+            </div>
+          </div>
+          
+          <!-- Mobile menu button -->
+          <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-gray-300 hover:text-white focus:outline-none focus:text-white">
+              <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                <path id="close-icon" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Mobile Navigation -->
+      <div id="mobile-menu" class="md:hidden hidden">
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-navy-800">
+          <a href="/" class="mobile-nav-link">Home</a>
+          <a href="/racing" class="mobile-nav-link">Racing</a>
+          <a href="/restaurant" class="mobile-nav-link">The Cove</a>
+          <a href="/events" class="mobile-nav-link">Events</a>
+          <a href="/membership" class="mobile-nav-link">Membership</a>
+          <a href="/club" class="mobile-nav-link">Club</a>
+          <a href="/news" class="mobile-nav-link">News</a>
+          <a href="/documents" class="mobile-nav-link">Documents</a>
+          <a href="/contact" class="mobile-nav-link">Contact</a>
+        </div>
+      </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main id="main-content" class="flex-1">
+      <slot />
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-navy-900 text-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <!-- Club Info -->
+          <div class="col-span-1 md:col-span-2">
+            <div class="flex items-center space-x-3 mb-4">
+              <img src="/images/scyc-logo.svg" alt="SCYC Logo" class="h-12 w-12" />
+              <div>
+                <h3 class="font-serif font-bold text-xl text-gold-400">South Caernarvonshire Yacht Club</h3>
+                <p class="text-gray-300 text-sm">Established 1924</p>
+              </div>
+            </div>
+            <p class="text-gray-300 mb-4 max-w-md">
+              Located in the heart of Abersoch on the beautiful Cardigan Bay, SCYC has been serving the sailing community for nearly a century.
+            </p>
+            <div class="flex space-x-4">
+              <a href="#" class="text-gray-300 hover:text-gold-400 transition-colors">
+                <span class="sr-only">Facebook</span>
+                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+              </a>
+              <a href="#" class="text-gray-300 hover:text-gold-400 transition-colors">
+                <span class="sr-only">Instagram</span>
+                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987 6.62 0 11.987-5.367 11.987-11.987C24.014 5.367 18.637.001 12.017.001zM8.449 16.988c-1.297 0-2.448-.49-3.323-1.297C4.198 14.895 3.708 13.744 3.708 12.447s.49-2.448 1.297-3.323C5.902 8.198 7.053 7.708 8.35 7.708s2.448.49 3.323 1.297c.876.807 1.366 1.958 1.366 3.255s-.49 2.448-1.297 3.323c-.876.876-2.027 1.366-3.324 1.366zm7.718 0c-1.297 0-2.448-.49-3.323-1.297-.876-.807-1.366-1.958-1.366-3.255s.49-2.448 1.297-3.323c.876-.876 2.027-1.366 3.324-1.366s2.448.49 3.323 1.297c.876.807 1.366 1.958 1.366 3.255s-.49 2.448-1.297 3.323c-.876.876-2.027 1.366-3.324 1.366z"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+          
+          <!-- Quick Links -->
+          <div>
+            <h4 class="font-semibold text-lg mb-4 text-gold-400">Quick Links</h4>
+            <ul class="space-y-2">
+              <li><a href="/racing" class="footer-link">Racing</a></li>
+              <li><a href="/events" class="footer-link">Events</a></li>
+              <li><a href="/membership" class="footer-link">Membership</a></li>
+              <li><a href="/restaurant" class="footer-link">The Cove</a></li>
+              <li><a href="/documents" class="footer-link">Documents</a></li>
+            </ul>
+          </div>
+          
+          <!-- Contact Info -->
+          <div>
+            <h4 class="font-semibold text-lg mb-4 text-gold-400">Contact</h4>
+            <div class="space-y-2 text-gray-300">
+              <p class="flex items-start">
+                <svg class="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                <span class="text-sm">Abersoch, Pwllheli<br />Gwynedd, Wales</span>
+              </p>
+              <p class="flex items-center">
+                <svg class="h-5 w-5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                <span class="text-sm">info@scyc.org.uk</span>
+              </p>
+              <p class="text-sm">
+                <strong>Coordinates:</strong><br />
+                52°49.43'N, 04°269.89'W
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="border-t border-navy-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+          <p class="text-gray-300 text-sm">
+            &copy; {new Date().getFullYear()} South Caernarvonshire Yacht Club. All rights reserved.
+          </p>
+          <div class="flex space-x-6 mt-4 md:mt-0">
+            <a href="/privacy" class="footer-link text-sm">Privacy Policy</a>
+            <a href="/terms" class="footer-link text-sm">Terms of Service</a>
+            <a href="/accessibility" class="footer-link text-sm">Accessibility</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    
+    <!-- Mobile menu toggle script -->
+    <script>
+      const mobileMenuButton = document.getElementById('mobile-menu-button');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const menuIcon = document.getElementById('menu-icon');
+      const closeIcon = document.getElementById('close-icon');
+      
+      mobileMenuButton?.addEventListener('click', () => {
+        const isHidden = mobileMenu?.classList.contains('hidden');
+        
+        if (isHidden) {
+          mobileMenu?.classList.remove('hidden');
+          menuIcon?.classList.add('hidden');
+          closeIcon?.classList.remove('hidden');
+        } else {
+          mobileMenu?.classList.add('hidden');
+          menuIcon?.classList.remove('hidden');
+          closeIcon?.classList.add('hidden');
+        }
+      });
+    </script>
+  </body>
+</html>
+
+<style>
+  .nav-link {
+    @apply text-gray-300 hover:text-gold-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200;
+  }
+  
+  .dropdown-link {
+    @apply block px-4 py-2 text-sm text-navy-900 hover:bg-gray-100 transition-colors duration-200;
+  }
+  
+  .mobile-nav-link {
+    @apply text-gray-300 hover:text-gold-400 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200;
+  }
+  
+  .footer-link {
+    @apply text-gray-300 hover:text-gold-400 transition-colors duration-200;
+  }
+</style>
