@@ -1,0 +1,12 @@
+# Cloudflare Pages redirects for Astro static site
+
+# Handle API routes (these should return 404 for static builds)
+/api/* /404.html 404
+
+# Handle dynamic routes - fallback to index for client-side routing
+/racing/results/* /racing/results/index.html 200
+/news/* /news/index.html 200
+/events/* /events/index.html 200
+
+# Catch-all fallback for any other routes
+/* /index.html 200
