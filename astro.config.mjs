@@ -13,7 +13,7 @@ export default defineConfig({
   ],
   output: 'server',
   adapter: cloudflare(),
-  site: 'https://scyc.co.uk/',
+  site: 'https://scyclatest-solo.pages.dev/',
   // Force deployment refresh
   build: {
     assets: 'assets'
