@@ -13,7 +13,7 @@ export default defineConfig({
   ],
   output: 'server',
   adapter: cloudflare(),
-  site: 'https://scyc.org.uk',
+  site: 'https://scyc.co.uk/',
   // Force deployment refresh
   build: {
     assets: 'assets'
