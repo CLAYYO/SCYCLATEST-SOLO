@@ -14,6 +14,7 @@ export default defineConfig({
   output: 'hybrid',
   adapter: cloudflare(),
   site: 'https://scyc.org.uk',
+  // Force deployment refresh
   build: {
     assets: 'assets'
   },
