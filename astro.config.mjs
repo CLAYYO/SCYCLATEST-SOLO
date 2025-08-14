@@ -11,7 +11,7 @@ export default defineConfig({
   ],
   output: 'static',
   site: 'https://scyclatest-solo.pages.dev/',
-  // Force deployment refresh
+  // Force deployment refresh - updated
   build: {
     assets: 'assets'
   },
