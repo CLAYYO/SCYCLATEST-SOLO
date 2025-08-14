@@ -1,0 +1,109 @@
+2025-08-14T16:03:54.937412Z	Cloning repository...
+2025-08-14T16:03:56.042484Z	From https://github.com/CLAYYO/SCYCLATEST-SOLO
+2025-08-14T16:03:56.04302Z	 * branch            ee83a67a40699752f3924d0dcbb63fc010232655 -> FETCH_HEAD
+2025-08-14T16:03:56.043131Z	
+2025-08-14T16:03:56.158805Z	HEAD is now at ee83a67 Trigger fresh Cloudflare Pages deployment
+2025-08-14T16:03:56.15938Z	
+2025-08-14T16:03:56.238932Z	
+2025-08-14T16:03:56.239647Z	Using v2 root directory strategy
+2025-08-14T16:03:56.26348Z	Success: Finished cloning repository files
+2025-08-14T16:03:57.936679Z	Checking for configuration in a Wrangler configuration file (BETA)
+2025-08-14T16:03:57.937314Z	
+2025-08-14T16:03:57.938769Z	Found wrangler.toml file. Reading build configuration...
+2025-08-14T16:03:57.945107Z	pages_build_output_dir: dist
+2025-08-14T16:03:57.945586Z	Build environment variables: (none found)
+2025-08-14T16:03:59.062366Z	Successfully read wrangler.toml file.
+2025-08-14T16:03:59.127623Z	Detected the following tools from environment: npm@10.9.2, nodejs@22.16.0
+2025-08-14T16:03:59.128397Z	Installing project dependencies: npm clean-install --progress=false
+2025-08-14T16:04:08.413799Z	
+2025-08-14T16:04:08.414051Z	added 526 packages, and audited 527 packages in 9s
+2025-08-14T16:04:08.414225Z	
+2025-08-14T16:04:08.41439Z	184 packages are looking for funding
+2025-08-14T16:04:08.414513Z	  run `npm fund` for details
+2025-08-14T16:04:08.415549Z	
+2025-08-14T16:04:08.415685Z	found 0 vulnerabilities
+2025-08-14T16:04:08.44655Z	Executing user command: npm run build
+2025-08-14T16:04:08.838018Z	
+2025-08-14T16:04:08.838241Z	> helpless-halo@0.0.1 build
+2025-08-14T16:04:08.838432Z	> astro build
+2025-08-14T16:04:08.838511Z	
+2025-08-14T16:04:10.391505Z	16:04:10 [content] Syncing content
+2025-08-14T16:04:10.395831Z	16:04:10 [content] Synced content
+2025-08-14T16:04:10.396465Z	16:04:10 [types] Generated 173ms
+2025-08-14T16:04:10.39685Z	16:04:10 [build] output: "static"
+2025-08-14T16:04:10.397021Z	16:04:10 [build] mode: "static"
+2025-08-14T16:04:10.397164Z	16:04:10 [build] directory: /opt/buildhome/repo/dist/
+2025-08-14T16:04:10.397284Z	16:04:10 [build] Collecting build info...
+2025-08-14T16:04:10.397685Z	16:04:10 [build] ✓ Completed in 268ms.
+2025-08-14T16:04:10.399241Z	16:04:10 [build] Building static entrypoints...
+2025-08-14T16:04:12.669233Z	16:04:12 [WARN] [vite] [33m"Loader2" is imported from external module "lucide-react" but never used in "src/components/racing/UploadResults.tsx".[39m
+2025-08-14T16:04:12.780021Z	16:04:12 [vite] [32m✓ built in 2.34s[39m
+2025-08-14T16:04:12.780366Z	16:04:12 [build] ✓ Completed in 2.38s.
+2025-08-14T16:04:12.780821Z	
+2025-08-14T16:04:12.780984Z	 building client (vite) 
+2025-08-14T16:04:12.789565Z	16:04:12 [vite] transforming...
+2025-08-14T16:04:14.934496Z	16:04:14 [vite] [32m✓[39m 1982 modules transformed.
+2025-08-14T16:04:14.939762Z	16:04:14 [WARN] [vite] [33mGenerated an empty chunk: "_slug_.astro_astro_type_script_index_0_lang".[39m
+2025-08-14T16:04:14.978972Z	16:04:14 [WARN] [vite] [33mGenerated an empty chunk: "_id_.astro_astro_type_script_index_0_lang".[39m
+2025-08-14T16:04:14.988255Z	16:04:14 [vite] rendering chunks...
+2025-08-14T16:04:15.053462Z	16:04:15 [vite] computing gzip size...
+2025-08-14T16:04:15.060184Z	16:04:15 [vite] [2mdist/[22m[2massets/[22m[36mjsx-runtime.D_zvdyIk.js                                 [39m[1m[2m  0.73 kB[22m[1m[22m[2m │ gzip:  0.46 kB[22m
+2025-08-14T16:04:15.060639Z	16:04:15 [vite] [2mdist/[22m[2massets/[22m[36mapply.astro_astro_type_script_index_0_lang.BHgejMPo.js  [39m[1m[2m  4.49 kB[22m[1m[22m[2m │ gzip:  1.50 kB[22m
+2025-08-14T16:04:15.06076Z	16:04:15 [vite] [2mdist/[22m[2massets/[22m[36mindex.RH_Wq4ov.js                                       [39m[1m[2m  7.88 kB[22m[1m[22m[2m │ gzip:  3.05 kB[22m
+2025-08-14T16:04:15.060976Z	16:04:15 [vite] [2mdist/[22m[2massets/[22m[36mUploadResults.CzKOW0Ur.js                               [39m[1m[2m 10.63 kB[22m[1m[22m[2m │ gzip:  3.16 kB[22m
+2025-08-14T16:04:15.061474Z	16:04:15 [vite] [2mdist/[22m[2massets/[22m[36mRacingResults.DzTPaMFe.js                               [39m[1m[2m 26.38 kB[22m[1m[22m[2m │ gzip:  8.01 kB[22m
+2025-08-14T16:04:15.061623Z	16:04:15 [vite] [2mdist/[22m[2massets/[22m[36mclient.DVxemvf8.js                                      [39m[1m[2m179.42 kB[22m[1m[22m[2m │ gzip: 56.61 kB[22m
+2025-08-14T16:04:15.061792Z	16:04:15 [vite] [32m✓ built in 2.28s[39m
+2025-08-14T16:04:15.078352Z	
+2025-08-14T16:04:15.078599Z	 generating static routes 
+2025-08-14T16:04:15.080327Z	16:04:15 λ src/pages/api/racing/confirm-import.ts
+2025-08-14T16:04:15.081261Z	16:04:15   └─ /api/racing/confirm-importMissing Supabase server environment variables - using mock client for static build
+2025-08-14T16:04:15.082394Z	16:04:15 [WARN] [router] No API Route handler exists for the method "GET" for the route "/api/racing/confirm-import".
+2025-08-14T16:04:15.082658Z	Found handlers: "OPTIONS", "POST"
+2025-08-14T16:04:15.082904Z	
+2025-08-14T16:04:15.08312Z	 (+2ms) (file not created, response body was empty)
+2025-08-14T16:04:15.493547Z	16:04:15 λ src/pages/api/racing/upload-results.ts
+2025-08-14T16:04:15.493933Z	16:04:15   └─ /api/racing/upload-results16:04:15 [WARN] [router] No API Route handler exists for the method "GET" for the route "/api/racing/upload-results".
+2025-08-14T16:04:15.494087Z	Found handlers: "OPTIONS", "POST"
+2025-08-14T16:04:15.494235Z	
+2025-08-14T16:04:15.494391Z	 (+1ms) (file not created, response body was empty)
+2025-08-14T16:04:15.502361Z	16:04:15 ▶ src/pages/club/index.astro
+2025-08-14T16:04:15.509616Z	16:04:15   └─ /club/index.html (+7ms) 
+2025-08-14T16:04:15.511242Z	16:04:15 ▶ src/pages/contact.astro
+2025-08-14T16:04:15.514Z	16:04:15   └─ /contact/index.html (+3ms) 
+2025-08-14T16:04:16.450284Z	Missing Supabase client environment variables - using mock client for static build
+2025-08-14T16:04:16.451024Z	16:04:16 ▶ src/pages/documents/index.astro
+2025-08-14T16:04:16.454914Z	16:04:16   └─ /documents/index.html (+4ms) 
+2025-08-14T16:04:16.457051Z	16:04:16 ▶ src/pages/events/[id]/register.astro
+2025-08-14T16:04:16.459906Z	16:04:16   ├─ /events/1/register/index.html (+2ms) 
+2025-08-14T16:04:16.461157Z	16:04:16   ├─ /events/2/register/index.html (+1ms) 
+2025-08-14T16:04:16.462588Z	16:04:16   └─ /events/3/register/index.html (+1ms) 
+2025-08-14T16:04:16.464426Z	16:04:16 ▶ src/pages/events/[id].astro
+2025-08-14T16:04:16.46806Z	16:04:16   ├─ /events/1/index.html (+3ms) 
+2025-08-14T16:04:16.470232Z	16:04:16   ├─ /events/2/index.html (+2ms) 
+2025-08-14T16:04:16.472225Z	16:04:16   └─ /events/3/index.html (+2ms) 
+2025-08-14T16:04:16.473806Z	16:04:16 ▶ src/pages/events/index.astro
+2025-08-14T16:04:16.479504Z	16:04:16   └─ /events/index.html (+6ms) 
+2025-08-14T16:04:16.480968Z	16:04:16 ▶ src/pages/membership/apply.astro
+2025-08-14T16:04:16.483225Z	16:04:16   └─ /membership/apply/index.html (+2ms) 
+2025-08-14T16:04:16.484743Z	16:04:16 ▶ src/pages/membership/index.astro
+2025-08-14T16:04:16.486925Z	16:04:16   └─ /membership/index.html (+2ms) 
+2025-08-14T16:04:16.488574Z	16:04:16 ▶ src/pages/news/[slug].astro
+2025-08-14T16:04:16.489967Z	16:04:16   ├─ /news/scyc-wins-regional-championship/index.html (+1ms) 
+2025-08-14T16:04:16.490851Z	16:04:16   ├─ /news/new-sailing-season-begins/index.html (+1ms) 
+2025-08-14T16:04:16.491644Z	16:04:16   └─ /news/club-facilities-upgrade/index.html (+1ms) 
+2025-08-14T16:04:16.493155Z	16:04:16 ▶ src/pages/news/index.astro
+2025-08-14T16:04:16.495115Z	16:04:16   └─ /news/index.html (+2ms) 
+2025-08-14T16:04:16.551269Z	16:04:16 ▶ src/pages/racing/admin.astro
+2025-08-14T16:04:16.562478Z	16:04:16   └─ /racing/admin/index.html (+11ms) 
+2025-08-14T16:04:16.564735Z	16:04:16 ▶ src/pages/racing/results/archive.astro
+2025-08-14T16:04:16.855706Z	16:04:16   └─ /racing/results/archive/index.htmlsupabase.from(...).select(...).lt is not a function
+2025-08-14T16:04:16.856179Z	  Stack trace:
+2025-08-14T16:04:16.856365Z	    at file:///opt/buildhome/repo/dist/pages/racing/results/archive.astro.mjs?time=1755187456562:17:6
+2025-08-14T16:04:16.856491Z	    at callComponentAsTemplateResultOrResponse (file:///opt/buildhome/repo/node_modules/astro/dist/runtime/server/render/astro/render.js:91:31)
+2025-08-14T16:04:16.856628Z	    at renderPage (file:///opt/buildhome/repo/node_modules/astro/dist/runtime/server/render/page.js:49:18)
+2025-08-14T16:04:16.856935Z	    at async NOOP_MIDDLEWARE_FN (file:///opt/buildhome/repo/node_modules/astro/dist/core/middleware/noop-middleware.js:3:20)
+2025-08-14T16:04:16.857044Z	    at async RenderContext.render (file:///opt/buildhome/repo/node_modules/astro/dist/core/render-context.js:232:22)
+2025-08-14T16:04:16.961915Z	Failed: Error while executing user command. Exited with error code: 1
+2025-08-14T16:04:16.97418Z	Failed: build command exited with code: 1
+2025-08-14T16:04:18.242064Z	Failed: error occurred while running build command
