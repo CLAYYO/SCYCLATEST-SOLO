@@ -2,9 +2,26 @@
 import Layout from '../../../layouts/Layout.astro';
 import { supabase } from '../../../lib/supabase';
 
-// Using server-side rendering instead of static generation
-// This allows the page to work even when no races exist in the database yet
-export const prerender = false;
+// Using static generation for better performance
+// Dynamic routes will be pre-rendered at build time
+
+// Required for static generation of dynamic routes
+export async function getStaticPaths() {
+  // Fetch all race IDs from Supabase for static generation
+  const { data: races } = await supabase
+    .from('races')
+    .select('id')
+    .order('date', { ascending: false });
+
+  // If no races exist, return empty array to prevent build errors
+  if (!races || races.length === 0) {
+    return [];
+  }
+
+  return races.map((race) => ({
+    params: { id: race.id.toString() }
+  }));
+}
 
 const { id } = Astro.params;
 

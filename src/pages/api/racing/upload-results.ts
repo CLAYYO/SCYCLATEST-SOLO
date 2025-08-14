@@ -1,8 +1,7 @@
 import type { APIRoute } from 'astro';
 import { parseSailwaveHTML, validateRaceData, sanitizeHTML } from '../../../utils/sailwaveParser';
 
-// Enable server-side rendering for this API endpoint
-export const prerender = false;
+// API route will be handled at build time for static deployment
 
 export const POST: APIRoute = async ({ request }) => {
   try {
