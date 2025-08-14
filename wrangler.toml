@@ -1,0 +1,16 @@
+name = "scyc-website"
+compatibility_date = "2024-01-15"
+compatibility_flags = ["nodejs_compat"]
+
+[build]
+command = "npm run build"
+
+[env.production]
+name = "scyc-website"
+route = "scyclatest-solo.pages.dev/*"
+
+# Enable Node.js compatibility for server-side rendering
+node_compat = true
+
+# Configure for Pages deployment
+pages_build_output_dir = "dist"
