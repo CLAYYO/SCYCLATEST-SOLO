@@ -4,17 +4,44 @@ import type { Database } from '../types/database';
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
+// Handle missing environment variables gracefully during static build
+let supabase: any;
+
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables');
+  console.warn('Missing Supabase client environment variables - using mock client for static build');
+  
+  // Create a mock client that provides basic structure for static builds
+  supabase = {
+    auth: {
+      signInWithPassword: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
+      signUp: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
+      signOut: () => Promise.resolve({ error: new Error('Supabase not configured') }),
+      getUser: () => Promise.resolve({ data: { user: null }, error: new Error('Supabase not configured') }),
+      getSession: () => Promise.resolve({ data: { session: null }, error: new Error('Supabase not configured') }),
+      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
+    },
+    from: () => ({
+      insert: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
+      select: () => ({
+        eq: () => ({
+          single: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') })
+        })
+      }),
+      update: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
+      delete: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') })
+    })
+  };
+} else {
+  supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: true
+    }
+  });
 }
 
-export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true
-  }
-});
+export { supabase };
 
 // Helper functions for common operations
 export const auth = supabase.auth;
