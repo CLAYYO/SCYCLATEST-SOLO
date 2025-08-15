@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
+import cloudflare from '@astrojs/cloudflare';
 // https://astro.build/config
 export default defineConfig({
   integrations: [
@@ -9,7 +10,10 @@ export default defineConfig({
       applyBaseStyles: false,
     })
   ],
-  output: 'static',
+  output: 'server',
+  adapter: cloudflare({
+    mode: 'advanced'
+  }),
   site: 'https://scyclatest-solo.pages.dev/',
   // Force deployment refresh - updated
   build: {
