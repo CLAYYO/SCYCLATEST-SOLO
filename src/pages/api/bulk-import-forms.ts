@@ -4,10 +4,35 @@ import fs from 'fs';
 import path from 'path';
 import type { FluentFormExport, BulkImportResults, ImportResult } from '../../types/fluentform';
 
-// Initialize Supabase client with service role key for admin operations
+// Initialize Supabase admin client with conditional creation for static builds
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
 const supabaseKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+
+let supabase: any;
+
+if (!supabaseUrl || !supabaseKey) {
+  console.warn('Missing Supabase admin environment variables - using mock client for static build');
+  
+  // Create a mock admin client that provides basic structure for static builds
+  supabase = {
+    from: () => {
+      const mockQuery = {
+        insert: () => Promise.resolve({ data: null, error: null }),
+        select: () => mockQuery,
+        eq: () => mockQuery,
+        single: () => Promise.resolve({ data: null, error: null }),
+        maybeSingle: () => Promise.resolve({ data: null, error: null }),
+        update: () => Promise.resolve({ data: null, error: null }),
+        upsert: () => Promise.resolve({ data: null, error: null }),
+        delete: () => Promise.resolve({ data: null, error: null }),
+        then: (resolve: (value: { data: any[], error: null }) => void) => resolve({ data: [], error: null })
+      };
+      return mockQuery;
+    }
+  };
+} else {
+  supabase = createClient(supabaseUrl, supabaseKey);
+}
 
 // FluentForm field type mappings
 const FIELD_TYPE_MAPPING: Record<string, string> = {
