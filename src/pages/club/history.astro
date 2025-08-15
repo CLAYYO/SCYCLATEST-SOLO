@@ -1,0 +1,281 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+// Historical milestones and key events
+const milestones = [
+  {
+    year: 1924,
+    title: 'Club Founded',
+    description: 'South Caernarvonshire Yacht Club established by a group of passionate sailors who recognized the exceptional sailing conditions offered by Cardigan Bay.'
+  },
+  {
+    year: 1925,
+    title: 'First Clubhouse',
+    description: 'The original clubhouse was constructed, providing a permanent home for the growing sailing community in Abersoch.'
+  },
+  {
+    year: 1930,
+    title: 'Small Beginnings',
+    description: 'Despite modest beginnings, the club began to establish itself as a center for sailing excellence on the Welsh coast.'
+  },
+  {
+    year: 1935,
+    title: 'Current Clubhouse Built',
+    description: 'The current historic clubhouse was constructed, replacing the original building with expanded facilities.'
+  },
+  {
+    year: 1950,
+    title: 'First Dragon',
+    description: 'The club welcomed its first Dragon class boat, marking the beginning of a long association with this prestigious racing class.'
+  },
+  {
+    year: 1960,
+    title: 'Marina Expansion',
+    description: 'Major expansion of marina facilities to accommodate the growing membership and larger boats.'
+  },
+  {
+    year: 1970,
+    title: 'Offshore Racing',
+    description: 'SCYC began hosting offshore racing events, establishing itself as a premier destination for competitive sailing.'
+  },
+  {
+    year: 1985,
+    title: 'RYA Training Centre',
+    description: 'Became an RYA recognized training center, formalizing the club\'s commitment to sailing education and safety.'
+  },
+  {
+    year: 1990,
+    title: 'National Championships',
+    description: 'First hosted National Championship events, putting SCYC on the map as a venue for top-level competitive sailing.'
+  },
+  {
+    year: 2010,
+    title: 'The Cove Acquisition',
+    description: 'The Cove Restaurant opened, adding fine dining to the club\'s amenities and becoming a destination in its own right.'
+  },
+  {
+    year: 2015,
+    title: 'Marina Development',
+    description: 'Major redevelopment of marina facilities with modern pontoons and improved services for visiting yachts.'
+  },
+  {
+    year: 2024,
+    title: 'Centenary Year',
+    description: 'Celebrating 100 years of sailing excellence and community spirit in Abersoch.'
+  }
+];
+
+// Key figures in club history
+const keyFigures = [
+  {
+    name: 'Founding Members',
+    role: 'Club Founders (1924)',
+    contribution: 'Visionary sailors who established SCYC and recognized the potential of Cardigan Bay as a premier sailing destination.'
+  },
+  {
+    name: 'Early Commodores',
+    role: 'Leadership (1924-1950)',
+    contribution: 'Guided the club through its formative years, establishing traditions and standards that continue today.'
+  },
+  {
+    name: 'Racing Pioneers',
+    role: 'Competitive Development',
+    contribution: 'Developed SCYC\'s reputation for competitive sailing and established many of the racing traditions still followed.'
+  }
+];
+---
+
+<Layout title="Club History - South Caernarvonshire Yacht Club">
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-r from-navy-900 to-navy-700 text-white py-20">
+    <div class="absolute inset-0 bg-black opacity-20"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <h1 class="text-5xl md:text-6xl font-serif font-bold mb-6">
+          Our History
+        </h1>
+        <p class="text-xl text-navy-100 max-w-3xl mx-auto mb-8">
+          A century of sailing excellence in the heart of Cardigan Bay
+        </p>
+        <div class="text-center">
+          <div class="text-6xl font-bold text-gold-400 mb-2">1924 - 2024</div>
+          <div class="text-lg text-navy-200">100 Years of Tradition</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Introduction -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-3xl font-serif font-bold text-navy-900 mb-8">
+          A Legacy of Sailing Excellence
+        </h2>
+        <div class="prose prose-lg text-gray-700 mx-auto">
+          <p class="mb-6">
+            Founded in 1924, the South Caernarvonshire Yacht Club has been a cornerstone of the sailing community in Abersoch for nearly a century. Our club was established by a group of passionate sailors who recognized the exceptional sailing conditions offered by Cardigan Bay and the sheltered waters around Abersoch.
+          </p>
+          <p class="mb-6">
+            From humble beginnings with a small group of enthusiasts, SCYC has grown to become one of Wales' most prestigious yacht clubs, hosting national championships, nurturing sailing talent, and maintaining the highest standards of seamanship and sportsmanship.
+          </p>
+          <p>
+            Located at coordinates 52°49.43'N, 04°269.89'W, our clubhouse sits in one of the most picturesque locations on the Welsh coast, where the traditions of the past meet the innovations of the future.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-serif font-bold text-navy-900 mb-4">
+          Historical Timeline
+        </h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          Key milestones in our century-long journey
+        </p>
+      </div>
+      
+      <div class="relative">
+        <!-- Timeline line -->
+        <div class="absolute left-1/2 transform -translate-x-px h-full w-0.5 bg-navy-200"></div>
+        
+        <div class="space-y-12">
+          {milestones.map((milestone, index) => (
+            <div class={`relative flex items-center ${index % 2 === 0 ? 'justify-start' : 'justify-end'}`}>
+              <!-- Timeline dot -->
+              <div class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gold-500 rounded-full border-4 border-white shadow-lg z-10"></div>
+              
+              <!-- Content -->
+              <div class={`w-5/12 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8 text-left'}`}>
+                <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                  <div class="text-2xl font-bold text-gold-600 mb-2">{milestone.year}</div>
+                  <h3 class="text-xl font-bold text-navy-900 mb-3">{milestone.title}</h3>
+                  <p class="text-gray-700">{milestone.description}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Key Figures -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-serif font-bold text-navy-900 mb-4">
+          Key Figures in Our History
+        </h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          The people who shaped SCYC into the club it is today
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {keyFigures.map(figure => (
+          <div class="bg-navy-50 rounded-lg p-6 text-center">
+            <div class="w-16 h-16 bg-gold-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-navy-900 mb-2">{figure.name}</h3>
+            <div class="text-gold-600 font-medium mb-3">{figure.role}</div>
+            <p class="text-gray-700 text-sm">{figure.contribution}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Heritage & Traditions -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <h2 class="text-3xl font-serif font-bold text-navy-900 mb-6">
+            Heritage &amp; Traditions
+          </h2>
+          <div class="prose prose-lg text-gray-700">
+            <p class="mb-6">
+              Throughout our history, SCYC has maintained its commitment to the highest standards of seamanship and sportsmanship. Our traditions, passed down through generations of sailors, continue to guide the club today.
+            </p>
+            <p class="mb-6">
+              The club has been home to numerous accomplished sailors who have competed at national and international levels, bringing honor to both SCYC and Welsh sailing. Our racing program has produced champions in various classes, from dinghies to offshore yachts.
+            </p>
+            <p>
+              The spirit of camaraderie and mutual support that characterized our founding members remains at the heart of SCYC today, welcoming new generations of sailors to experience the joy and challenge of sailing in Cardigan Bay.
+            </p>
+          </div>
+        </div>
+        
+        <div class="space-y-6">
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-xl font-bold text-navy-900 mb-4">Racing Heritage</h3>
+            <ul class="space-y-2 text-gray-700">
+              <li>• Host to National Championship events</li>
+              <li>• Home to Dragon class racing tradition</li>
+              <li>• Offshore racing excellence</li>
+              <li>• Youth sailing development programs</li>
+            </ul>
+          </div>
+          
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-xl font-bold text-navy-900 mb-4">Club Traditions</h3>
+            <ul class="space-y-2 text-gray-700">
+              <li>• Annual prize giving ceremonies</li>
+              <li>• Traditional club dinners</li>
+              <li>• Commodore's receptions</li>
+              <li>• Centenary celebrations</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="py-16 bg-navy-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl font-serif font-bold mb-4">
+        Be Part of Our Continuing Story
+      </h2>
+      <p class="text-xl text-navy-100 mb-8 max-w-3xl mx-auto">
+        Join SCYC and become part of a century-long tradition of sailing excellence in one of Wales' most beautiful locations.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href="/membership/apply"
+          class="px-8 py-3 bg-gold-500 text-navy-900 font-bold rounded-md hover:bg-gold-400 transition-colors"
+        >
+          Apply for Membership
+        </a>
+        <a
+          href="/club"
+          class="px-8 py-3 border-2 border-white text-white font-bold rounded-md hover:bg-white hover:text-navy-900 transition-colors"
+        >
+          Learn More About SCYC
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .prose {
+    line-height: 1.7;
+  }
+  
+  .prose p {
+    margin-bottom: 1.5rem;
+  }
+  
+  .prose p:last-child {
+    margin-bottom: 0;
+  }
+</style>

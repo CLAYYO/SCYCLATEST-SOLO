@@ -1,0 +1,23 @@
+---
+// Forms Administration Page
+import Layout from '../../layouts/Layout.astro';
+import FormsAdmin from '../../components/admin/FormsAdmin';
+---
+
+<Layout title="Forms Administration - SCYC">
+  <main>
+    <FormsAdmin client:load />
+  </main>
+</Layout>
+
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+  }
+  
+  #forms-admin-root {
+    min-height: 100vh;
+    background: #f8fafc;
+  }
+</style>

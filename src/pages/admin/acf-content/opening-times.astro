@@ -1,0 +1,352 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { supabase } from '../../../lib/supabase';
+
+// Fetch opening times data
+const { data: openingTimes, error } = await supabase
+  .from('acf_opening_times')
+  .select('*')
+  .order('created_at', { ascending: false });
+
+if (error) {
+  console.error('Error fetching opening times:', error);
+}
+
+const totalTimes = openingTimes?.length || 0;
+---
+
+<Layout title="Opening Times Management - SCYC Admin">
+  <div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Header -->
+      <div class="mb-8">
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900">Opening Times</h1>
+            <p class="mt-2 text-gray-600">Manage bar and office hours</p>
+          </div>
+          <button
+            id="addTimeBtn"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+          >
+            Add New Schedule
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow p-6">
+          <div class="flex items-center">
+            <div class="p-2 bg-blue-100 rounded-lg">
+              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm font-medium text-gray-600">Total Schedules</p>
+              <p class="text-2xl font-semibold text-gray-900">{totalTimes}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Opening Times Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {openingTimes?.map((time) => (
+          <div key={time.id} class="bg-white rounded-lg shadow-md overflow-hidden">
+            {time.image_url && (
+              <img
+                src={time.image_url}
+                alt={time.title}
+                class="w-full h-48 object-cover"
+              />
+            )}
+            <div class="p-6">
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">{time.title}</h3>
+              
+              {time.category && (
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mb-3">
+                  {time.category}
+                </span>
+              )}
+              
+              {time.description && (
+                <p class="text-gray-600 text-sm mb-4">{time.description}</p>
+              )}
+              
+              {time.schedule && (
+                <div class="bg-gray-50 rounded-lg p-3 mb-4">
+                  <h4 class="text-sm font-medium text-gray-700 mb-2">Schedule:</h4>
+                  <div class="text-sm text-gray-600 whitespace-pre-line">{time.schedule}</div>
+                </div>
+              )}
+              
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-gray-500">
+                  Updated: {new Date(time.updated_at).toLocaleDateString()}
+                </span>
+                <div class="flex space-x-2">
+                  <button
+                    class="text-blue-600 hover:text-blue-800 text-sm font-medium edit-btn"
+                    data-id={time.id}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    class="text-red-600 hover:text-red-800 text-sm font-medium delete-btn"
+                    data-id={time.id}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {(!openingTimes || openingTimes.length === 0) && (
+        <div class="text-center py-12">
+          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <h3 class="mt-2 text-sm font-medium text-gray-900">No opening times</h3>
+          <p class="mt-1 text-sm text-gray-500">Get started by creating a new schedule.</p>
+        </div>
+      )}
+    </div>
+  </div>
+
+  <!-- Add/Edit Opening Time Modal -->
+  <div id="timeModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+      <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+        <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+      </div>
+      <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <form id="timeForm" enctype="multipart/form-data">
+          <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div class="sm:flex sm:items-start">
+              <div class="w-full">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4" id="modalTitle">
+                  Add New Schedule
+                </h3>
+                
+                <input type="hidden" id="timeId" name="id">
+                
+                <div class="mb-4">
+                  <label for="title" class="block text-sm font-medium text-gray-700 mb-2">Title *</label>
+                  <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="e.g., Bar Opening Hours"
+                  >
+                </div>
+                
+                <div class="mb-4">
+                  <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                  <select
+                    id="category"
+                    name="category"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Select Category</option>
+                    <option value="Bar">Bar</option>
+                    <option value="Office">Office</option>
+                    <option value="Restaurant">Restaurant</option>
+                    <option value="General">General</option>
+                  </select>
+                </div>
+                
+                <div class="mb-4">
+                  <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                  <textarea
+                    id="description"
+                    name="description"
+                    rows="2"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Brief description of the opening times"
+                  ></textarea>
+                </div>
+                
+                <div class="mb-4">
+                  <label for="schedule" class="block text-sm font-medium text-gray-700 mb-2">Schedule *</label>
+                  <textarea
+                    id="schedule"
+                    name="schedule"
+                    rows="6"
+                    required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Monday: 9:00 AM - 5:00 PM&#10;Tuesday: 9:00 AM - 5:00 PM&#10;Wednesday: Closed&#10;..."
+                  ></textarea>
+                </div>
+                
+                <div class="mb-4">
+                  <label for="image" class="block text-sm font-medium text-gray-700 mb-2">Image</label>
+                  <input
+                    type="file"
+                    id="image"
+                    name="image"
+                    accept="image/*"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                  <p class="text-sm text-gray-500 mt-1">Upload an image related to the opening times</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+            <button
+              type="submit"
+              id="saveBtn"
+              class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+            >
+              Save Schedule
+            </button>
+            <button
+              type="button"
+              id="cancelBtn"
+              class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Modal elements
+    const modal = document.getElementById('timeModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const timeForm = document.getElementById('timeForm');
+    const addBtn = document.getElementById('addTimeBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    
+    let isEditing = false;
+    let editingId = null;
+
+    // Show modal
+    function showModal(title = 'Add New Schedule') {
+      modalTitle.textContent = title;
+      modal.classList.remove('hidden');
+    }
+
+    // Hide modal
+    function hideModal() {
+      modal.classList.add('hidden');
+      timeForm.reset();
+      isEditing = false;
+      editingId = null;
+    }
+
+    // Add schedule button
+    addBtn.addEventListener('click', () => {
+      showModal('Add New Schedule');
+    });
+
+    // Cancel button
+    cancelBtn.addEventListener('click', hideModal);
+
+    // Close modal on backdrop click
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        hideModal();
+      }
+    });
+
+    // Edit buttons
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const id = e.target.dataset.id;
+        editingId = id;
+        isEditing = true;
+        
+        try {
+          const response = await fetch(`/api/admin/acf-opening-times?id=${id}`);
+          const data = await response.json();
+          
+          if (data.openingTime) {
+            document.getElementById('timeId').value = data.openingTime.id;
+            document.getElementById('title').value = data.openingTime.title || '';
+            document.getElementById('category').value = data.openingTime.category || '';
+            document.getElementById('description').value = data.openingTime.description || '';
+            document.getElementById('schedule').value = data.openingTime.schedule || '';
+            
+            showModal('Edit Schedule');
+          }
+        } catch (error) {
+          console.error('Error fetching opening time:', error);
+          alert('Error loading schedule data');
+        }
+      });
+    });
+
+    // Delete buttons
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const id = e.target.dataset.id;
+        
+        if (confirm('Are you sure you want to delete this schedule?')) {
+          try {
+            const response = await fetch('/api/admin/acf-opening-times', {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ id })
+            });
+            
+            if (response.ok) {
+              location.reload();
+            } else {
+              alert('Error deleting schedule');
+            }
+          } catch (error) {
+            console.error('Error deleting schedule:', error);
+            alert('Error deleting schedule');
+          }
+        }
+      });
+    });
+
+    // Form submission
+    timeForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(timeForm);
+      const method = isEditing ? 'PUT' : 'POST';
+      
+      // Show loading state
+      saveBtn.textContent = 'Saving...';
+      saveBtn.disabled = true;
+      
+      try {
+        const response = await fetch('/api/admin/acf-opening-times', {
+          method: method,
+          body: formData
+        });
+        
+        if (response.ok) {
+          hideModal();
+          location.reload();
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.error || 'Failed to save schedule'}`);
+        }
+      } catch (error) {
+        console.error('Error saving schedule:', error);
+        alert('Error saving schedule');
+      } finally {
+        saveBtn.textContent = 'Save Schedule';
+        saveBtn.disabled = false;
+      }
+    });
+  </script>
+</Layout>

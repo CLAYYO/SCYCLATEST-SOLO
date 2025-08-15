@@ -1,0 +1,192 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { supabase } from '../../lib/supabase';
+
+// Get counts for each content type
+const { data: eventsCount } = await supabase
+  .from('acf_events')
+  .select('*', { count: 'exact', head: true });
+
+const { data: peopleCount } = await supabase
+  .from('acf_people')
+  .select('*', { count: 'exact', head: true });
+
+const { data: accommodationsCount } = await supabase
+  .from('acf_local_accommodations')
+  .select('*', { count: 'exact', head: true });
+
+const { data: classesCount } = await supabase
+  .from('acf_classes')
+  .select('*', { count: 'exact', head: true });
+
+const { data: friendsCount } = await supabase
+  .from('acf_friends')
+  .select('*', { count: 'exact', head: true });
+
+const { data: documentsCount } = await supabase
+  .from('acf_rules_documents')
+  .select('*', { count: 'exact', head: true });
+
+const { data: openingTimesCount } = await supabase
+  .from('acf_opening_times')
+  .select('*', { count: 'exact', head: true });
+
+const contentTypes = [
+  {
+    name: 'Events',
+    description: 'Manage sailing events, races, and competitions',
+    count: eventsCount?.length || 0,
+    href: '/admin/acf-content/events',
+    icon: '🏆',
+    color: 'bg-blue-500'
+  },
+  {
+    name: 'People',
+    description: 'Staff and committee member profiles',
+    count: peopleCount?.length || 0,
+    href: '/admin/acf-content/people',
+    icon: '👥',
+    color: 'bg-green-500'
+  },
+  {
+    name: 'Local Accommodations',
+    description: 'Business listings and accommodation options',
+    count: accommodationsCount?.length || 0,
+    href: '/admin/acf-content/accommodations',
+    icon: '🏨',
+    color: 'bg-purple-500'
+  },
+  {
+    name: 'Classes',
+    description: 'Boat class information and specifications',
+    count: classesCount?.length || 0,
+    href: '/admin/acf-content/classes',
+    icon: '⛵',
+    color: 'bg-cyan-500'
+  },
+  {
+    name: 'Friends',
+    description: 'Partner organizations and sponsors',
+    count: friendsCount?.length || 0,
+    href: '/admin/acf-content/friends',
+    icon: '🤝',
+    color: 'bg-orange-500'
+  },
+  {
+    name: 'Rules & Documents',
+    description: 'Club rules, regulations, and official documents',
+    count: documentsCount?.length || 0,
+    href: '/admin/acf-content/documents',
+    icon: '📋',
+    color: 'bg-red-500'
+  },
+  {
+    name: 'Opening Times',
+    description: 'Bar and office opening hours',
+    count: openingTimesCount?.length || 0,
+    href: '/admin/acf-content/opening-times',
+    icon: '🕐',
+    color: 'bg-yellow-500'
+  }
+];
+---
+
+<Layout title="ACF Content Management - SCYC Admin">
+  <div class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <div class="bg-white shadow-sm border-b">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-6">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900">ACF Content Management</h1>
+            <p class="mt-1 text-sm text-gray-500">Manage legacy WordPress ACF content in your new Astro build</p>
+          </div>
+          <a 
+            href="/admin" 
+            class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            ← Back to Admin
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Overview Stats -->
+      <div class="mb-8">
+        <h2 class="text-lg font-medium text-gray-900 mb-4">Content Overview</h2>
+        <div class="bg-white rounded-lg shadow p-6">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="text-center">
+              <div class="text-2xl font-bold text-blue-600">{contentTypes.reduce((sum, type) => sum + type.count, 0)}</div>
+              <div class="text-sm text-gray-500">Total Items</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-green-600">{contentTypes.length}</div>
+              <div class="text-sm text-gray-500">Content Types</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-purple-600">{contentTypes.filter(type => type.count > 0).length}</div>
+              <div class="text-sm text-gray-500">Active Types</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-orange-600">{contentTypes.filter(type => type.count === 0).length}</div>
+              <div class="text-sm text-gray-500">Empty Types</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Type Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {contentTypes.map((type) => (
+          <a 
+            href={type.href}
+            class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden group"
+          >
+            <div class="p-6">
+              <div class="flex items-center justify-between mb-4">
+                <div class={`w-12 h-12 ${type.color} rounded-lg flex items-center justify-center text-white text-xl group-hover:scale-110 transition-transform duration-200`}>
+                  {type.icon}
+                </div>
+                <div class="text-right">
+                  <div class="text-2xl font-bold text-gray-900">{type.count}</div>
+                  <div class="text-xs text-gray-500">items</div>
+                </div>
+              </div>
+              <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                {type.name}
+              </h3>
+              <p class="text-sm text-gray-600">{type.description}</p>
+            </div>
+            <div class="px-6 py-3 bg-gray-50 border-t">
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-gray-500">Manage content</span>
+                <span class="text-blue-600 group-hover:text-blue-800">→</span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="mt-8">
+        <h2 class="text-lg font-medium text-gray-900 mb-4">Quick Actions</h2>
+        <div class="bg-white rounded-lg shadow p-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <button class="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+              📤 Export All Data
+            </button>
+            <button class="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+              📥 Import Data
+            </button>
+            <button class="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+              🔄 Sync with WordPress
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

@@ -1,0 +1,29 @@
+---
+// TODO: Add authentication check here
+// For now, this is a placeholder admin page
+import Layout from '../../layouts/Layout.astro';
+import EventsAdmin from '../../components/admin/EventsAdmin.tsx';
+---
+
+<Layout title="Events Admin - SCYC">
+  <main class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-navy-900">Events Administration</h1>
+        <p class="mt-2 text-gray-600">Manage club events, registrations, and event data</p>
+      </div>
+      
+      <EventsAdmin client:load />
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .btn-primary {
+    @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-navy-700 hover:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-navy-500 transition-colors;
+  }
+  
+  .btn-secondary {
+    @apply inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-navy-500 transition-colors;
+  }
+</style>

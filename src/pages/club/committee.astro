@@ -1,0 +1,431 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+// Current officers data (expanded from club/index.astro)
+const officers = [
+  {
+    position: 'Commodore',
+    name: 'Captain James Morrison',
+    term: '2023-2025',
+    email: 'commodore@scyc.co.uk',
+    bio: 'An experienced offshore sailor with over 30 years of sailing experience. James has competed in numerous national championships and brings extensive leadership experience to the role.',
+    responsibilities: ['Club leadership and strategic direction', 'External relations and partnerships', 'Ceremonial duties and events', 'Member relations and club culture']
+  },
+  {
+    position: 'Vice Commodore',
+    name: 'Sarah Williams',
+    term: '2023-2025',
+    email: 'vicecommodore@scyc.co.uk',
+    bio: 'A passionate racing sailor and former national champion in the Dragon class. Sarah leads our racing program and youth development initiatives.',
+    responsibilities: ['Racing program oversight', 'Youth sailing development', 'Training center management', 'Safety and seamanship standards']
+  },
+  {
+    position: 'Rear Commodore',
+    name: 'David Evans',
+    term: '2023-2025',
+    email: 'rearcommodore@scyc.co.uk',
+    bio: 'A local businessman with extensive experience in marina management and facilities development. David oversees all club facilities and infrastructure.',
+    responsibilities: ['Facilities management', 'Marina operations', 'Infrastructure development', 'Maintenance and improvements']
+  },
+  {
+    position: 'Honorary Secretary',
+    name: 'Mrs. Elizabeth Roberts',
+    term: '2023-2025',
+    email: 'secretary@scyc.co.uk',
+    bio: 'A long-standing member with over 20 years of administrative experience. Elizabeth manages all club communications and member services.',
+    responsibilities: ['Club administration', 'Member communications', 'Meeting coordination', 'Record keeping and documentation']
+  },
+  {
+    position: 'Honorary Treasurer',
+    name: 'Michael Davies',
+    term: '2023-2025',
+    email: 'treasurer@scyc.co.uk',
+    bio: 'A qualified accountant and financial advisor who ensures the club\'s financial stability and growth. Michael has been managing club finances for over 10 years.',
+    responsibilities: ['Financial management', 'Budget planning and oversight', 'Investment strategy', 'Financial reporting and compliance']
+  },
+  {
+    position: 'Sailing Secretary',
+    name: 'Tom Hughes',
+    term: '2023-2025',
+    email: 'sailing@scyc.co.uk',
+    bio: 'An accomplished racing sailor and RYA instructor who coordinates all sailing activities and competitions at the club.',
+    responsibilities: ['Racing calendar management', 'Regatta organization', 'Sailing instruction coordination', 'Competition entries and results']
+  }
+];
+
+// Committee structure
+const committees = [
+  {
+    name: 'General Committee',
+    description: 'The main governing body responsible for overall club management and strategic decisions.',
+    members: ['All Officers', 'Elected Committee Members', 'Co-opted Specialists'],
+    meetings: 'Monthly',
+    responsibilities: ['Strategic planning', 'Policy development', 'Budget approval', 'Major decisions']
+  },
+  {
+    name: 'Racing Committee',
+    description: 'Manages all racing activities, regattas, and competitive sailing events.',
+    members: ['Sailing Secretary (Chair)', 'Race Officers', 'Class Representatives', 'Safety Officer'],
+    meetings: 'Bi-weekly during season',
+    responsibilities: ['Race program planning', 'Regatta organization', 'Racing rules and procedures', 'Safety protocols']
+  },
+  {
+    name: 'House Committee',
+    description: 'Oversees clubhouse operations, facilities, and member amenities.',
+    members: ['Rear Commodore (Chair)', 'Bar Manager', 'Catering Manager', 'Facilities Coordinator'],
+    meetings: 'Monthly',
+    responsibilities: ['Clubhouse management', 'Catering services', 'Bar operations', 'Event coordination']
+  },
+  {
+    name: 'Marina Committee',
+    description: 'Manages marina operations, berthing, and marine services.',
+    members: ['Marina Manager (Chair)', 'Harbour Master', 'Maintenance Team', 'Security Coordinator'],
+    meetings: 'Monthly',
+    responsibilities: ['Berth allocation', 'Marina maintenance', 'Security systems', 'Visitor services']
+  },
+  {
+    name: 'Training Committee',
+    description: 'Oversees sailing instruction, youth programs, and RYA training courses.',
+    members: ['Chief Instructor (Chair)', 'RYA Instructors', 'Youth Coordinator', 'Safety Boat Operators'],
+    meetings: 'Monthly',
+    responsibilities: ['Training programs', 'Instructor certification', 'Youth development', 'Safety training']
+  }
+];
+
+// Club governance information
+const governance = {
+  constitution: 'The club operates under a constitution established in 1924 and regularly updated to reflect modern governance standards.',
+  membership: 'All major decisions are made democratically with input from the membership through Annual General Meetings and special meetings.',
+  elections: 'Officers are elected every two years by the membership, with nominations open to all eligible members.',
+  meetings: 'The Annual General Meeting is held each spring, with Extraordinary General Meetings called as needed.'
+};
+---
+
+<Layout title="Committee & Officers - South Caernarvonshire Yacht Club">
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-r from-navy-900 to-navy-700 text-white py-20">
+    <div class="absolute inset-0 bg-black opacity-20"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <h1 class="text-5xl md:text-6xl font-serif font-bold mb-6">
+          Committee &amp; Officers
+        </h1>
+        <p class="text-xl text-navy-100 max-w-3xl mx-auto mb-8">
+          Meet the dedicated team leading SCYC into its second century
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto text-center">
+          <div class="bg-navy-800 bg-opacity-50 rounded-lg p-4">
+            <div class="text-2xl font-bold text-gold-400">6</div>
+            <div class="text-sm text-navy-200">Club Officers</div>
+          </div>
+          <div class="bg-navy-800 bg-opacity-50 rounded-lg p-4">
+            <div class="text-2xl font-bold text-gold-400">5</div>
+            <div class="text-sm text-navy-200">Committees</div>
+          </div>
+          <div class="bg-navy-800 bg-opacity-50 rounded-lg p-4">
+            <div class="text-2xl font-bold text-gold-400">100</div>
+            <div class="text-sm text-navy-200">Years of Leadership</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Club Officers -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-serif font-bold text-navy-900 mb-4">
+          Club Officers
+        </h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          Our elected officers bring decades of sailing experience and leadership to guide the club
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {officers.map(officer => (
+          <div class="bg-gray-50 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+            <div class="p-6">
+              <div class="flex items-start mb-4">
+                <div class="w-16 h-16 bg-gold-500 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                  <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold text-navy-900">{officer.position}</h3>
+                  <div class="text-lg text-gold-600 font-medium">{officer.name}</div>
+                  <div class="text-sm text-gray-500 mb-2">Term: {officer.term}</div>
+                  <a href={`mailto:${officer.email}`} class="text-sm text-navy-600 hover:text-navy-800">
+                    {officer.email}
+                  </a>
+                </div>
+              </div>
+              
+              <p class="text-gray-700 mb-4 text-sm">{officer.bio}</p>
+              
+              <div>
+                <h4 class="text-sm font-semibold text-navy-900 mb-2">Key Responsibilities</h4>
+                <ul class="space-y-1 text-sm text-gray-600">
+                  {officer.responsibilities.map(responsibility => (
+                    <li class="flex items-start">
+                      <svg class="w-3 h-3 text-gold-500 mr-2 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                      </svg>
+                      {responsibility}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Committee Structure -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-serif font-bold text-navy-900 mb-4">
+          Committee Structure
+        </h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          Specialized committees ensure expert management of all club activities
+        </p>
+      </div>
+      
+      <div class="space-y-8">
+        {committees.map(committee => (
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div class="lg:col-span-2">
+                <h3 class="text-xl font-bold text-navy-900 mb-3">{committee.name}</h3>
+                <p class="text-gray-700 mb-4">{committee.description}</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h4 class="text-sm font-semibold text-navy-900 mb-2">Committee Members</h4>
+                    <ul class="space-y-1 text-sm text-gray-600">
+                      {committee.members.map(member => (
+                        <li class="flex items-center">
+                          <svg class="w-3 h-3 text-gold-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                          </svg>
+                          {member}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  
+                  <div>
+                    <h4 class="text-sm font-semibold text-navy-900 mb-2">Key Responsibilities</h4>
+                    <ul class="space-y-1 text-sm text-gray-600">
+                      {committee.responsibilities.map(responsibility => (
+                        <li class="flex items-start">
+                          <svg class="w-3 h-3 text-gold-500 mr-2 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                          </svg>
+                          {responsibility}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="bg-navy-50 rounded-lg p-4">
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-navy-900 mb-1">{committee.meetings}</div>
+                  <div class="text-sm text-gray-600">Meeting Schedule</div>
+                </div>
+                
+                <div class="mt-4 pt-4 border-t border-navy-200">
+                  <div class="text-xs text-gray-500 text-center">
+                    Contact the Secretary for meeting schedules and agendas
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Club Governance -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <h2 class="text-3xl font-serif font-bold text-navy-900 mb-6">
+            Club Governance
+          </h2>
+          <div class="prose prose-lg text-gray-700">
+            <p class="mb-6">
+              SCYC operates under a democratic governance structure that has evolved over our 100-year history. Our constitution ensures transparent decision-making and member participation in all major club matters.
+            </p>
+            <p class="mb-6">
+              The club is managed by elected officers who serve two-year terms, supported by specialized committees that handle specific aspects of club operations. This structure ensures expert management while maintaining democratic oversight.
+            </p>
+            <p>
+              All members have the opportunity to participate in club governance through voting, committee service, and attendance at general meetings where important decisions are made collectively.
+            </p>
+          </div>
+        </div>
+        
+        <div class="space-y-6">
+          <div class="bg-navy-50 rounded-lg p-6">
+            <h3 class="text-xl font-bold text-navy-900 mb-4">Democratic Process</h3>
+            <div class="space-y-4 text-sm text-gray-700">
+              <div>
+                <div class="font-semibold text-navy-900">Constitution</div>
+                <p>{governance.constitution}</p>
+              </div>
+              <div>
+                <div class="font-semibold text-navy-900">Member Participation</div>
+                <p>{governance.membership}</p>
+              </div>
+              <div>
+                <div class="font-semibold text-navy-900">Elections</div>
+                <p>{governance.elections}</p>
+              </div>
+              <div>
+                <div class="font-semibold text-navy-900">Meetings</div>
+                <p>{governance.meetings}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-gold-50 rounded-lg p-6">
+            <h3 class="text-xl font-bold text-navy-900 mb-4">Get Involved</h3>
+            <div class="space-y-3 text-sm text-gray-700">
+              <div class="flex items-center">
+                <svg class="w-4 h-4 text-gold-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                Attend Annual General Meetings
+              </div>
+              <div class="flex items-center">
+                <svg class="w-4 h-4 text-gold-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                Volunteer for committee service
+              </div>
+              <div class="flex items-center">
+                <svg class="w-4 h-4 text-gold-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                Stand for elected positions
+              </div>
+              <div class="flex items-center">
+                <svg class="w-4 h-4 text-gold-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                Participate in club events
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Committee -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-serif font-bold text-navy-900 mb-4">
+          Contact the Committee
+        </h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          Have questions or suggestions? Our officers and committee members are here to help.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-white rounded-lg shadow-md p-6 text-center">
+          <div class="w-12 h-12 bg-navy-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+              <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-navy-900 mb-2">General Inquiries</h3>
+          <p class="text-gray-600 mb-4">For general club matters and information</p>
+          <a href="mailto:secretary@scyc.co.uk" class="text-navy-600 hover:text-navy-800 font-medium">
+            secretary@scyc.co.uk
+          </a>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md p-6 text-center">
+          <div class="w-12 h-12 bg-gold-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-navy-900 mb-2">Racing & Events</h3>
+          <p class="text-gray-600 mb-4">For sailing activities and competitions</p>
+          <a href="mailto:sailing@scyc.co.uk" class="text-navy-600 hover:text-navy-800 font-medium">
+            sailing@scyc.co.uk
+          </a>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md p-6 text-center">
+          <div class="w-12 h-12 bg-navy-700 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-navy-900 mb-2">Leadership</h3>
+          <p class="text-gray-600 mb-4">For strategic matters and club direction</p>
+          <a href="mailto:commodore@scyc.co.uk" class="text-navy-600 hover:text-navy-800 font-medium">
+            commodore@scyc.co.uk
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="py-16 bg-navy-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl font-serif font-bold mb-4">
+        Join Our Community
+      </h2>
+      <p class="text-xl text-navy-100 mb-8 max-w-3xl mx-auto">
+        Become part of SCYC's democratic tradition and help shape the future of our club.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href="/membership/apply"
+          class="px-8 py-3 bg-gold-500 text-navy-900 font-bold rounded-md hover:bg-gold-400 transition-colors"
+        >
+          Apply for Membership
+        </a>
+        <a
+          href="/contact"
+          class="px-8 py-3 border-2 border-white text-white font-bold rounded-md hover:bg-white hover:text-navy-900 transition-colors"
+        >
+          Contact Us
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .prose {
+    line-height: 1.7;
+  }
+  
+  .prose p {
+    margin-bottom: 1.5rem;
+  }
+  
+  .prose p:last-child {
+    margin-bottom: 0;
+  }
+</style>

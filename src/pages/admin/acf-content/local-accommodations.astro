@@ -1,0 +1,397 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { supabase } from '../../../lib/supabase';
+
+// Get all local accommodations
+const { data: accommodations, error } = await supabase
+  .from('acf_local_accommodations')
+  .select('*')
+  .order('created_at', { ascending: false });
+
+if (error) {
+  console.error('Error fetching accommodations:', error);
+}
+---
+
+<Layout title="Local Accommodations Management - ACF Content">
+  <div class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <div class="bg-white shadow-sm border-b">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-6">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900">Local Accommodations</h1>
+            <p class="mt-1 text-sm text-gray-500">Manage local business listings and accommodations</p>
+          </div>
+          <div class="flex space-x-3">
+            <a 
+              href="/admin/acf-content" 
+              class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+            >
+              ← Back to ACF Content
+            </a>
+            <button 
+              id="add-accommodation-btn"
+              class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              + Add New Business
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Stats -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white rounded-lg shadow p-6">
+          <div class="text-2xl font-bold text-blue-600">{accommodations?.length || 0}</div>
+          <div class="text-sm text-gray-500">Total Businesses</div>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6">
+          <div class="text-2xl font-bold text-green-600">{accommodations?.filter(a => a.image_url).length || 0}</div>
+          <div class="text-sm text-gray-500">With Images</div>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6">
+          <div class="text-2xl font-bold text-purple-600">{accommodations?.filter(a => a.website).length || 0}</div>
+          <div class="text-sm text-gray-500">With Websites</div>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6">
+          <div class="text-2xl font-bold text-orange-600">{accommodations?.filter(a => a.category).length || 0}</div>
+          <div class="text-sm text-gray-500">Categorized</div>
+        </div>
+      </div>
+
+      <!-- Accommodations Grid -->
+      <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-lg font-medium text-gray-900">All Businesses</h2>
+        </div>
+        
+        {accommodations && accommodations.length > 0 ? (
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+            {accommodations.map((accommodation) => (
+              <div class="bg-gray-50 rounded-lg p-6 hover:shadow-md transition-shadow">
+                <div class="flex items-start space-x-4">
+                  {accommodation.image_url ? (
+                    <img 
+                      src={accommodation.image_url} 
+                      alt={accommodation.business_name}
+                      class="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                    >
+                  ) : (
+                    <div class="w-16 h-16 rounded-lg bg-gray-300 flex items-center justify-center flex-shrink-0">
+                      <svg class="w-8 h-8 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                      </svg>
+                    </div>
+                  )}
+                  <div class="flex-1 min-w-0">
+                    <h3 class="text-lg font-medium text-gray-900 truncate">{accommodation.business_name}</h3>
+                    {accommodation.category && (
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mt-1">
+                        {accommodation.category}
+                      </span>
+                    )}
+                    {accommodation.address && (
+                      <p class="text-sm text-gray-500 mt-1">{accommodation.address}</p>
+                    )}
+                    {accommodation.phone && (
+                      <p class="text-sm text-gray-600 mt-1">{accommodation.phone}</p>
+                    )}
+                  </div>
+                </div>
+                
+                {accommodation.blurb && (
+                  <p class="text-sm text-gray-600 mt-3 line-clamp-2">{accommodation.blurb}</p>
+                )}
+                
+                <div class="mt-4 flex justify-between items-center">
+                  <div class="flex space-x-2">
+                    {accommodation.website && (
+                      <a 
+                        href={accommodation.website} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        class="text-blue-600 hover:text-blue-900 text-sm font-medium"
+                      >
+                        Visit Website
+                      </a>
+                    )}
+                  </div>
+                  <div class="flex space-x-2">
+                    <button 
+                      class="text-blue-600 hover:text-blue-900 text-sm font-medium edit-accommodation-btn" 
+                      data-accommodation-id={accommodation.id}
+                    >
+                      Edit
+                    </button>
+                    <button 
+                      class="text-red-600 hover:text-red-900 text-sm font-medium delete-accommodation-btn" 
+                      data-accommodation-id={accommodation.id}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div class="text-center py-12">
+            <div class="text-gray-500 text-lg mb-4">No businesses found</div>
+            <button 
+              id="add-first-accommodation-btn"
+              class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+            >
+              + Add Your First Business
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Accommodation Modal -->
+  <div id="accommodation-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-2/3 lg:w-1/2 shadow-lg rounded-md bg-white">
+      <div class="mt-3">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-medium text-gray-900" id="modal-title">Add New Business</h3>
+          <button id="close-modal" class="text-gray-400 hover:text-gray-600">
+            <span class="sr-only">Close</span>
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <form id="accommodation-form" class="space-y-4">
+          <input type="hidden" id="accommodation-id" name="id">
+          
+          <div>
+            <label for="business_name" class="block text-sm font-medium text-gray-700">Business Name *</label>
+            <input type="text" id="business_name" name="business_name" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+          </div>
+          
+          <div>
+            <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
+            <textarea id="address" name="address" rows="2" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Full address including postcode"></textarea>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+              <input type="tel" id="phone" name="phone" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="01234 567890">
+            </div>
+            <div>
+              <label for="website" class="block text-sm font-medium text-gray-700">Website</label>
+              <input type="url" id="website" name="website" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="https://example.com">
+            </div>
+          </div>
+          
+          <div>
+            <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+            <select id="category" name="category" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+              <option value="">Select a category</option>
+              <option value="Accommodation">Accommodation</option>
+              <option value="Restaurant">Restaurant</option>
+              <option value="Pub">Pub</option>
+              <option value="Shop">Shop</option>
+              <option value="Activity">Activity</option>
+              <option value="Service">Service</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          
+          <div>
+            <label for="blurb" class="block text-sm font-medium text-gray-700">Description</label>
+            <textarea id="blurb" name="blurb" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Brief description of the business"></textarea>
+          </div>
+          
+          <!-- Image Upload Section -->
+          <div class="border-t pt-4">
+            <h4 class="text-md font-medium text-gray-900 mb-3">Business Image</h4>
+            <div>
+              <label for="image" class="block text-sm font-medium text-gray-700">Upload Image</label>
+              <input type="file" id="image" name="image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+              <p class="mt-1 text-sm text-gray-500">PNG, JPG, GIF up to 10MB</p>
+            </div>
+            
+            <!-- Current image preview -->
+            <div id="current-image-preview" class="mt-3 hidden">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Current Image</label>
+              <img id="current-image" src="" alt="Current business image" class="w-32 h-32 rounded-lg object-cover">
+            </div>
+          </div>
+          
+          <div class="flex justify-end space-x-3 pt-4">
+            <button type="button" id="cancel-btn" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+              Cancel
+            </button>
+            <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+              Save Business
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Modal functionality
+    const modal = document.getElementById('accommodation-modal');
+    const addAccommodationBtn = document.getElementById('add-accommodation-btn');
+    const addFirstAccommodationBtn = document.getElementById('add-first-accommodation-btn');
+    const closeModal = document.getElementById('close-modal');
+    const cancelBtn = document.getElementById('cancel-btn');
+    const accommodationForm = document.getElementById('accommodation-form');
+    const modalTitle = document.getElementById('modal-title');
+    const currentImagePreview = document.getElementById('current-image-preview');
+    const currentImage = document.getElementById('current-image');
+    
+    let isEditing = false;
+    
+    // Open modal for new accommodation
+    function openModal(accommodation = null) {
+      modal.classList.remove('hidden');
+      
+      if (accommodation) {
+        isEditing = true;
+        modalTitle.textContent = 'Edit Business';
+        populateForm(accommodation);
+      } else {
+        isEditing = false;
+        modalTitle.textContent = 'Add New Business';
+        accommodationForm.reset();
+        currentImagePreview.classList.add('hidden');
+      }
+    }
+    
+    // Close modal
+    function closeModalHandler() {
+      modal.classList.add('hidden');
+      accommodationForm.reset();
+      currentImagePreview.classList.add('hidden');
+    }
+    
+    // Populate form with accommodation data
+    function populateForm(accommodation) {
+      Object.keys(accommodation).forEach(key => {
+        const input = document.getElementById(key);
+        if (input && accommodation[key] !== null) {
+          input.value = accommodation[key];
+        }
+      });
+      
+      // Show current image if exists
+      if (accommodation.image_url) {
+        currentImage.src = accommodation.image_url;
+        currentImagePreview.classList.remove('hidden');
+      }
+    }
+    
+    // Event listeners
+    addAccommodationBtn?.addEventListener('click', () => openModal());
+    addFirstAccommodationBtn?.addEventListener('click', () => openModal());
+    closeModal.addEventListener('click', closeModalHandler);
+    cancelBtn.addEventListener('click', closeModalHandler);
+    
+    // Edit accommodation buttons
+    document.querySelectorAll('.edit-accommodation-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const accommodationId = e.target.dataset.accommodationId;
+        
+        try {
+          const response = await fetch(`/api/admin/acf-local-accommodations?id=${accommodationId}`);
+          const data = await response.json();
+          
+          if (response.ok) {
+            openModal(data.accommodation);
+          } else {
+            alert('Error loading business: ' + data.error);
+          }
+        } catch (error) {
+          console.error('Error fetching accommodation:', error);
+          alert('Error loading business. Please try again.');
+        }
+      });
+    });
+    
+    // Delete accommodation buttons
+    document.querySelectorAll('.delete-accommodation-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const accommodationId = e.target.dataset.accommodationId;
+        
+        if (confirm('Are you sure you want to delete this business?')) {
+          try {
+            const response = await fetch('/api/admin/acf-local-accommodations', {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ id: accommodationId })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+              alert('Business deleted successfully!');
+              window.location.reload();
+            } else {
+              alert('Error deleting business: ' + data.error);
+            }
+          } catch (error) {
+            console.error('Error deleting accommodation:', error);
+            alert('Error deleting business. Please try again.');
+          }
+        }
+      });
+    });
+    
+    // Form submission
+    accommodationForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(accommodationForm);
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      
+      // Disable submit button and show loading
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Saving...';
+      
+      try {
+        const method = isEditing ? 'PUT' : 'POST';
+        const response = await fetch('/api/admin/acf-local-accommodations', {
+          method: method,
+          body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          alert(data.message);
+          closeModalHandler();
+          window.location.reload();
+        } else {
+          alert('Error saving business: ' + data.error);
+        }
+      } catch (error) {
+        console.error('Error saving accommodation:', error);
+        alert('Error saving business. Please try again.');
+      } finally {
+        // Re-enable submit button
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Save Business';
+      }
+    });
+    
+    // Close modal when clicking outside
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModalHandler();
+      }
+    });
+  </script>
+</Layout>

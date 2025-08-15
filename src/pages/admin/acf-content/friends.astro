@@ -1,0 +1,308 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { supabase } from '../../../lib/supabase';
+
+// Fetch friends data
+const { data: friends, error } = await supabase
+  .from('acf_friends')
+  .select('*')
+  .order('created_at', { ascending: false });
+
+if (error) {
+  console.error('Error fetching friends:', error);
+}
+
+const friendsCount = friends?.length || 0;
+---
+
+<Layout title="Manage Friends - ACF Content">
+  <div class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <div class="bg-white shadow-sm border-b">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-6">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">Manage Friends</h1>
+            <p class="mt-1 text-sm text-gray-500">Partner organizations and sponsors</p>
+          </div>
+          <div class="flex space-x-3">
+            <a href="/admin/acf-content" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+              ← Back to ACF Content
+            </a>
+            <button id="addFriendBtn" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+              Add New Friend
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div class="bg-white rounded-lg shadow p-6">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Total Friends</dt>
+              <dd class="text-lg font-medium text-gray-900">{friendsCount}</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Friends Grid -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      <div class="bg-white shadow rounded-lg">
+        <div class="px-4 py-5 sm:p-6">
+          <div id="friendsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {friends && friends.map((friend) => (
+              <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                {friend.logo_url && (
+                  <div class="mb-4 flex justify-center">
+                    <img src={friend.logo_url} alt={friend.organization_name} class="h-20 w-auto object-contain" />
+                  </div>
+                )}
+                <div class="space-y-2 text-center">
+                  <h3 class="text-lg font-semibold text-gray-900">{friend.organization_name}</h3>
+                  {friend.description && (
+                    <p class="text-sm text-gray-600 line-clamp-3">{friend.description}</p>
+                  )}
+                  {friend.website_url && (
+                    <div class="pt-2">
+                      <a href={friend.website_url} target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                        Visit Website →
+                      </a>
+                    </div>
+                  )}
+                  <div class="flex justify-between items-center pt-3">
+                    <span class="text-xs text-gray-400">
+                      {new Date(friend.created_at).toLocaleDateString()}
+                    </span>
+                    <div class="flex space-x-2">
+                      <button 
+                        class="editFriendBtn text-blue-600 hover:text-blue-800 text-sm font-medium"
+                        data-id={friend.id}
+                      >
+                        Edit
+                      </button>
+                      <button 
+                        class="deleteFriendBtn text-red-600 hover:text-red-800 text-sm font-medium"
+                        data-id={friend.id}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          {(!friends || friends.length === 0) && (
+            <div class="text-center py-12">
+              <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+              </svg>
+              <h3 class="mt-2 text-sm font-medium text-gray-900">No friends</h3>
+              <p class="mt-1 text-sm text-gray-500">Get started by adding a partner organization.</p>
+              <div class="mt-6">
+                <button id="addFriendBtnEmpty" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                  Add New Friend
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Friend Modal -->
+  <div id="friendModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+      <div class="mt-3">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-medium text-gray-900" id="modalTitle">Add New Friend</h3>
+          <button id="closeModal" class="text-gray-400 hover:text-gray-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        
+        <form id="friendForm" class="space-y-4">
+          <input type="hidden" id="friendId" name="id">
+          
+          <div>
+            <label for="organizationName" class="block text-sm font-medium text-gray-700">Organization Name *</label>
+            <input type="text" id="organizationName" name="organization_name" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+          </div>
+          
+          <div>
+            <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+            <textarea id="description" name="description" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Brief description of the organization"></textarea>
+          </div>
+          
+          <div>
+            <label for="websiteUrl" class="block text-sm font-medium text-gray-700">Website URL</label>
+            <input type="url" id="websiteUrl" name="website_url" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="https://example.com">
+          </div>
+          
+          <div>
+            <label for="friendLogo" class="block text-sm font-medium text-gray-700">Organization Logo</label>
+            <input type="file" id="friendLogo" name="logo" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+            <p class="mt-1 text-sm text-gray-500">PNG, JPG, GIF up to 10MB. Logos work best with transparent backgrounds.</p>
+          </div>
+          
+          <div class="flex justify-end space-x-3 pt-4">
+            <button type="button" id="cancelBtn" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+              Cancel
+            </button>
+            <button type="submit" id="saveBtn" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+              <span id="saveText">Save Friend</span>
+              <span id="savingText" class="hidden">Saving...</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Modal functionality
+    const modal = document.getElementById('friendModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const friendForm = document.getElementById('friendForm');
+    const friendId = document.getElementById('friendId');
+    const saveBtn = document.getElementById('saveBtn');
+    const saveText = document.getElementById('saveText');
+    const savingText = document.getElementById('savingText');
+    
+    // Open modal for adding new friend
+    document.getElementById('addFriendBtn')?.addEventListener('click', () => {
+      modalTitle.textContent = 'Add New Friend';
+      friendForm.reset();
+      friendId.value = '';
+      modal.classList.remove('hidden');
+    });
+    
+    document.getElementById('addFriendBtnEmpty')?.addEventListener('click', () => {
+      modalTitle.textContent = 'Add New Friend';
+      friendForm.reset();
+      friendId.value = '';
+      modal.classList.remove('hidden');
+    });
+    
+    // Close modal
+    document.getElementById('closeModal')?.addEventListener('click', () => {
+      modal.classList.add('hidden');
+    });
+    
+    document.getElementById('cancelBtn')?.addEventListener('click', () => {
+      modal.classList.add('hidden');
+    });
+    
+    // Close modal when clicking outside
+    modal?.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.add('hidden');
+      }
+    });
+    
+    // Edit friend
+    document.querySelectorAll('.editFriendBtn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const id = e.target.getAttribute('data-id');
+        try {
+          const response = await fetch(`/api/admin/acf-friends?id=${id}`);
+          const data = await response.json();
+          
+          if (data.friend) {
+            modalTitle.textContent = 'Edit Friend';
+            friendId.value = data.friend.id;
+            document.getElementById('organizationName').value = data.friend.organization_name || '';
+            document.getElementById('description').value = data.friend.description || '';
+            document.getElementById('websiteUrl').value = data.friend.website_url || '';
+            modal.classList.remove('hidden');
+          }
+        } catch (error) {
+          console.error('Error fetching friend:', error);
+          alert('Error loading friend data');
+        }
+      });
+    });
+    
+    // Delete friend
+    document.querySelectorAll('.deleteFriendBtn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const id = e.target.getAttribute('data-id');
+        if (confirm('Are you sure you want to delete this friend?')) {
+          try {
+            const response = await fetch('/api/admin/acf-friends', {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ id })
+            });
+            
+            if (response.ok) {
+              location.reload();
+            } else {
+              alert('Error deleting friend');
+            }
+          } catch (error) {
+            console.error('Error deleting friend:', error);
+            alert('Error deleting friend');
+          }
+        }
+      });
+    });
+    
+    // Form submission
+    friendForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Show saving state
+      saveText.classList.add('hidden');
+      savingText.classList.remove('hidden');
+      saveBtn.disabled = true;
+      
+      try {
+        const formData = new FormData(friendForm);
+        const id = friendId.value;
+        
+        const url = '/api/admin/acf-friends';
+        const method = id ? 'PUT' : 'POST';
+        
+        const response = await fetch(url, {
+          method: method,
+          body: formData
+        });
+        
+        if (response.ok) {
+          location.reload();
+        } else {
+          const errorData = await response.json();
+          alert('Error saving friend: ' + (errorData.error || 'Unknown error'));
+        }
+      } catch (error) {
+        console.error('Error saving friend:', error);
+        alert('Error saving friend');
+      } finally {
+        // Reset saving state
+        saveText.classList.remove('hidden');
+        savingText.classList.add('hidden');
+        saveBtn.disabled = false;
+      }
+    });
+  </script>
+</Layout>

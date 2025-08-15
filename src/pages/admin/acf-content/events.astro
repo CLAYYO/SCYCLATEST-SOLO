@@ -1,0 +1,429 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { supabase } from '../../../lib/supabase';
+
+// Get all events
+const { data: events, error } = await supabase
+  .from('acf_events')
+  .select('*')
+  .order('created_at', { ascending: false });
+
+if (error) {
+  console.error('Error fetching events:', error);
+}
+
+const eventCategories = ['Mirrors', 'Class 12', 'Mixed Keelboats', 'SCYC Racing', 'Open Event'];
+---
+
+<Layout title="Events Management - ACF Content">
+  <div class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <div class="bg-white shadow-sm border-b">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-6">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900">Events Management</h1>
+            <p class="mt-1 text-sm text-gray-500">Manage sailing events, races, and competitions</p>
+          </div>
+          <div class="flex space-x-3">
+            <a 
+              href="/admin/acf-content" 
+              class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+            >
+              ← Back to ACF Content
+            </a>
+            <button 
+              id="add-event-btn"
+              class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              + Add New Event
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Stats -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white rounded-lg shadow p-6">
+          <div class="text-2xl font-bold text-blue-600">{events?.length || 0}</div>
+          <div class="text-sm text-gray-500">Total Events</div>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6">
+          <div class="text-2xl font-bold text-green-600">{events?.filter(e => e.event_category === 'SCYC Racing').length || 0}</div>
+          <div class="text-sm text-gray-500">SCYC Racing</div>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6">
+          <div class="text-2xl font-bold text-purple-600">{events?.filter(e => e.event_category === 'Open Event').length || 0}</div>
+          <div class="text-sm text-gray-500">Open Events</div>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6">
+          <div class="text-2xl font-bold text-orange-600">{events?.filter(e => new Date(e.event_start_date) > new Date()).length || 0}</div>
+          <div class="text-sm text-gray-500">Upcoming</div>
+        </div>
+      </div>
+
+      <!-- Events Table -->
+      <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-lg font-medium text-gray-900">All Events</h2>
+        </div>
+        
+        {events && events.length > 0 ? (
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dates</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Venue</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Files</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                {events.map((event) => (
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div>
+                        <div class="text-sm font-medium text-gray-900">{event.title}</div>
+                        <div class="text-sm text-gray-500">{event.organiser}</div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                        event.event_category === 'SCYC Racing' ? 'bg-blue-100 text-blue-800' :
+                        event.event_category === 'Open Event' ? 'bg-green-100 text-green-800' :
+                        event.event_category === 'Mirrors' ? 'bg-purple-100 text-purple-800' :
+                        event.event_category === 'Class 12' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-gray-100 text-gray-800'
+                      }`}>
+                        {event.event_category || 'Uncategorized'}
+                      </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <div>
+                        {event.event_start_date && (
+                          <div>Start: {new Date(event.event_start_date).toLocaleDateString()}</div>
+                        )}
+                        {event.event_end_date && (
+                          <div>End: {new Date(event.event_end_date).toLocaleDateString()}</div>
+                        )}
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {event.venue || 'Not specified'}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <div class="flex flex-col space-y-1">
+                        {event.notice_of_race_url && (
+                          <a href={event.notice_of_race_url} target="_blank" class="text-blue-600 hover:text-blue-800">📄 Notice of Race</a>
+                        )}
+                        {event.sailing_instructions_url && (
+                          <a href={event.sailing_instructions_url} target="_blank" class="text-blue-600 hover:text-blue-800">📋 Sailing Instructions</a>
+                        )}
+                        {event.dinghy_launching_guide_url && (
+                          <a href={event.dinghy_launching_guide_url} target="_blank" class="text-blue-600 hover:text-blue-800">🚤 Launching Guide</a>
+                        )}
+                        {event.event_beach_info_url && (
+                          <a href={event.event_beach_info_url} target="_blank" class="text-blue-600 hover:text-blue-800">🏖️ Beach Info</a>
+                        )}
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div class="flex space-x-2">
+                        <button 
+                          class="text-blue-600 hover:text-blue-900 edit-event-btn" 
+                          data-event-id={event.id}
+                        >
+                          Edit
+                        </button>
+                        <button 
+                          class="text-red-600 hover:text-red-900 delete-event-btn" 
+                          data-event-id={event.id}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div class="text-center py-12">
+            <div class="text-gray-500 text-lg mb-4">No events found</div>
+            <button 
+              id="add-first-event-btn"
+              class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+            >
+              + Add Your First Event
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Event Modal -->
+  <div id="event-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+      <div class="mt-3">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-medium text-gray-900" id="modal-title">Add New Event</h3>
+          <button id="close-modal" class="text-gray-400 hover:text-gray-600">
+            <span class="sr-only">Close</span>
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <form id="event-form" class="space-y-4">
+          <input type="hidden" id="event-id" name="id">
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="title" class="block text-sm font-medium text-gray-700">Event Title *</label>
+              <input type="text" id="title" name="title" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            
+            <div>
+              <label for="event_category" class="block text-sm font-medium text-gray-700">Category</label>
+              <select id="event_category" name="event_category" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                <option value="">Select Category</option>
+                {eventCategories.map(category => (
+                  <option value={category}>{category}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="event_start_date" class="block text-sm font-medium text-gray-700">Start Date</label>
+              <input type="date" id="event_start_date" name="event_start_date" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            
+            <div>
+              <label for="event_end_date" class="block text-sm font-medium text-gray-700">End Date</label>
+              <input type="date" id="event_end_date" name="event_end_date" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="venue" class="block text-sm font-medium text-gray-700">Venue</label>
+              <input type="text" id="venue" name="venue" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            
+            <div>
+              <label for="organiser" class="block text-sm font-medium text-gray-700">Organiser</label>
+              <input type="text" id="organiser" name="organiser" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
+          </div>
+          
+          <div>
+            <label for="content" class="block text-sm font-medium text-gray-700">Description</label>
+            <textarea id="content" name="content" rows="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
+          </div>
+          
+          <div>
+            <label for="entry_form_details" class="block text-sm font-medium text-gray-700">Entry Form Details</label>
+            <textarea id="entry_form_details" name="entry_form_details" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
+          </div>
+          
+          <div>
+            <label for="event_noticeboard" class="block text-sm font-medium text-gray-700">Event Noticeboard</label>
+            <textarea id="event_noticeboard" name="event_noticeboard" rows="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
+          </div>
+          
+          <!-- File Upload Section -->
+          <div class="border-t pt-4">
+            <h4 class="text-md font-medium text-gray-900 mb-3">Event Documents</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="notice_of_race" class="block text-sm font-medium text-gray-700">Notice of Race</label>
+                <input type="file" id="notice_of_race" name="notice_of_race" accept=".pdf,.doc,.docx" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+              </div>
+              
+              <div>
+                <label for="sailing_instructions" class="block text-sm font-medium text-gray-700">Sailing Instructions</label>
+                <input type="file" id="sailing_instructions" name="sailing_instructions" accept=".pdf,.doc,.docx" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+              </div>
+              
+              <div>
+                <label for="dinghy_launching_guide" class="block text-sm font-medium text-gray-700">Dinghy Launching Guide</label>
+                <input type="file" id="dinghy_launching_guide" name="dinghy_launching_guide" accept=".pdf,.doc,.docx" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+              </div>
+              
+              <div>
+                <label for="event_beach_info" class="block text-sm font-medium text-gray-700">Event Beach Info</label>
+                <input type="file" id="event_beach_info" name="event_beach_info" accept=".pdf,.doc,.docx" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex justify-end space-x-3 pt-4">
+            <button type="button" id="cancel-btn" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+              Cancel
+            </button>
+            <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+              Save Event
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Modal functionality
+    const modal = document.getElementById('event-modal');
+    const addEventBtn = document.getElementById('add-event-btn');
+    const addFirstEventBtn = document.getElementById('add-first-event-btn');
+    const closeModal = document.getElementById('close-modal');
+    const cancelBtn = document.getElementById('cancel-btn');
+    const eventForm = document.getElementById('event-form');
+    const modalTitle = document.getElementById('modal-title');
+    
+    let isEditing = false;
+    
+    // Open modal for new event
+    function openModal(event = null) {
+      modal.classList.remove('hidden');
+      
+      if (event) {
+        isEditing = true;
+        modalTitle.textContent = 'Edit Event';
+        populateForm(event);
+      } else {
+        isEditing = false;
+        modalTitle.textContent = 'Add New Event';
+        eventForm.reset();
+      }
+    }
+    
+    // Close modal
+    function closeModalHandler() {
+      modal.classList.add('hidden');
+      eventForm.reset();
+    }
+    
+    // Populate form with event data
+    function populateForm(event) {
+      Object.keys(event).forEach(key => {
+        const input = document.getElementById(key);
+        if (input && event[key] !== null) {
+          input.value = event[key];
+        }
+      });
+    }
+    
+    // Event listeners
+    addEventBtn?.addEventListener('click', () => openModal());
+    addFirstEventBtn?.addEventListener('click', () => openModal());
+    closeModal.addEventListener('click', closeModalHandler);
+    cancelBtn.addEventListener('click', closeModalHandler);
+    
+    // Edit event buttons
+    document.querySelectorAll('.edit-event-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const eventId = e.target.dataset.eventId;
+        
+        try {
+          const response = await fetch(`/api/admin/acf-events?id=${eventId}`);
+          const data = await response.json();
+          
+          if (response.ok) {
+            openModal(data.event);
+          } else {
+            alert('Error loading event: ' + data.error);
+          }
+        } catch (error) {
+          console.error('Error fetching event:', error);
+          alert('Error loading event. Please try again.');
+        }
+      });
+    });
+    
+    // Delete event buttons
+    document.querySelectorAll('.delete-event-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const eventId = e.target.dataset.eventId;
+        
+        if (confirm('Are you sure you want to delete this event?')) {
+          try {
+            const response = await fetch('/api/admin/acf-events', {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ id: eventId })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+              alert('Event deleted successfully!');
+              window.location.reload();
+            } else {
+              alert('Error deleting event: ' + data.error);
+            }
+          } catch (error) {
+            console.error('Error deleting event:', error);
+            alert('Error deleting event. Please try again.');
+          }
+        }
+      });
+    });
+    
+    // Form submission
+    eventForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(eventForm);
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      
+      // Disable submit button and show loading
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Saving...';
+      
+      try {
+        const method = isEditing ? 'PUT' : 'POST';
+        const response = await fetch('/api/admin/acf-events', {
+          method: method,
+          body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          alert(data.message);
+          closeModalHandler();
+          window.location.reload();
+        } else {
+          alert('Error saving event: ' + data.error);
+        }
+      } catch (error) {
+        console.error('Error saving event:', error);
+        alert('Error saving event. Please try again.');
+      } finally {
+        // Re-enable submit button
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Save Event';
+      }
+    });
+    
+    // Close modal when clicking outside
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModalHandler();
+      }
+    });
+  </script>
+</Layout>

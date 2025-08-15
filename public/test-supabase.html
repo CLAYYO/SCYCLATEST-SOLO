@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supabase Test</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    pre { background: #f5f5f5; padding: 10px; border-radius: 5px; overflow: auto; }
+    button { padding: 8px 16px; background: #0070f3; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    .error { color: red; }
+    .success { color: green; }
+  </style>
+</head>
+<body>
+  <h1>Supabase Connection Test</h1>
+  
+  <div>
+    <h2>Test with Hardcoded Credentials</h2>
+    <button id="testHardcoded">Test Connection</button>
+    <div id="hardcodedResult"></div>
+  </div>
+
+  <div style="margin-top: 30px;">
+    <h2>Test with Custom Credentials</h2>
+    <div>
+      <label>Supabase URL:</label>
+      <input type="text" id="customUrl" style="width: 100%; margin: 5px 0;" value="https://kvqnjroenyqdrxmvzirj.supabase.co">
+    </div>
+    <div>
+      <label>Supabase Anon Key:</label>
+      <input type="text" id="customKey" style="width: 100%; margin: 5px 0;" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2cW5qcm9lbnlxZHJ4bXZ6aXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxNzM0MTMsImV4cCI6MjA3MDc0OTQxM30.Yd_HbAmGRxKGXEMzLSFwt-OGjZEgMOlLRnZ9NWEpbIQ">
+    </div>
+    <button id="testCustom">Test Custom Connection</button>
+    <div id="customResult"></div>
+  </div>
+
+  <script>
+    // Hardcoded credentials from DebugFormSubmissions.tsx
+    const hardcodedUrl = 'https://kvqnjroenyqdrxmvzirj.supabase.co';
+    const hardcodedKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2cW5qcm9lbnlxZHJ4bXZ6aXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxNzM0MTMsImV4cCI6MjA3MDc0OTQxM30.Yd_HbAmGRxKGXEMzLSFwt-OGjZEgMOlLRnZ9NWEpbIQ';
+
+    document.getElementById('testHardcoded').addEventListener('click', async () => {
+      const resultDiv = document.getElementById('hardcodedResult');
+      resultDiv.innerHTML = '<p>Testing connection...</p>';
+      
+      try {
+        const supabase = supabase.createClient(hardcodedUrl, hardcodedKey);
+        
+        // Try to fetch tables
+        const { data, error } = await supabase
+          .from('forms')
+          .select('*')
+          .limit(5);
+        
+        if (error) throw error;
+        
+        resultDiv.innerHTML = `
+          <p class="success">Connection successful!</p>
+          <p>Found ${data.length} forms</p>
+          <pre>${JSON.stringify(data, null, 2)}</pre>
+        `;
+      } catch (error) {
+        resultDiv.innerHTML = `
+          <p class="error">Connection failed</p>
+          <pre>${JSON.stringify(error, null, 2)}</pre>
+        `;
+      }
+    });
+
+    document.getElementById('testCustom').addEventListener('click', async () => {
+      const resultDiv = document.getElementById('customResult');
+      const customUrl = document.getElementById('customUrl').value;
+      const customKey = document.getElementById('customKey').value;
+      
+      resultDiv.innerHTML = '<p>Testing connection...</p>';
+      
+      try {
+        const supabase = supabase.createClient(customUrl, customKey);
+        
+        // Try to fetch tables
+        const { data, error } = await supabase
+          .from('forms')
+          .select('*')
+          .limit(5);
+        
+        if (error) throw error;
+        
+        resultDiv.innerHTML = `
+          <p class="success">Connection successful!</p>
+          <p>Found ${data.length} forms</p>
+          <pre>${JSON.stringify(data, null, 2)}</pre>
+        `;
+      } catch (error) {
+        resultDiv.innerHTML = `
+          <p class="error">Connection failed</p>
+          <pre>${JSON.stringify(error, null, 2)}</pre>
+        `;
+      }
+    });
+  </script>
+</body>
+</html>

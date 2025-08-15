@@ -1,0 +1,367 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+// Facilities data with expanded details
+const facilities = [
+  {
+    name: 'Marina',
+    icon: '⚓',
+    description: 'State-of-the-art marina with modern pontoons and comprehensive services',
+    details: [
+      '120 berths for vessels up to 15 meters',
+      'Deep water access at all states of tide',
+      'Modern floating pontoons with finger berths',
+      'Shore power and water connections',
+      '24/7 security and CCTV monitoring',
+      'Fuel dock with diesel and petrol',
+      'Pump-out facilities',
+      'Wi-Fi throughout marina'
+    ],
+    amenities: ['Fuel Dock', 'Shore Power', 'Water', 'Wi-Fi', 'Security']
+  },
+  {
+    name: 'The Cove Restaurant',
+    icon: '🍽️',
+    description: 'Award-winning restaurant offering fine dining with spectacular sea views',
+    details: [
+      'Panoramic views across Cardigan Bay',
+      'Fresh local seafood and Welsh produce',
+      'Indoor seating for 80 guests',
+      'Outdoor terrace for 40 guests',
+      'Private dining room available',
+      'Full bar with extensive wine list',
+      'Open to members and public',
+      'Advance booking recommended'
+    ],
+    amenities: ['Fine Dining', 'Sea Views', 'Private Events', 'Full Bar', 'Terrace']
+  },
+  {
+    name: 'Clubhouse',
+    icon: '🏛️',
+    description: 'Historic clubhouse providing comfortable accommodation and social facilities',
+    details: [
+      'Historic building dating from 1935',
+      'Comfortable lounge and bar areas',
+      'Reading room with nautical library',
+      'Committee and meeting rooms',
+      'Members\' changing facilities',
+      'Shower and toilet facilities',
+      'Notice boards and race information',
+      'Traditional club atmosphere'
+    ],
+    amenities: ['Bar & Lounge', 'Library', 'Changing Rooms', 'Meeting Rooms', 'Showers']
+  },
+  {
+    name: 'Boat Storage',
+    icon: '🚤',
+    description: 'Comprehensive boat storage solutions for all types of vessels',
+    details: [
+      'Dry storage for dinghies and small keelboats',
+      'Covered storage areas',
+      'Boat launching facilities',
+      'Crane services available',
+      'Winter storage programs',
+      'Boat maintenance area',
+      'Trolley and dolly storage',
+      'Security fencing and lighting'
+    ],
+    amenities: ['Dry Storage', 'Crane Services', 'Launch Facilities', 'Maintenance Area', 'Security']
+  },
+  {
+    name: 'Training Centre',
+    icon: '🎓',
+    description: 'RYA recognized training centre offering courses for all skill levels',
+    details: [
+      'RYA recognized training centre',
+      'Qualified instructors and safety boats',
+      'Youth sailing programs',
+      'Adult learn-to-sail courses',
+      'Racing skills development',
+      'Safety and seamanship training',
+      'Theory and practical courses',
+      'Equipment and boats provided'
+    ],
+    amenities: ['RYA Courses', 'Youth Programs', 'Safety Training', 'Equipment Provided', 'Qualified Instructors']
+  },
+  {
+    name: 'Race Management',
+    icon: '🏁',
+    description: 'Professional race management facilities and equipment',
+    details: [
+      'Race committee boat and equipment',
+      'Professional race management team',
+      'Electronic timing systems',
+      'VHF radio communications',
+      'Safety boat fleet',
+      'Mark laying and course setting',
+      'Results processing systems',
+      'Prize giving facilities'
+    ],
+    amenities: ['Committee Boat', 'Timing Systems', 'Safety Boats', 'Communications', 'Results Processing']
+  }
+];
+
+// Additional services
+const services = [
+  {
+    title: 'Visitor Services',
+    description: 'Comprehensive services for visiting yachts and sailors',
+    features: ['Visitor berths', 'Shower facilities', 'Laundry service', 'Tourist information', 'Local transport links']
+  },
+  {
+    title: 'Events & Functions',
+    description: 'Facilities available for private events and corporate functions',
+    features: ['Wedding receptions', 'Corporate events', 'Private parties', 'Conference facilities', 'Catering services']
+  },
+  {
+    title: 'Marine Services',
+    description: 'Professional marine services and maintenance',
+    features: ['Boat repairs', 'Engine servicing', 'Sail repairs', 'Rigging services', 'Antifouling']
+  }
+];
+---
+
+<Layout title="Club Facilities - South Caernarvonshire Yacht Club">
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-r from-navy-900 to-navy-700 text-white py-20">
+    <div class="absolute inset-0 bg-black opacity-20"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <h1 class="text-5xl md:text-6xl font-serif font-bold mb-6">
+          Club Facilities
+        </h1>
+        <p class="text-xl text-navy-100 max-w-3xl mx-auto mb-8">
+          World-class facilities in one of Wales' most beautiful sailing locations
+        </p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto text-center">
+          <div class="bg-navy-800 bg-opacity-50 rounded-lg p-4">
+            <div class="text-2xl font-bold text-gold-400">120</div>
+            <div class="text-sm text-navy-200">Marina Berths</div>
+          </div>
+          <div class="bg-navy-800 bg-opacity-50 rounded-lg p-4">
+            <div class="text-2xl font-bold text-gold-400">80</div>
+            <div class="text-sm text-navy-200">Restaurant Seats</div>
+          </div>
+          <div class="bg-navy-800 bg-opacity-50 rounded-lg p-4">
+            <div class="text-2xl font-bold text-gold-400">24/7</div>
+            <div class="text-sm text-navy-200">Security</div>
+          </div>
+          <div class="bg-navy-800 bg-opacity-50 rounded-lg p-4">
+            <div class="text-2xl font-bold text-gold-400">RYA</div>
+            <div class="text-sm text-navy-200">Training Centre</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Facilities -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-serif font-bold text-navy-900 mb-4">
+          Our Facilities
+        </h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          Everything you need for an exceptional sailing experience
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {facilities.map(facility => (
+          <div class="bg-gray-50 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+            <div class="p-6">
+              <div class="flex items-center mb-4">
+                <div class="text-4xl mr-4">{facility.icon}</div>
+                <div>
+                  <h3 class="text-2xl font-bold text-navy-900">{facility.name}</h3>
+                  <p class="text-gray-600">{facility.description}</p>
+                </div>
+              </div>
+              
+              <div class="mb-6">
+                <h4 class="text-lg font-semibold text-navy-900 mb-3">Features & Services</h4>
+                <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-700">
+                  {facility.details.map(detail => (
+                    <li class="flex items-start">
+                      <svg class="w-4 h-4 text-gold-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                      </svg>
+                      {detail}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div>
+                <h4 class="text-lg font-semibold text-navy-900 mb-3">Key Amenities</h4>
+                <div class="flex flex-wrap gap-2">
+                  {facility.amenities.map(amenity => (
+                    <span class="px-3 py-1 bg-gold-100 text-gold-800 text-sm rounded-full">
+                      {amenity}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Additional Services -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-serif font-bold text-navy-900 mb-4">
+          Additional Services
+        </h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          Comprehensive support services for members and visitors
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {services.map(service => (
+          <div class="bg-white rounded-lg shadow-md p-6 text-center">
+            <h3 class="text-xl font-bold text-navy-900 mb-4">{service.title}</h3>
+            <p class="text-gray-600 mb-6">{service.description}</p>
+            <ul class="space-y-2 text-sm text-gray-700">
+              {service.features.map(feature => (
+                <li class="flex items-center justify-center">
+                  <svg class="w-4 h-4 text-gold-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                  </svg>
+                  {feature}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Location & Access -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <h2 class="text-3xl font-serif font-bold text-navy-900 mb-6">
+            Location &amp; Access
+          </h2>
+          <div class="prose prose-lg text-gray-700">
+            <p class="mb-6">
+              SCYC is perfectly positioned in Abersoch, offering easy access to some of the finest sailing waters in the UK. Our facilities are designed to provide everything you need for a perfect day on the water.
+            </p>
+            <p class="mb-6">
+              The club is easily accessible by road, with ample parking available for members and visitors. Our location provides sheltered berthing while offering quick access to the open waters of Cardigan Bay.
+            </p>
+          </div>
+          
+          <div class="bg-navy-50 rounded-lg p-6 mt-8">
+            <h3 class="text-xl font-bold text-navy-900 mb-4">Contact Information</h3>
+            <div class="space-y-2 text-gray-700">
+              <div class="flex items-center">
+                <svg class="w-5 h-5 text-gold-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                </svg>
+                Abersoch, Gwynedd, Wales
+              </div>
+              <div class="flex items-center">
+                <svg class="w-5 h-5 text-gold-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                </svg>
+                +44 (0) 1758 712338
+              </div>
+              <div class="flex items-center">
+                <svg class="w-5 h-5 text-gold-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                  <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                </svg>
+                info@scyc.co.uk
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="space-y-6">
+          <div class="bg-gold-50 rounded-lg p-6">
+            <h3 class="text-xl font-bold text-navy-900 mb-4">Opening Hours</h3>
+            <div class="space-y-3 text-gray-700">
+              <div class="flex justify-between">
+                <span class="font-medium">Marina:</span>
+                <span>24/7 Access</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="font-medium">Clubhouse:</span>
+                <span>8:00 AM - 11:00 PM</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="font-medium">The Cove:</span>
+                <span>12:00 PM - 9:00 PM</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="font-medium">Office:</span>
+                <span>9:00 AM - 5:00 PM</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-navy-50 rounded-lg p-6">
+            <h3 class="text-xl font-bold text-navy-900 mb-4">Coordinates</h3>
+            <div class="text-gray-700">
+              <div class="font-mono text-lg text-center">
+                52°49.43'N, 04°269.89'W
+              </div>
+              <p class="text-sm text-center mt-2">
+                Perfect for GPS navigation
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="py-16 bg-navy-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl font-serif font-bold mb-4">
+        Experience Our Facilities
+      </h2>
+      <p class="text-xl text-navy-100 mb-8 max-w-3xl mx-auto">
+        Visit SCYC and discover why we're considered one of Wales' premier yacht clubs.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href="/contact"
+          class="px-8 py-3 bg-gold-500 text-navy-900 font-bold rounded-md hover:bg-gold-400 transition-colors"
+        >
+          Plan Your Visit
+        </a>
+        <a
+          href="/membership/apply"
+          class="px-8 py-3 border-2 border-white text-white font-bold rounded-md hover:bg-white hover:text-navy-900 transition-colors"
+        >
+          Become a Member
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .prose {
+    line-height: 1.7;
+  }
+  
+  .prose p {
+    margin-bottom: 1.5rem;
+  }
+  
+  .prose p:last-child {
+    margin-bottom: 0;
+  }
+</style>
