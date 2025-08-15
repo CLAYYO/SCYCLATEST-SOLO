@@ -12,5 +12,9 @@
 /admin/* /admin/index.html 200
 /admin /admin/index.html 200
 
+# Handle ACF content specific routes
+/admin/acf-content/accommodations /admin/acf-content/local-accommodations.html 200
+/admin/acf-content/documents /admin/acf-content/rules-documents.html 200
+
 # Catch-all fallback for any other routes
 /* /index.html 200
