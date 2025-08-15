@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
 import cloudflare from '@astrojs/cloudflare';
+import { messageChannelPolyfill } from './vite-plugins/message-channel-polyfill.js';
 // https://astro.build/config
 export default defineConfig({
   integrations: [
@@ -20,6 +21,7 @@ export default defineConfig({
     assets: 'assets'
   },
   vite: {
+    plugins: [messageChannelPolyfill()],
     optimizeDeps: {
       include: ['react', 'react-dom']
     },
