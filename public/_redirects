@@ -8,5 +8,9 @@
 /news/* /news/index.html 200
 /events/* /events/index.html 200
 
+# Handle admin routes
+/admin/* /admin/index.html 200
+/admin /admin/index.html 200
+
 # Catch-all fallback for any other routes
 /* /index.html 200
