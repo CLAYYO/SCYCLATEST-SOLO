@@ -88,6 +88,14 @@ export const GET: APIRoute = async ({ request }) => {
 
 export const POST: APIRoute = async ({ request }) => {
   try {
+    // Debug: Check environment variables
+    console.log('Environment check:', {
+      hasUrl: !!import.meta.env.PUBLIC_SUPABASE_URL,
+      hasKey: !!import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
+      url: import.meta.env.PUBLIC_SUPABASE_URL?.substring(0, 30) + '...',
+      keyPrefix: import.meta.env.PUBLIC_SUPABASE_ANON_KEY?.substring(0, 20) + '...'
+    });
+    
     const formData = await request.formData();
     
     // Extract text fields
