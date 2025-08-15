@@ -2,8 +2,8 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Use hardcoded credentials from DebugFormSubmissions.tsx
-const supabaseUrl = 'https://kvqnjroenyqdrxmvzirj.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2cW5qcm9lbnlxZHJ4bXZ6aXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxNzM0MTMsImV4cCI6MjA3MDc0OTQxM30.Yd_HbAmGRxKGXEMzLSFwt-OGjZEgMOlLRnZ9NWEpbIQ';
+const supabaseUrl = process.env.PUBLIC_SUPABASE_URL || 'https://kvqnjroenyqdrxmvzirj.supabase.co';
+const supabaseAnonKey = process.env.PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
 
 console.log('Using Supabase URL:', supabaseUrl);
 console.log('Using Supabase Key:', supabaseAnonKey.substring(0, 10) + '...');

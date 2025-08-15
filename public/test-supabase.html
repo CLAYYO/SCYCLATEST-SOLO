@@ -26,20 +26,20 @@
     <h2>Test with Custom Credentials</h2>
     <div>
       <label>Supabase URL:</label>
-      <input type="text" id="customUrl" style="width: 100%; margin: 5px 0;" value="https://kvqnjroenyqdrxmvzirj.supabase.co">
+      <input type="text" id="customUrl" style="width: 100%; margin: 5px 0;" placeholder="Enter your Supabase URL">
     </div>
     <div>
       <label>Supabase Anon Key:</label>
-      <input type="text" id="customKey" style="width: 100%; margin: 5px 0;" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2cW5qcm9lbnlxZHJ4bXZ6aXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxNzM0MTMsImV4cCI6MjA3MDc0OTQxM30.Yd_HbAmGRxKGXEMzLSFwt-OGjZEgMOlLRnZ9NWEpbIQ">
+      <input type="text" id="customKey" style="width: 100%; margin: 5px 0;" placeholder="Enter your Supabase anon key">
     </div>
     <button id="testCustom">Test Custom Connection</button>
     <div id="customResult"></div>
   </div>
 
   <script>
-    // Hardcoded credentials from DebugFormSubmissions.tsx
-    const hardcodedUrl = 'https://kvqnjroenyqdrxmvzirj.supabase.co';
-    const hardcodedKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2cW5qcm9lbnlxZHJ4bXZ6aXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxNzM0MTMsImV4cCI6MjA3MDc0OTQxM30.Yd_HbAmGRxKGXEMzLSFwt-OGjZEgMOlLRnZ9NWEpbIQ';
+    // Environment variables - these should be set in your environment
+    const hardcodedUrl = 'YOUR_SUPABASE_URL';
+    const hardcodedKey = 'YOUR_SUPABASE_ANON_KEY';
 
     document.getElementById('testHardcoded').addEventListener('click', async () => {
       const resultDiv = document.getElementById('hardcodedResult');
