@@ -1,0 +1,269 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Admin Dashboard - SCYC">
+  <main class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-navy-900">Admin Dashboard</h1>
+        <p class="mt-2 text-gray-600">Manage all user-editable content from one central location</p>
+      </div>
+
+      <!-- Admin Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- ACF Content Management -->
+        <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
+          <div class="p-6">
+            <div class="flex items-center mb-4">
+              <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center text-white text-2xl">
+                📝
+              </div>
+              <div class="ml-4">
+                <h3 class="text-lg font-semibold text-gray-900">ACF Content</h3>
+                <p class="text-sm text-gray-500">WordPress Legacy Content</p>
+              </div>
+            </div>
+            <p class="text-gray-600 text-sm mb-4">
+              Manage imported WordPress ACF content including events, people, accommodations, classes, and more.
+            </p>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">Events</span>
+              <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">People</span>
+              <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">Classes</span>
+              <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">+4 more</span>
+            </div>
+            <a 
+              href="/admin/acf-content" 
+              class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+            >
+              Manage ACF Content
+              <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Forms Administration -->
+        <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
+          <div class="p-6">
+            <div class="flex items-center mb-4">
+              <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center text-white text-2xl">
+                📋
+              </div>
+              <div class="ml-4">
+                <h3 class="text-lg font-semibold text-gray-900">Forms Admin</h3>
+                <p class="text-sm text-gray-500">Contact & Application Forms</p>
+              </div>
+            </div>
+            <p class="text-gray-600 text-sm mb-4">
+              Manage form submissions, create new forms, view analytics, and export data from contact and membership forms.
+            </p>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">1,388 Submissions</span>
+              <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Form Builder</span>
+              <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Analytics</span>
+            </div>
+            <a 
+              href="/admin/forms" 
+              class="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
+            >
+              Manage Forms
+              <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Events Management -->
+        <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
+          <div class="p-6">
+            <div class="flex items-center mb-4">
+              <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center text-white text-2xl">
+                📅
+              </div>
+              <div class="ml-4">
+                <h3 class="text-lg font-semibold text-gray-900">Events Admin</h3>
+                <p class="text-sm text-gray-500">Club Events & Registration</p>
+              </div>
+            </div>
+            <p class="text-gray-600 text-sm mb-4">
+              Manage club events, registrations, calendar entries, and event-related content for the sailing club.
+            </p>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">Registration</span>
+              <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">Calendar</span>
+              <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">Filtering</span>
+            </div>
+            <a 
+              href="/admin/events" 
+              class="inline-flex items-center px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors"
+            >
+              Manage Events
+              <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Racing Administration -->
+        <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
+          <div class="p-6">
+            <div class="flex items-center mb-4">
+              <div class="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center text-white text-2xl">
+                🏁
+              </div>
+              <div class="ml-4">
+                <h3 class="text-lg font-semibold text-gray-900">Racing Admin</h3>
+                <p class="text-sm text-gray-500">Race Results & Data</p>
+              </div>
+            </div>
+            <p class="text-gray-600 text-sm mb-4">
+              Upload race results, manage racing data, and handle Sailwave integration for club racing events.
+            </p>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">Sailwave</span>
+              <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">Results Upload</span>
+              <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">Race Data</span>
+            </div>
+            <a 
+              href="/racing/admin" 
+              class="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
+            >
+              Manage Racing
+              <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- News & Documents -->
+        <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
+          <div class="p-6">
+            <div class="flex items-center mb-4">
+              <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center text-white text-2xl">
+                📰
+              </div>
+              <div class="ml-4">
+                <h3 class="text-lg font-semibold text-gray-900">Content Admin</h3>
+                <p class="text-sm text-gray-500">News & Documents</p>
+              </div>
+            </div>
+            <p class="text-gray-600 text-sm mb-4">
+              Manage news articles, blog posts, and document library content for the club website.
+            </p>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">News Articles</span>
+              <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">Documents</span>
+              <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">Search</span>
+            </div>
+            <div class="flex gap-2">
+              <a 
+                href="/news" 
+                class="inline-flex items-center px-3 py-2 bg-yellow-600 text-white text-sm font-medium rounded-md hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-colors"
+              >
+                News
+              </a>
+              <a 
+                href="/documents" 
+                class="inline-flex items-center px-3 py-2 bg-yellow-600 text-white text-sm font-medium rounded-md hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-colors"
+              >
+                Documents
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Club Information -->
+        <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
+          <div class="p-6">
+            <div class="flex items-center mb-4">
+              <div class="w-12 h-12 bg-indigo-500 rounded-lg flex items-center justify-center text-white text-2xl">
+                ⚓
+              </div>
+              <div class="ml-4">
+                <h3 class="text-lg font-semibold text-gray-900">Club Info</h3>
+                <p class="text-sm text-gray-500">About & Membership</p>
+              </div>
+            </div>
+            <p class="text-gray-600 text-sm mb-4">
+              Manage club information, history, facilities, committee details, and membership content.
+            </p>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="px-2 py-1 bg-indigo-100 text-indigo-800 text-xs rounded-full">History</span>
+              <span class="px-2 py-1 bg-indigo-100 text-indigo-800 text-xs rounded-full">Facilities</span>
+              <span class="px-2 py-1 bg-indigo-100 text-indigo-800 text-xs rounded-full">Committee</span>
+            </div>
+            <div class="flex gap-2">
+              <a 
+                href="/club" 
+                class="inline-flex items-center px-3 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+              >
+                Club Info
+              </a>
+              <a 
+                href="/membership" 
+                class="inline-flex items-center px-3 py-2 bg-indigo-600 text-white text-white text-sm font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+              >
+                Membership
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="mt-12 bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Quick Stats</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="text-center">
+            <div class="text-2xl font-bold text-blue-600">7</div>
+            <div class="text-sm text-gray-600">ACF Content Types</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-green-600">1,388</div>
+            <div class="text-sm text-gray-600">Form Submissions</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-purple-600">28</div>
+            <div class="text-sm text-gray-600">Static Pages</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-red-600">8</div>
+            <div class="text-sm text-gray-600">Database Tables</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- System Status -->
+      <div class="mt-6 bg-green-50 border border-green-200 rounded-lg p-4">
+        <div class="flex items-center">
+          <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+          <div>
+            <h3 class="text-sm font-medium text-green-800">System Status: Operational</h3>
+            <p class="text-sm text-green-700">All admin systems are running normally. Last updated: {new Date().toLocaleString()}</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</Layout>
+
+<style>
+  /* Additional hover effects */
+  .bg-white:hover {
+    transform: translateY(-2px);
+  }
+  
+  .transition-shadow {
+    transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+  }
+</style>
