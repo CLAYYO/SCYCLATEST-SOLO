@@ -92,6 +92,7 @@ export const POST: APIRoute = async ({ request }) => {
     
     // Extract text fields
     const personData: any = {
+      title: formData.get('persons_name') as string, // Use person's name as title
       persons_name: formData.get('persons_name') as string,
       position: formData.get('position') as string || null,
       where_do_they_work: formData.get('where_do_they_work') as string || null,
@@ -151,6 +152,7 @@ export const PUT: APIRoute = async ({ request }) => {
 
     // Extract text fields
     const personData: any = {
+      title: formData.get('persons_name') as string, // Use person's name as title
       persons_name: formData.get('persons_name') as string,
       position: formData.get('position') as string || null,
       where_do_they_work: formData.get('where_do_they_work') as string || null,
