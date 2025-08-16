@@ -12,6 +12,9 @@ You need to add these environment variables in the Cloudflare Pages dashboard:
 2. **PUBLIC_SUPABASE_ANON_KEY**
    - Value: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2cW5qcm9lbnlxZHJ4bXZ6aXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxNzM0MTMsImV4cCI6MjA3MDc0OTQxM30.AIvynZargdB99zfyHJRrAzUX_Fl0e3r7kzsAlYPUxpE`
 
+3. **SUPABASE_SERVICE_ROLE_KEY** (CRITICAL - Required for server-side operations)
+   - Value: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2cW5qcm9lbnlxZHJ4bXZ6aXJqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NTE3MzQxMywiZXhwIjoyMDcwNzQ5NDEzfQ.zlDEyT3yCo6zKqu8eRd1a-Je-YxJgHRstzxcXdca02Q`
+
 ## How to Add Environment Variables
 
 1. Go to [Cloudflare Dashboard](https://dash.cloudflare.com/)
