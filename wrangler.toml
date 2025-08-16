@@ -3,3 +3,13 @@ name = "scyclatest-solo"
 pages_build_output_dir = "dist"
 compatibility_date = "2024-01-15"
 compatibility_flags = ["nodejs_compat"]
+
+# Environment variables
+[vars]
+# Add your Supabase URL and anonymous key here
+# PUBLIC_SUPABASE_URL = "your-supabase-url"
+# PUBLIC_SUPABASE_ANON_KEY = "your-supabase-anon-key"
+
+# Note: For security reasons, it's recommended to add actual values
+# through the Cloudflare dashboard as encrypted secrets rather than
+# storing them directly in this file
