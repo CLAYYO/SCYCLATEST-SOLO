@@ -22,7 +22,13 @@ if (!supabaseUrl || !supabaseServiceKey) {
       }),
       update: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
       delete: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') })
-    })
+    }),
+    storage: {
+      from: () => ({
+        upload: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
+        getPublicUrl: () => ({ data: { publicUrl: '' } })
+      })
+    }
   };
 } else {
   // Create server client with service role key
