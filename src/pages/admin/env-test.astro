@@ -1,0 +1,28 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import EnvChecker from '../../components/admin/EnvChecker';
+---
+
+<Layout title="Environment Variables Test">
+  <div class="max-w-4xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-navy-900 mb-6">Environment Variables Test</h1>
+    <p class="mb-6 text-gray-600">
+      This page tests if the Supabase environment variables are correctly configured and accessible.
+      It performs a client-side check of the environment variables.
+    </p>
+    
+    <div class="mb-8">
+      <EnvChecker client:load />
+    </div>
+    
+    <div class="mt-8 p-4 bg-gray-50 rounded-lg">
+      <h2 class="text-xl font-bold mb-2">Troubleshooting</h2>
+      <ul class="list-disc pl-5 space-y-2">
+        <li>If variables show as "Not Configured", check your <code>.env</code> file for local development</li>
+        <li>For production, verify variables are set in the Cloudflare Pages dashboard</li>
+        <li>After updating environment variables, redeploy the application</li>
+        <li>Check browser console for any related errors</li>
+      </ul>
+    </div>
+  </div>
+</Layout>
