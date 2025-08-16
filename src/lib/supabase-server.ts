@@ -13,16 +13,21 @@ if (!supabaseUrl || !supabaseServiceKey) {
   
   // Create a mock client that throws runtime errors for actual usage
   supabaseServer = {
-    from: () => ({
-      insert: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
-      select: () => ({
-        eq: () => ({
-          single: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') })
-        })
-      }),
-      update: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
-      delete: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') })
-    }),
+    from: (table: string) => {
+      console.warn(`Mock database query called for table: ${table}`);
+      const mockQuery = {
+        insert: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
+        select: (columns?: string) => ({
+          eq: (column: string, value: any) => ({
+            single: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') })
+          }),
+          order: (column: string, options?: any) => Promise.resolve({ data: [], error: null })
+        }),
+        update: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
+        delete: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') })
+      };
+      return mockQuery;
+    },
     storage: {
       from: (bucket: string) => ({
         upload: (path: string, file: File, options?: any) => {
