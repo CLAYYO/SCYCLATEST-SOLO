@@ -1,9 +1,9 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
-import { supabase } from '../../../lib/supabase';
+import { supabaseServer } from '../../../lib/supabase-server';
 
 // Get all events
-const { data: events, error } = await supabase
+const { data: events, error } = await supabaseServer
   .from('acf_events')
   .select('*')
   .order('created_at', { ascending: false });

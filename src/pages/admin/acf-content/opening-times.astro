@@ -1,9 +1,9 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
-import { supabase } from '../../../lib/supabase';
+import { supabaseServer } from '../../../lib/supabase-server';
 
 // Fetch opening times data
-const { data: openingTimes, error } = await supabase
+const { data: openingTimes, error } = await supabaseServer
   .from('acf_opening_times')
   .select('*')
   .order('created_at', { ascending: false });

@@ -1,9 +1,9 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
-import { supabase } from '../../../lib/supabase';
+import { supabaseServer } from '../../../lib/supabase-server';
 
-// Get all people
-const { data: people, error } = await supabase
+// Get all people using server client with service role key
+const { data: people, error } = await supabaseServer
   .from('acf_people')
   .select('*')
   .order('created_at', { ascending: false });

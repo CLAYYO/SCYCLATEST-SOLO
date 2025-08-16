@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { supabase } from '../../../lib/supabase';
+import { supabaseServer } from '../../../lib/supabase-server';
 
 // Helper function to upload files to Supabase Storage
 async function uploadFile(file: File, bucket: string, folder: string): Promise<{ url: string; filename: string } | null> {
@@ -8,7 +9,7 @@ async function uploadFile(file: File, bucket: string, folder: string): Promise<{
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
     const filePath = `${folder}/${fileName}`;
 
-    const { data, error } = await supabase.storage
+    const { data, error } = await supabaseServer.storage
       .from(bucket)
       .upload(filePath, file, {
         cacheControl: '3600',
@@ -20,7 +21,7 @@ async function uploadFile(file: File, bucket: string, folder: string): Promise<{
       return null;
     }
 
-    const { data: { publicUrl } } = supabase.storage
+    const { data: { publicUrl } } = supabaseServer.storage
       .from(bucket)
       .getPublicUrl(filePath);
 
@@ -40,8 +41,8 @@ export const GET: APIRoute = async ({ request }) => {
     const id = url.searchParams.get('id');
 
     if (id) {
-      // Get single person
-      const { data: person, error } = await supabase
+      // Get single person using server client with service role key
+      const { data: person, error } = await supabaseServer
         .from('acf_people')
         .select('*')
         .eq('id', id)
@@ -59,8 +60,8 @@ export const GET: APIRoute = async ({ request }) => {
         headers: { 'Content-Type': 'application/json' }
       });
     } else {
-      // Get all people
-      const { data: people, error } = await supabase
+      // Get all people using server client with service role key
+      const { data: people, error } = await supabaseServer
         .from('acf_people')
         .select('*')
         .order('created_at', { ascending: false });
@@ -108,8 +109,8 @@ export const POST: APIRoute = async ({ request }) => {
       }
     }
 
-    // Insert into database
-    const { data, error } = await supabase
+    // Insert into database using server client with service role key
+    const { data, error } = await supabaseServer
       .from('acf_people')
       .insert([personData])
       .select()
@@ -169,8 +170,8 @@ export const PUT: APIRoute = async ({ request }) => {
       }
     }
 
-    // Update in database
-    const { data, error } = await supabase
+    // Update in database using server client with service role key
+    const { data, error } = await supabaseServer
       .from('acf_people')
       .update(personData)
       .eq('id', id)
@@ -219,8 +220,8 @@ export const DELETE: APIRoute = async ({ request }) => {
     //   .eq('id', id)
     //   .single();
 
-    // Delete from database
-    const { error } = await supabase
+    // Delete from database using server client with service role key
+    const { error } = await supabaseServer
       .from('acf_people')
       .delete()
       .eq('id', id);

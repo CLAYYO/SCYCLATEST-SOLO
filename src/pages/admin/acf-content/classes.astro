@@ -1,9 +1,9 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
-import { supabase } from '../../../lib/supabase';
+import { supabaseServer } from '../../../lib/supabase-server';
 
 // Fetch classes data
-const { data: classes, error } = await supabase
+const { data: classes, error } = await supabaseServer
   .from('acf_classes')
   .select('*')
   .order('created_at', { ascending: false });

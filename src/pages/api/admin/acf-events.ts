@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { supabase } from '../../../lib/supabase';
+import { supabaseServer } from '../../../lib/supabase-server';
 
 // Helper function to upload file to Supabase Storage
 async function uploadFile(file: File, bucket: string, folder: string): Promise<{ url: string; filename: string } | null> {
@@ -8,7 +8,7 @@ async function uploadFile(file: File, bucket: string, folder: string): Promise<{
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
     const filePath = `${folder}/${fileName}`;
 
-    const { data, error } = await supabase.storage
+    const { data, error } = await supabaseServer.storage
       .from(bucket)
       .upload(filePath, file);
 
@@ -17,7 +17,7 @@ async function uploadFile(file: File, bucket: string, folder: string): Promise<{
       return null;
     }
 
-    const { data: { publicUrl } } = supabase.storage
+    const { data: { publicUrl } } = supabaseServer.storage
       .from(bucket)
       .getPublicUrl(filePath);
 
@@ -38,7 +38,7 @@ export const GET: APIRoute = async ({ url }) => {
     
     if (eventId) {
       // Get single event
-      const { data: event, error } = await supabase
+      const { data: event, error } = await supabaseServer
         .from('acf_events')
         .select('*')
         .eq('id', eventId)
@@ -57,7 +57,7 @@ export const GET: APIRoute = async ({ url }) => {
       });
     } else {
       // Get all events
-      const { data: events, error } = await supabase
+      const { data: events, error } = await supabaseServer
         .from('acf_events')
         .select('*')
         .order('created_at', { ascending: false });
@@ -121,7 +121,7 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     // Insert into database
-    const { data: event, error } = await supabase
+    const { data: event, error } = await supabaseServer
       .from('acf_events')
       .insert([eventData])
       .select()
@@ -194,7 +194,7 @@ export const PUT: APIRoute = async ({ request }) => {
     }
 
     // Update in database
-    const { data: event, error } = await supabase
+    const { data: event, error } = await supabaseServer
       .from('acf_events')
       .update(eventData)
       .eq('id', eventId)
@@ -234,14 +234,14 @@ export const DELETE: APIRoute = async ({ request }) => {
     }
 
     // Get event data first to clean up files
-    const { data: event } = await supabase
+    const { data: event } = await supabaseServer
       .from('acf_events')
       .select('*')
       .eq('id', id)
       .single();
 
     // Delete the event
-    const { error } = await supabase
+    const { error } = await supabaseServer
       .from('acf_events')
       .delete()
       .eq('id', id);

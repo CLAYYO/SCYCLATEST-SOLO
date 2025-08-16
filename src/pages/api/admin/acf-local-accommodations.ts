@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { supabase } from '../../../lib/supabase';
+import { supabaseServer } from '../../../lib/supabase-server';
 
 // Helper function to upload files to Supabase Storage
 async function uploadFile(file: File, bucket: string, folder: string): Promise<{ url: string; filename: string } | null> {
@@ -8,7 +8,7 @@ async function uploadFile(file: File, bucket: string, folder: string): Promise<{
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
     const filePath = `${folder}/${fileName}`;
 
-    const { data, error } = await supabase.storage
+    const { data, error } = await supabaseServer.storage
       .from(bucket)
       .upload(filePath, file, {
         cacheControl: '3600',
@@ -20,7 +20,7 @@ async function uploadFile(file: File, bucket: string, folder: string): Promise<{
       return null;
     }
 
-    const { data: { publicUrl } } = supabase.storage
+    const { data: { publicUrl } } = supabaseServer.storage
       .from(bucket)
       .getPublicUrl(filePath);
 
@@ -41,7 +41,7 @@ export const GET: APIRoute = async ({ request }) => {
 
     if (id) {
       // Get single accommodation
-      const { data: accommodation, error } = await supabase
+      const { data: accommodation, error } = await supabaseServer
         .from('acf_local_accommodations')
         .select('*')
         .eq('id', id)
@@ -60,7 +60,7 @@ export const GET: APIRoute = async ({ request }) => {
       });
     } else {
       // Get all accommodations
-      const { data: accommodations, error } = await supabase
+      const { data: accommodations, error } = await supabaseServer
         .from('acf_local_accommodations')
         .select('*')
         .order('created_at', { ascending: false });
@@ -111,7 +111,7 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     // Insert into database
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('acf_local_accommodations')
       .insert([accommodationData])
       .select()
@@ -174,7 +174,7 @@ export const PUT: APIRoute = async ({ request }) => {
     }
 
     // Update in database
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('acf_local_accommodations')
       .update(accommodationData)
       .eq('id', id)
@@ -217,14 +217,14 @@ export const DELETE: APIRoute = async ({ request }) => {
 
     // TODO: Delete associated files from storage
     // Get accommodation data first to find files to delete
-    // const { data: accommodation } = await supabase
+    // const { data: accommodation } = await supabaseServer
     //   .from('acf_local_accommodations')
     //   .select('image_filename')
     //   .eq('id', id)
     //   .single();
 
     // Delete from database
-    const { error } = await supabase
+    const { error } = await supabaseServer
       .from('acf_local_accommodations')
       .delete()
       .eq('id', id);

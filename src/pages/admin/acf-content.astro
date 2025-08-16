@@ -1,33 +1,33 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { supabase } from '../../lib/supabase';
+import { supabaseServer } from '../../lib/supabase-server';
 
 // Get counts for each content type
-const { data: eventsCount } = await supabase
+const { data: eventsCount } = await supabaseServer
   .from('acf_events')
   .select('*', { count: 'exact', head: true });
 
-const { data: peopleCount } = await supabase
+const { data: peopleCount } = await supabaseServer
   .from('acf_people')
   .select('*', { count: 'exact', head: true });
 
-const { data: accommodationsCount } = await supabase
+const { data: accommodationsCount } = await supabaseServer
   .from('acf_local_accommodations')
   .select('*', { count: 'exact', head: true });
 
-const { data: classesCount } = await supabase
+const { data: classesCount } = await supabaseServer
   .from('acf_classes')
   .select('*', { count: 'exact', head: true });
 
-const { data: friendsCount } = await supabase
+const { data: friendsCount } = await supabaseServer
   .from('acf_friends')
   .select('*', { count: 'exact', head: true });
 
-const { data: documentsCount } = await supabase
+const { data: documentsCount } = await supabaseServer
   .from('acf_rules_documents')
   .select('*', { count: 'exact', head: true });
 
-const { data: openingTimesCount } = await supabase
+const { data: openingTimesCount } = await supabaseServer
   .from('acf_opening_times')
   .select('*', { count: 'exact', head: true });
 

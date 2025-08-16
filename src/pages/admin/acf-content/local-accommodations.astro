@@ -1,9 +1,9 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
-import { supabase } from '../../../lib/supabase';
+import { supabaseServer } from '../../../lib/supabase-server';
 
 // Get all local accommodations
-const { data: accommodations, error } = await supabase
+const { data: accommodations, error } = await supabaseServer
   .from('acf_local_accommodations')
   .select('*')
   .order('created_at', { ascending: false });

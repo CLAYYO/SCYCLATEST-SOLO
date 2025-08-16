@@ -1,9 +1,9 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
-import { supabase } from '../../../lib/supabase';
+import { supabaseServer } from '../../../lib/supabase-server';
 
 // Fetch friends data
-const { data: friends, error } = await supabase
+const { data: friends, error } = await supabaseServer
   .from('acf_friends')
   .select('*')
   .order('created_at', { ascending: false });
