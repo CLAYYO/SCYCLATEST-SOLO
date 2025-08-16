@@ -24,9 +24,20 @@ if (!supabaseUrl || !supabaseServiceKey) {
       delete: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') })
     }),
     storage: {
-      from: () => ({
-        upload: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
-        getPublicUrl: () => ({ data: { publicUrl: '' } })
+      from: (bucket: string) => ({
+        upload: (path: string, file: File, options?: any) => {
+          console.warn(`Mock storage upload called for bucket: ${bucket}, path: ${path}`);
+          return Promise.resolve({ 
+            data: { path: path, id: 'mock-id', fullPath: `${bucket}/${path}` }, 
+            error: null 
+          });
+        },
+        getPublicUrl: (path: string) => {
+          console.warn(`Mock storage getPublicUrl called for bucket: ${bucket}, path: ${path}`);
+          return { 
+            data: { publicUrl: `https://mock-storage.supabase.co/storage/v1/object/public/${bucket}/${path}` } 
+          };
+        }
       })
     }
   };
