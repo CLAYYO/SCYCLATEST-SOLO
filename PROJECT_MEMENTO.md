@@ -1,4 +1,5 @@
 ## Project Context
+<!-- Updated to trigger fresh deployment -->
 
 This project is a web application for the South Caernarvonshire Yacht Club (SCYC) that includes various features such as forms administration, event management, and content management.
 
