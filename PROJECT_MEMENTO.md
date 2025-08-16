@@ -43,11 +43,16 @@ Supabase migrations define Row Level Security (RLS) policies requiring `authenti
      - Check that Supabase Row Level Security (RLS) policies are correctly configured
      - Verify that authentication tokens are valid and not expired
 
-3. **Build Errors**
+3. **"404 Not Found" Error with `.astro` Extension**
+   - When accessing pages in the deployed site, do not include the `.astro` extension in the URL
+   - Example: Use `https://scyclatest-solo.pages.dev/admin/env-test` instead of `https://scyclatest-solo.pages.dev/admin/env-test.astro`
+   - Astro files are compiled to HTML during the build process and should be accessed without the extension
+
+4. **Build Errors**
    - Check for correct formatting in wrangler.toml
    - Avoid mixing environment variable configurations between dashboard and wrangler.toml
 
-4. **Local Development Issues**
+5. **Local Development Issues**
    - Ensure `.env` file has correct Supabase credentials
    - Run `npm run dev` to start the development server
    - Check console for Supabase connection error messages
@@ -81,7 +86,7 @@ The following tools have been created to help test environment variable configur
 2. Ensure the variables are set as secrets (encrypted) and are applied to the production environment
 3. Trigger a new deployment by pushing a commit or manually redeploying
 4. Use the new environment checker tools to verify variables are accessible:
-   - Visit `/admin/env-test` in the browser to check client-side environment variable access
+   - Visit `/admin/env-test` in the browser to check client-side environment variable access (important: do not include the `.astro` extension in the URL)
    - Use the `/api/test-env` endpoint to verify server-side environment variable access
 5. Implement authentication checks on admin pages
 6. Test ACF people management functionality after environment variables are configured
