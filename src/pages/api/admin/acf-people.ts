@@ -1,5 +1,4 @@
 import type { APIRoute } from 'astro';
-import { supabase } from '../../../lib/supabase';
 import { supabaseServer } from '../../../lib/supabase-server';
 
 // Helper function to upload files to Supabase Storage
