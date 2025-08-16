@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Environment Variables Check</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <h1>Environment Variables Check</h1>
+    <div id="results">Checking environment variables...</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const resultsDiv = document.getElementById('results');
+            
+            // Check if we're in development or production
+            const mode = window.location.hostname === 'localhost' ? 'development' : 'production';
+            
+            // Try to fetch the environment check API
+            fetch('/api/env-check')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`API returned ${response.status}: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Display API results
+                    let html = `<h2>Server-Side Check</h2>`;
+                    html += `<p>Environment: ${data.environment}</p>`;
+                    html += `<p>Timestamp: ${data.timestamp}</p>`;
+                    
+                    // Display variables
+                    html += `<h3>Environment Variables:</h3>`;
+                    for (const [key, status] of Object.entries(data.variables)) {
+                        const statusClass = status.configured ? 'success' : 'error';
+                        html += `<div class="status ${statusClass}">`;
+                        html += `<strong>${key}:</strong> ${status.value}`;
+                        html += `</div>`;
+                    }
+                    
+                    // Display message
+                    const messageClass = data.message.includes('Warning') ? 'warning' : 'success';
+                    html += `<div class="status ${messageClass}">${data.message}</div>`;
+                    
+                    resultsDiv.innerHTML = html;
+                })
+                .catch(error => {
+                    // API error - try client-side check
+                    let html = `<h2>API Error</h2>`;
+                    html += `<div class="status error">Could not access the environment check API: ${error.message}</div>`;
+                    
+                    html += `<h2>Client-Side Check</h2>`;
+                    html += `<p>Environment: ${mode}</p>`;
+                    html += `<p>Timestamp: ${new Date().toISOString()}</p>`;
+                    
+                    // Try to access environment variables directly
+                    html += `<div class="status warning">Note: Client-side environment variables must be prefixed with PUBLIC_ to be accessible.</div>`;
+                    
+                    resultsDiv.innerHTML = html;
+                });
+        });
+    </script>
+</body>
+</html>
